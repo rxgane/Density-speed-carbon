@@ -1,0 +1,117 @@
+==========================================================================
+A. BASELINE CALIBRATION  (representative product)
+==========================================================================
+  N=40, mu=20000, sigma=8000 (CV=0.40), rho=0.3, alpha=0.95 (z=1.645)
+  delta=120.0 mi, D=1.0, v in [0.3,3.0]
+  cost rates:   F=7500.0  h=0.5  t0=1.0  t1=0.05  tL=0.005
+  carbon rates: phi=3000.0  eta=0.15  eps0=0.04  epsL=0.0015
+  carbon intensity per $ :  eta/h=0.30  eps0/t1=0.80  epsL/tL=0.30  phi/F=0.40
+  diagnostics:  R_speed=0.38   R_density=0.75
+--------------------------------------------------------------------------
+  cost-min   : n*= 7.84  v*= 1.03   K=$1,244,125   C=160,484 kg
+               carbon split: transport=85,592 kg  holding=74,891 kg
+  carbon-min : n*= 6.55  v*= 0.69   K=$1,259,588   C=152,353 kg
+  direction carbon-min vs cost-min :  speed slower,  density consolidate
+  cost of carbon-min config : +1.2% over cost-min  for 5.1% less carbon
+
+==========================================================================
+B. FOUR-REGIME MAP  (carbon-min direction vs cost-min, joint optima)
+==========================================================================
+  Sweep R_speed via eta/h and R_density via epsL/tL; classify the
+  joint carbon-min (n,v) against the joint cost-min (n,v).
+  legend: 1st letter speed {F=faster, S=slower}; 2nd density {D=disperse, C=consolidate}
+
+  -- No pooling (rho=1): thresholds separate, R_speed=1 and R_density=1 --
+
+  rho = 0.999999999   cost-min reference: n=10.07, v=1.22
+  rows = R_speed (eta/h), cols = R_density (epsL/tL)
+  R_s \ R_d |    0.3    0.6    0.9    1.0    1.1    1.5    2.5
+  ------------------------------------------------------------
+      0.3  |     SC     SC     SC     S=     SD     SD     SD
+      0.6  |     SC     SC     SC     S=     SD     SD     SD
+      0.9  |     SC     SC     SC     S=     SD     SD     SD
+      1.0  |     =C     =C     =C     ==     =D     =D     =D
+      1.1  |     FC     FC     FC     F=     FD     FD     FD
+      1.5  |     FC     FC     FC     F=     FD     FD     FD
+      2.5  |     FC     FC     FC     F=     FD     FD     FD
+
+  -- With pooling (rho=0.30): density boundary tilts (Prop 2 inward force) --
+
+  rho = 0.3   cost-min reference: n=7.84, v=1.03
+  rows = R_speed (eta/h), cols = R_density (epsL/tL)
+  R_s \ R_d |    0.3    0.6    0.9    1.0    1.1    1.5    2.5
+  ------------------------------------------------------------
+      0.3  |     SC     SC     SC     SD     SD     SD     SD
+      0.6  |     SC     SC     SC     SC     SC     SD     SD
+      0.9  |     SC     SC     SC     SC     SC     SD     SD
+      1.0  |     SC     SC     SC     SC     SC     FD     FD
+      1.1  |     SC     FC     FC     FC     FC     FD     FD
+      1.5  |     FC     FC     FC     FC     FC     FC     FD
+      2.5  |     FC     FC     FC     FC     FC     FC     FD
+
+==========================================================================
+C. VALUE OF JOINT REDESIGN  (single-lever reach vs. joint, then common target)
+==========================================================================
+  product: E-grocery perishables (refrig., van LM)
+  R_speed=1.55, R_density=5.00 (carbon-min wants faster + disperse -> levers reinforce)
+  cost-min: n=7.84, v=1.03, K=$1,244,125, C=443,723 kg
+
+  Maximum achievable carbon reduction by policy:
+    joint (n,v)             : floor C=401,107 kg   max cut = 9.60%
+    speed only (n fixed)    : floor C=441,379 kg   max cut = 0.53%
+    density only (v fixed)  : floor C=406,268 kg   max cut = 8.44%
+
+  Target moderate (90% of best single lever): cut 7.60%  (B = 410,013 kg). Cost to comply:
+    joint (n,v)             : n=12.76 v= 1.17  K=$1,260,808  (+1.34%)
+    speed only (n fixed)    : INFEASIBLE (lever cannot reach this cut)
+    density only (v fixed)  : n=13.93 v= 1.03  K=$1,266,727  (+1.82%)
+
+  Target deep (95% of joint reach): cut 9.12%  (B = 403,238 kg). Cost to comply:
+    joint (n,v)             : n=15.61 v= 1.25  K=$1,279,167  (+2.82%)
+    speed only (n fixed)    : INFEASIBLE (lever cannot reach this cut)
+    density only (v fixed)  : INFEASIBLE (lever cannot reach this cut)
+
+  Reading: each single lever has a bounded reach; the deep target lies
+  beyond both single levers and is met only by adjusting speed and density
+  together -- the complementarity of Proposition 3.
+
+==========================================================================
+D. CARBON-PRICE PATH  (sweep tau; trace n*, v*, K, C)
+==========================================================================
+  R_speed=0.38, R_density=0.75
+         tau      n*      v*          K ($)         C (kg)
+  --------------------------------------------------------
+           0    7.84    1.03      1,244,125        160,484
+           5    6.99    0.78      1,252,014        152,991
+          10    6.81    0.74      1,254,915        152,564
+          20    6.69    0.72      1,256,914        152,417
+          35    6.63    0.71      1,257,993        152,375
+          50    6.61    0.70      1,258,431        152,365
+         100    6.59    0.70      1,259,080        152,356
+         300    6.57    0.69      1,259,332        152,354
+         800    6.55    0.69      1,259,588        152,353
+         inf    6.55    0.69      1,259,588        152,353
+
+==========================================================================
+E. PRODUCT ARCHETYPES  (carbon-min direction + cost at 80% of own max cut)
+==========================================================================
+
+  Cold-chain pharma (refrig., diesel last mile)
+    ratios: eta/h=0.95 eps0/t1=0.50 epsL/tL=1.40 phi/F=0.35  -> R_speed=1.90, R_density=4.00
+    cost-min (n=7.8,v=1.03) -> carbon-min (n=16.5,v=1.42): faster, disperse   (max cut 7.7%)
+    cost to cut 6.2% carbon (joint): +1.13%
+
+  Ambient dry goods (stable, rail/efficient LM)
+    ratios: eta/h=0.30 eps0/t1=0.80 epsL/tL=0.25 phi/F=0.40  -> R_speed=0.37, R_density=0.62
+    cost-min (n=7.8,v=1.03) -> carbon-min (n=5.8,v=0.69): slower, consolidate   (max cut 6.1%)
+    cost to cut 4.9% carbon (joint): +0.45%
+
+  Bulky low-value (cheap storage, diesel LM)
+    ratios: eta/h=0.20 eps0/t1=0.45 epsL/tL=1.30 phi/F=0.30  -> R_speed=0.44, R_density=4.33
+    cost-min (n=7.8,v=1.03) -> carbon-min (n=22.8,v=0.82): slower, disperse   (max cut 17.4%)
+    cost to cut 13.9% carbon (joint): +2.23%
+
+  E-grocery perishables (refrig., van LM)
+    ratios: eta/h=0.85 eps0/t1=0.55 epsL/tL=1.50 phi/F=0.30  -> R_speed=1.55, R_density=5.00
+    cost-min (n=7.8,v=1.03) -> carbon-min (n=18.9,v=1.32): faster, disperse   (max cut 9.6%)
+    cost to cut 7.7% carbon (joint): +1.39%

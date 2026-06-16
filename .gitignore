@@ -1,0 +1,27 @@
+# --- LaTeX build artifacts ---
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# --- Python ---
+__pycache__/
+*.pyc
+
+# --- macOS ---
+.DS_Store
+
+# --- PDFs: ignore everything by default to avoid committing copyrighted
+#     third-party journal articles, then whitelist the paper and its figures ---
+*.pdf
+!model.pdf
+!fig_chance.pdf
+!fig_frontier.pdf
+!fig_regimes.pdf
