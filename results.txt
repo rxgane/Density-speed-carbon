@@ -35,7 +35,7 @@ B. FOUR-REGIME MAP  (carbon-min direction vs cost-min, joint optima)
       1.5  |     FC     FC     FC     F=     FD     FD     FD
       2.5  |     FC     FC     FC     F=     FD     FD     FD
 
-  -- With pooling (rho=0.30): density boundary tilts (Prop 2 inward force) --
+  -- With pooling (rho=0.30): density boundary tilts (pooling-adjusted threshold; holding is the inward force) --
 
   rho = 0.3   cost-min reference: n=7.84, v=1.03
   rows = R_speed (eta/h), cols = R_density (epsL/tL)

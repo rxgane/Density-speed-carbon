@@ -106,10 +106,8 @@ def J(n, v, p, tau):
 
 
 # --------------------------------------------------------------------------
-# Optimizers (grid over n in [1,N]; v from closed form + grid safety net)
+# Optimizers (grid search over both n and v; closed-form v used as a starting point)
 # --------------------------------------------------------------------------
-
-_NGRID = np.linspace(1.0, None or 1.0, 1)  # placeholder; built per-call below
 
 def _v_grid(p, m=1201):
     return np.linspace(p.vmin, p.vmax, m)
@@ -226,7 +224,7 @@ def expB_regime_map(p):
           "2nd density {D=disperse, C=consolidate}")
     print("\n  -- No pooling (rho=1): thresholds separate, R_speed=1 and R_density=1 --")
     _regime_map(p, 1.0 - 1e-9)
-    print("\n  -- With pooling (rho=%.2f): density boundary tilts (Prop 2 inward force) --"
+    print("\n  -- With pooling (rho=%.2f): density boundary tilts (pooling-adjusted threshold; holding is the inward force) --"
           % p.rho)
     _regime_map(p, p.rho)
 

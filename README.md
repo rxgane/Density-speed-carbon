@@ -4,7 +4,7 @@ Replication materials for the analytical paper *"Cost, Carbon, and the Speed of
 Replenishment in Distribution Network Design"* (Ram Ganeshan, Raymond A. Mason
 School of Business, William & Mary).
 
-A stylized location–inventory model in which a firm chooses **network density**
+A parsimonious continuous-approximation location–inventory model in which a firm chooses **network density**
 (the number of distribution centers, `n`) and **replenishment speed** (`v`) to
 minimize cost subject to a carbon cap and a service requirement. Carbon splits
 into a transport bucket and a holding bucket; pricing carbon selects which
@@ -25,7 +25,6 @@ chance-constrained (high-confidence) carbon cap.
 | `figures.py`, `gen_chance_fig.py`, `gen_regimes_fig.py` | Figure generation |
 | `fig_regimes.pdf`, `fig_frontier.pdf`, `fig_chance.pdf` | Generated figures |
 | `verify_*.wl`, `check_*.{wl,py}` | Symbolic/numeric verification (Mathematica + Python) |
-| `model.md`, `notes.md`, `attribution.md`, `literature_review.md`, `managerial_implications.md` | Working notes |
 | `results.txt` | Saved numerical output |
 
 ## Reproducing
