@@ -7,7 +7,7 @@ School of Business, William & Mary).
 A parsimonious continuous-approximation location–inventory model in which a firm chooses **network density**
 (the number of distribution centers, `n`) and **replenishment speed** (`v`) to
 minimize cost subject to a carbon cap and a service requirement. Carbon splits
-into a transport bucket and a holding bucket; pricing carbon selects which
+into a transport component and a holding component; pricing carbon selects which
 operational substitute — stock vs. speed for availability, facilities vs.
 last-mile for proximity — is lower-emission. Key results: a closed-form speed
 threshold, a pooling-adjusted density threshold, their complementarity, and a
@@ -21,15 +21,16 @@ chance-constrained (high-confidence) carbon cap.
 | `model.pdf` | Compiled paper |
 | `numerics.py` | Core model: cost/carbon functions and optimizers |
 | `computational_experiments.py` | Calibration, archetypes, value-of-joint-redesign, robustness |
-| `chance_experiment.py` | Chance-constrained carbon-cap experiments |
+| `chance_experiment.py` | Chance-constrained carbon-cap illustrations |
 | `figures.py`, `gen_chance_fig.py`, `gen_regimes_fig.py` | Figure generation |
 | `fig_regimes.pdf`, `fig_frontier.pdf`, `fig_chance.pdf` | Generated figures |
-| `verify_*.wl`, `check_*.{wl,py}` | Symbolic/numeric verification (Mathematica + Python) |
+| `verify_*.wl`, `check_*.{wl,py}` | Symbolic/numeric checks (Mathematica + Python) |
 | `results.txt` | Saved numerical output |
 
 ## Reproducing
 
-Numerics (Python 3, `numpy`; standard-library `statistics.NormalDist`, no SciPy):
+Numerics require **NumPy** (`pip install numpy`); everything else is standard
+library (`statistics.NormalDist`, no SciPy). With Python 3:
 
 ```bash
 python3 numerics.py

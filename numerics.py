@@ -160,7 +160,7 @@ def carbon_floor(p, free="both", n_fix=None, v_fix=None):
 
 
 # --------------------------------------------------------------------------
-# Experiment A: baseline calibration
+# Illustration A: baseline calibration
 # --------------------------------------------------------------------------
 
 def expA_baseline(p):
@@ -191,7 +191,7 @@ def expA_baseline(p):
 
 
 # --------------------------------------------------------------------------
-# Experiment B: four-regime map
+# Illustration B: four-regime map
 # --------------------------------------------------------------------------
 
 def _regime_map(p, rho):
@@ -230,7 +230,7 @@ def expB_regime_map(p):
 
 
 # --------------------------------------------------------------------------
-# Experiment C: value of joint redesign
+# Illustration C: value of joint redesign
 # --------------------------------------------------------------------------
 
 def build_archetypes(p):
@@ -288,11 +288,11 @@ def expC_value_joint(p, name):
                   f"K=${K:,.0f}  (+{100*(K/KC-1):.2f}%)")
     print("\n  Reading: each single lever has a bounded reach; the deep target lies")
     print("  beyond both single levers and is met only by adjusting speed and density")
-    print("  together -- the complementarity of Proposition 3.")
+    print("  together -- the complementarity result.")
 
 
 # --------------------------------------------------------------------------
-# Experiment D: carbon-price path
+# Illustration D: carbon-price path
 # --------------------------------------------------------------------------
 
 def expD_price_path(p):
@@ -310,7 +310,7 @@ def expD_price_path(p):
 
 
 # --------------------------------------------------------------------------
-# Experiment E: product archetypes
+# Illustration E: product archetypes
 # --------------------------------------------------------------------------
 
 def expE_archetypes(p):

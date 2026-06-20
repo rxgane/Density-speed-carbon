@@ -1,4 +1,4 @@
-"""Chance-constrained carbon cap experiment: scale the transport bucket by
+"""Chance-constrained carbon cap illustration: scale the transport component by
 m = q_{1-beta}/(N mu) and recompute the carbon-minimizing design."""
 import numpy as np
 from statistics import NormalDist

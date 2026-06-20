@@ -73,7 +73,7 @@ C. VALUE OF JOINT REDESIGN  (single-lever reach vs. joint, then common target)
 
   Reading: each single lever has a bounded reach; the deep target lies
   beyond both single levers and is met only by adjusting speed and density
-  together -- the complementarity of Proposition 3.
+  together -- the complementarity result.
 
 ==========================================================================
 D. CARBON-PRICE PATH  (sweep tau; trace n*, v*, K, C)

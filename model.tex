@@ -52,8 +52,8 @@
 \begin{abstract}
 \noindent To distribute a product, a firm operates a network of distribution centers and replenishes them to
 serve its markets. How densely it places those centers and how fast it replenishes them shape both its cost
-and the carbon its distribution emits.  We study how a carbon price impacts these two levers in a model of a firm distributing a single product
-from one source to many markets. Emissions in carbon arise both from moving goods and holding inventory. We provide a model that optimizes replenishment speed and network density to minimize cost, subject to a carbon cap and a service requirement. A transport-focused response --- slower
+and the carbon its distribution emits.  We study how carbon accounting changes these two levers in a model of a firm distributing a single product
+from one source to many markets. Distribution carbon arises from both moving goods and holding inventory. The firm chooses replenishment speed and network density to minimize cost subject to a carbon cap and a service requirement. A transport-focused response --- slower
 replenishment and network consolidation --- lowers transport carbon but increases the inventory emissions, so whether it lowers \emph{total} carbon depends on which activity is more carbon-intensive per dollar. We show
 that a carbon price can instead call for \emph{faster} replenishment --- when holding is the more
 carbon-intensive mode of availability --- and for a \emph{more dispersed} network --- when a long last mile is
@@ -118,7 +118,7 @@ and lowers the inventory penalty of dispersing, so the carbon-minimizing respons
 than one alone. Together, the two thresholds give managers a product-specific rule for setting both
 levers: each compares the carbon intensity per dollar of the two competing activities and
 identifies the carbon-minimizing direction --- faster or slower replenishment, a denser
-or more dispersed network --- placing a product in one of four regimes. Counterintuitively, in one regime, both thresholds point to a network that is at once faster \emph{and} more dispersed --- a departure from the expectation that lower-carbon operation calls for slower replenishment and a more consolidated network.
+or more dispersed network --- placing a product in one of four regimes. In one regime, both thresholds select a network that is at once faster \emph{and} more dispersed, rather than slower and more consolidated.
 
 The remainder of the paper proceeds as follows. Section~\ref{sec:related} positions the paper relative to
 the location--inventory, carbon-network-design, and inventory--transport--emissions literatures.
@@ -782,8 +782,8 @@ pooling-adjusted density threshold \eqref{eq:densthreshpool} becomes
 \begin{equation}\label{eq:chancedensthresh}
   m\,\frac{\varepsilon_L}{t_L} \;>\; \frac{\varphi+\eta\,G\big(n_K(v),v\big)}{F+h\,G\big(n_K(v),v\big)},
 \end{equation}
-which reduces to $m\,\varepsilon_L/t_L>\varphi/F$ in the no-pooling limit ($\rho=1$). Since $m\ge 1$ for
-$\beta_c\le\tfrac12$, with equality at $\beta_c=\tfrac12$, the chance constraint tightens the speed-reversal
+which reduces to $m\,\varepsilon_L/t_L>\varphi/F$ in the no-pooling limit ($\rho=1$). Under the normal approximation, $m\ge 1$ for
+$\beta_c\le\tfrac12$, with equality at $\beta_c=\tfrac12$, so the chance constraint tightens the speed-reversal
 threshold and relaxes the dispersion threshold relative to the expected-value cap, and the effect grows as $m$ rises with the demand
 coefficient of variation $\sigma/\mu$, the correlation $\rho$, and the confidence $1-\beta_c$.
 \end{corollary}
@@ -920,7 +920,7 @@ points locate the four archetypes of Table~\ref{tab:archcalib} and the baseline.
 
 \subsection{Constructing the product archetypes}
 
-The four archetypes are chosen from external benchmarks rather than freely. Their two diagnostic ratios are
+The four archetypes are guided by external benchmarks. Their two diagnostic ratios are
 carbon intensities per dollar, whose components are measurable, and Table~\ref{tab:calibemp} maps published
 emission factors and costs into those ratios. The emission factors are well established (national inventories
 and standard conversion-factor sets) and the cost figures order-of-magnitude (industry benchmarks), so the
@@ -1037,8 +1037,8 @@ E-grocery perishable & faster, disperse    & $9.6\%$  & $+1.4\%$ & $+4.8\%$\\
 
 \subsection{Value of joint redesign}
 
-Because the two levers are complements (Proposition~\ref{prop:complement}), adjusting them together reaches
-abatement and cost levels that neither reaches alone. Table~\ref{tab:joint} reports this for a product in
+The two levers are complements (Proposition~\ref{prop:complement}); in this illustration, adjusting them together reaches
+abatement levels and target costs that neither single-lever adjustment reaches. Table~\ref{tab:joint} reports this for a product in
 the faster-and-more-dispersed regime (e-grocery perishables, $R_{\mathrm{speed}}=1.55$,
 $R_{\mathrm{density}}=5.0$). Holding the network fixed and varying only speed lowers carbon by at most
 $0.5\%$; holding speed fixed and varying only density reaches $8.4\%$; adjusting both reaches $9.6\%$. We
