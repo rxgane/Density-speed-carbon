@@ -1,6 +1,6 @@
 """Numerical illustrations: archetype endpoint premiums, chance x demand-CV,
-robustness (integer n, discrete modes, rho, load factor), and a Monte-Carlo
-check of the chance constraint."""
+robustness (integer n, discrete modes, rho, load factor), and a Monte Carlo
+diagnostic of the chance constraint."""
 import numpy as np
 from statistics import NormalDist
 from dataclasses import replace
@@ -54,7 +54,7 @@ for rho in [0.0, 0.30, 0.60, 0.90]:
     pr = replace(p, rho=rho)
     nKr, _, _, _ = minimize_obj(pr, 0.0); nEr, _, _, _ = minimize_carbon(pr)
     print(f"    rho={rho:.2f}: cost n={nKr:.2f}, carbon n={nEr:.2f}")
-print("  load factor on last mile (carbon-min n; nref=8, 50% load-sensitive):")
+print("  load factor on last mile (nref=8, 50% load-sensitive at reference density):")
 def carbonmin_lf(pp, nref=8.0):
     ng = np.linspace(1, pp.N, 1961); vg = np.linspace(pp.vmin, pp.vmax, 1201)
     NN, VV = np.meshgrid(ng, vg, indexing="ij")
@@ -63,11 +63,24 @@ def carbonmin_lf(pp, nref=8.0):
          + gfac*pp.epsL*pp.N*pp.mu*d_last(NN,pp))
     i, j = np.unravel_index(np.argmin(C), C.shape)
     return ng[i], vg[j]
+def costmin_lf(pp, nref=8.0):
+    # common-multiplier case: the same fill multiplier applies to the last-mile COST rate
+    ng = np.linspace(1, pp.N, 1961); vg = np.linspace(pp.vmin, pp.vmax, 1201)
+    NN, VV = np.meshgrid(ng, vg, indexing="ij")
+    gfac = 0.5 + 0.5 * (NN / nref)
+    K = (pp.F*NN + pp.h*SS(NN,VV,pp) + (pp.t0 + pp.t1*VV**2)*pp.N*pp.mu*pp.D
+         + gfac*pp.tL*pp.N*pp.mu*d_last(NN,pp))
+    i, j = np.unravel_index(np.argmin(K), K.shape)
+    return ng[i], vg[j]
 for nm, pp in [("baseline", p), ("bulky", build_archetypes(p)["Bulky low-value (cheap storage, diesel LM)"])]:
-    nE0, _, _, _ = minimize_carbon(pp); nLF, vLF = carbonmin_lf(pp)
-    print(f"    {nm:9}: carbon-min n  no-LF={nE0:.2f}  with-LF={nLF:.2f}")
+    nK0, _, _, _ = minimize_obj(pp, 0.0); nE0, _, _, _ = minimize_carbon(pp)
+    nLF, vLF = carbonmin_lf(pp); nKLF, vKLF = costmin_lf(pp)
+    d_co = "disperse" if nLF > nK0 + 0.01 else "consolidate"
+    d_sym = "disperse" if nLF > nKLF + 0.01 else "consolidate"
+    print(f"    {nm:9}: constant-rate nK={nK0:.2f} nC={nE0:.2f} | carbon-only ell: nC={nLF:.2f} vs nK={nK0:.2f} ({d_co})"
+          f" | common ell: nC={nLF:.2f} vs nK={nKLF:.2f} ({d_sym})")
 
-print("="*70, "\n4. MONTE-CARLO CHECK (design=cost optimum; cap at normal det.-equiv.)")
+print("="*70, "\n4. MONTE CARLO DIAGNOSTIC (design=cost optimum; cap at normal det.-equiv.)")
 rng = np.random.default_rng(7)
 M = 500_000
 for cv, lbl in [(0.40, "baseline"), (0.80, "high-CV")]:
