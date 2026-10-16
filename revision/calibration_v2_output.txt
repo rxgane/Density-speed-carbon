@@ -1,0 +1,141 @@
+ENERGY PRIMITIVES (kg CO2e per dollar of energy)
+  diesel 2.79   grid electricity 2.90-4.58   heavy fuel oil 5.0-5.8
+
+INBOUND SPEED LEVERS: r_t = marginal carbon / marginal cost of faster inbound (kg/$)
+  ocean vessel speed          5.37  (range 4.97-5.82)   marginal cost of speed is bunker fuel [MRV][BUNKER]
+  intermodal -> truckload     1.78  (range 1.18-3.55)   60% carbon saving, 10-30% cost saving [ATRI][IMX]
+  truckload -> air            1.10  (range 0.60-1.90)   air 4-5x road cost, about 5-10x road carbon per t-km [AIR]
+  solo -> team drivers        0.03  (range 0.00-0.10)   same tractor and fuel; premium is driver labor [TEAM]
+
+LAST MILE: r_L (kg/$)
+  diesel van / courier       0.300  (range 0.15-0.45)   EEIO couriers 0.303; fuel share x 2.79 kg/$
+  diesel local truck         0.500  (range 0.30-0.60)   EEIO local trucking 0.595; ATRI fuel share 21% -> 0.59
+  electric van               0.075  (range 0.05-0.10)   0.37-0.39 kWh/mile x 0.371 kg/kWh over van cost per mile [EVAN]
+
+FACILITIES: r_F (kg/$)  [ESTAR site energy x grid factor, over fixed cost]
+  ambient                    0.171  (range 0.10-0.24)   cross-check: EEIO warehousing 0.244, Lineage 0.28
+  refrigerated               0.230  (range 0.18-0.28)   cross-check: EEIO warehousing 0.244, Lineage 0.28
+
+HOLDING: r_h (kg/$), storage energy only (no spoilage)
+  Ambient packaged goods     0.077  (range 0.030-0.223)
+  Bulky low-value goods      0.103  (range 0.048-0.298)
+  Refrigerated dairy         0.180  (range 0.085-0.318)
+  Fresh beef                 0.101  (range 0.042-0.206)
+  Fresh poultry              0.140  (range 0.061-0.269)
+  Cold-chain pharmaceuticals 0.041  (range 0.015-0.090)
+
+COST SIDE (baseline cost structure): omega = 0.313; speed bands 0.661 / 1.174
+
+CLASSIFICATION AT CENTRAL VALUES (Proposition prop:classify)
+  product                     speed lever              last mile              R_speed    thr    r_L  result
+  Ambient packaged goods      ocean vessel speed       diesel van / courier     0.014  0.174  0.300  slower, more dispersed
+  Ambient packaged goods      ocean vessel speed       electric van             0.014  0.174  0.075  slower, more consolidated
+  Ambient packaged goods      intermodal -> truckload  diesel van / courier     0.043  0.162  0.300  slower, more dispersed
+  Ambient packaged goods      intermodal -> truckload  electric van             0.043  0.162  0.075  slower, more consolidated
+  Ambient packaged goods      truckload -> air         diesel van / courier     0.070  0.158  0.300  slower, more dispersed
+  Ambient packaged goods      truckload -> air         electric van             0.070  0.158  0.075  slower, more consolidated
+  Ambient packaged goods      solo -> team drivers     diesel van / courier     2.564  0.137  0.300  faster, more dispersed
+  Ambient packaged goods      solo -> team drivers     electric van             2.564  0.137  0.075  faster, more consolidated
+  Bulky low-value goods       ocean vessel speed       diesel local truck       0.019  0.189  0.500  slower, more dispersed
+  Bulky low-value goods       ocean vessel speed       electric van             0.019  0.189  0.075  slower, more consolidated
+  Bulky low-value goods       intermodal -> truckload  diesel local truck       0.058  0.174  0.500  slower, more dispersed
+  Bulky low-value goods       intermodal -> truckload  electric van             0.058  0.174  0.075  slower, more consolidated
+  Bulky low-value goods       truckload -> air         diesel local truck       0.094  0.169  0.500  slower, more dispersed
+  Bulky low-value goods       truckload -> air         electric van             0.094  0.169  0.075  slower, more consolidated
+  Bulky low-value goods       solo -> team drivers     diesel local truck       3.448  0.143  0.500  faster, more dispersed
+  Bulky low-value goods       solo -> team drivers     electric van             3.448  0.143  0.075  faster, more consolidated
+  Refrigerated dairy          ocean vessel speed       diesel van / courier     0.034  0.270  0.300  slower, more dispersed
+  Refrigerated dairy          ocean vessel speed       electric van             0.034  0.270  0.075  slower, more consolidated
+  Refrigerated dairy          intermodal -> truckload  diesel van / courier     0.101  0.247  0.300  slower, more dispersed
+  Refrigerated dairy          intermodal -> truckload  electric van             0.101  0.247  0.075  slower, more consolidated
+  Refrigerated dairy          truckload -> air         diesel van / courier     0.164  0.239  0.300  slower, more dispersed
+  Refrigerated dairy          truckload -> air         electric van             0.164  0.239  0.075  slower, more consolidated
+  Refrigerated dairy          solo -> team drivers     diesel van / courier     6.006  0.198  0.300  faster, more dispersed
+  Refrigerated dairy          solo -> team drivers     electric van             6.006  0.198  0.075  faster, more consolidated
+  Fresh beef                  ocean vessel speed       diesel van / courier     0.019  0.228  0.300  slower, more dispersed
+  Fresh beef                  ocean vessel speed       electric van             0.019  0.228  0.075  slower, more consolidated
+  Fresh beef                  intermodal -> truckload  diesel van / courier     0.057  0.214  0.300  slower, more dispersed
+  Fresh beef                  intermodal -> truckload  electric van             0.057  0.214  0.075  slower, more consolidated
+  Fresh beef                  truckload -> air         diesel van / courier     0.092  0.209  0.300  slower, more dispersed
+  Fresh beef                  truckload -> air         electric van             0.092  0.209  0.075  slower, more consolidated
+  Fresh beef                  solo -> team drivers     diesel van / courier     3.364  0.183  0.300  faster, more dispersed
+  Fresh beef                  solo -> team drivers     electric van             3.364  0.183  0.075  faster, more consolidated
+  Fresh poultry               ocean vessel speed       diesel van / courier     0.026  0.249  0.300  slower, more dispersed
+  Fresh poultry               ocean vessel speed       electric van             0.026  0.249  0.075  slower, more consolidated
+  Fresh poultry               intermodal -> truckload  diesel van / courier     0.079  0.231  0.300  slower, more dispersed
+  Fresh poultry               intermodal -> truckload  electric van             0.079  0.231  0.075  slower, more consolidated
+  Fresh poultry               truckload -> air         diesel van / courier     0.127  0.224  0.300  slower, more dispersed
+  Fresh poultry               truckload -> air         electric van             0.127  0.224  0.075  slower, more consolidated
+  Fresh poultry               solo -> team drivers     diesel van / courier     4.658  0.190  0.300  faster, more dispersed
+  Fresh poultry               solo -> team drivers     electric van             4.658  0.190  0.075  faster, more consolidated
+  Cold-chain pharmaceuticals  ocean vessel speed       diesel van / courier     0.008  0.192  0.300  slower, more dispersed
+  Cold-chain pharmaceuticals  ocean vessel speed       electric van             0.008  0.192  0.075  slower, more consolidated
+  Cold-chain pharmaceuticals  intermodal -> truckload  diesel van / courier     0.023  0.185  0.300  slower, more dispersed
+  Cold-chain pharmaceuticals  intermodal -> truckload  electric van             0.023  0.185  0.075  slower, more consolidated
+  Cold-chain pharmaceuticals  truckload -> air         diesel van / courier     0.037  0.183  0.300  slower, more dispersed
+  Cold-chain pharmaceuticals  truckload -> air         electric van             0.037  0.183  0.075  slower, more consolidated
+  Cold-chain pharmaceuticals  solo -> team drivers     diesel van / courier     1.353  0.170  0.300  faster, more dispersed
+  Cold-chain pharmaceuticals  solo -> team drivers     electric van             1.353  0.170  0.075  faster, more consolidated
+
+ROBUSTNESS: share of range corners (r_h, r_t, r_L, r_F, omega) giving the central-value classification
+  Ambient packaged goods      ocean vessel speed       diesel van / courier     71%
+  Ambient packaged goods      ocean vessel speed       electric van             88%
+  Ambient packaged goods      intermodal -> truckload  diesel van / courier     71%
+  Ambient packaged goods      intermodal -> truckload  electric van             88%
+  Ambient packaged goods      truckload -> air         diesel van / courier     71%
+  Ambient packaged goods      truckload -> air         electric van             88%
+  Ambient packaged goods      solo -> team drivers     diesel van / courier     58%
+  Ambient packaged goods      solo -> team drivers     electric van             54%
+  Bulky low-value goods       ocean vessel speed       diesel local truck       88%
+  Bulky low-value goods       ocean vessel speed       electric van             98%
+  Bulky low-value goods       intermodal -> truckload  diesel local truck       92%
+  Bulky low-value goods       intermodal -> truckload  electric van             92%
+  Bulky low-value goods       truckload -> air         diesel local truck       94%
+  Bulky low-value goods       truckload -> air         electric van             88%
+  Bulky low-value goods       solo -> team drivers     diesel local truck       75%
+  Bulky low-value goods       solo -> team drivers     electric van             54%
+  Refrigerated dairy          ocean vessel speed       diesel van / courier     48%
+  Refrigerated dairy          ocean vessel speed       electric van            100%
+  Refrigerated dairy          intermodal -> truckload  diesel van / courier     50%
+  Refrigerated dairy          intermodal -> truckload  electric van            100%
+  Refrigerated dairy          truckload -> air         diesel van / courier     52%
+  Refrigerated dairy          truckload -> air         electric van            100%
+  Refrigerated dairy          solo -> team drivers     diesel van / courier     50%
+  Refrigerated dairy          solo -> team drivers     electric van             71%
+  Fresh beef                  ocean vessel speed       diesel van / courier     54%
+  Fresh beef                  ocean vessel speed       electric van            100%
+  Fresh beef                  intermodal -> truckload  diesel van / courier     56%
+  Fresh beef                  intermodal -> truckload  electric van            100%
+  Fresh beef                  truckload -> air         diesel van / courier     56%
+  Fresh beef                  truckload -> air         electric van            100%
+  Fresh beef                  solo -> team drivers     diesel van / courier     50%
+  Fresh beef                  solo -> team drivers     electric van             71%
+  Fresh poultry               ocean vessel speed       diesel van / courier     50%
+  Fresh poultry               ocean vessel speed       electric van            100%
+  Fresh poultry               intermodal -> truckload  diesel van / courier     52%
+  Fresh poultry               intermodal -> truckload  electric van            100%
+  Fresh poultry               truckload -> air         diesel van / courier     54%
+  Fresh poultry               truckload -> air         electric van            100%
+  Fresh poultry               solo -> team drivers     diesel van / courier     50%
+  Fresh poultry               solo -> team drivers     electric van             71%
+  Cold-chain pharmaceuticals  ocean vessel speed       diesel van / courier     62%
+  Cold-chain pharmaceuticals  ocean vessel speed       electric van            100%
+  Cold-chain pharmaceuticals  intermodal -> truckload  diesel van / courier     62%
+  Cold-chain pharmaceuticals  intermodal -> truckload  electric van             96%
+  Cold-chain pharmaceuticals  truckload -> air         diesel van / courier     62%
+  Cold-chain pharmaceuticals  truckload -> air         electric van             96%
+  Cold-chain pharmaceuticals  solo -> team drivers     diesel van / courier     38%
+  Cold-chain pharmaceuticals  solo -> team drivers     electric van             46%
+
+SPOILAGE BREAK-EVEN: weekly spoilage (share of stock value lost per week held) at which faster
+replenishment becomes carbon-minimizing whatever the network does (R_speed > upper band)
+Holding carbon then includes the embodied carbon of spoiled food [EEIO]; holding cost includes its value.
+  Refrigerated dairy     vs intermodal -> truckload : never (embodied 0.80 kg/$ <= 2.09 needed)
+  Refrigerated dairy     vs truckload -> air        : never (embodied 0.80 kg/$ <= 1.29 needed)
+  Refrigerated dairy     vs ocean vessel speed      : never (embodied 0.80 kg/$ <= 6.30 needed)
+  Fresh beef             vs intermodal -> truckload : never (embodied 1.12 kg/$ <= 2.09 needed)
+  Fresh beef             vs truckload -> air        : never (embodied 1.12 kg/$ <= 1.29 needed)
+  Fresh beef             vs ocean vessel speed      : never (embodied 1.12 kg/$ <= 6.30 needed)
+  Fresh poultry          vs intermodal -> truckload : never (embodied 0.39 kg/$ <= 2.09 needed)
+  Fresh poultry          vs truckload -> air        : never (embodied 0.39 kg/$ <= 1.29 needed)
+  Fresh poultry          vs ocean vessel speed      : never (embodied 0.39 kg/$ <= 6.30 needed)
