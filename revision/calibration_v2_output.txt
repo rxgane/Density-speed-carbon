@@ -48,3 +48,12 @@ Holding carbon then includes the embodied carbon of spoiled food [EEIO]; holding
   Fresh poultry          vs intermodal -> truckload : never (embodied 0.39 kg/$ <= 1.92 needed)
   Fresh poultry          vs truckload -> air        : never (embodied 0.39 kg/$ <= 1.19 needed)
   Fresh poultry          vs ocean vessel speed      : never (embodied 0.39 kg/$ <= 5.81 needed)
+
+CARBON SHARE OF PRICED COST, s = tau r / (1 + tau r), at central ratios; and the price at which s = 1/2
+  activity                                   $50/t  $100/t  $200/t  s=1/2 at $/t
+  holding, ambient packaged goods             0.4%    0.8%    1.5%        13,000
+  facilities, ambient DC                      0.5%    1.0%    1.9%        10,250
+  last mile, diesel local truck               2.4%    4.8%    9.1%         2,000
+  last mile, diesel van                       1.5%    2.9%    5.7%         3,333
+  line haul, truck instead of intermodal      8.2%   15.1%   26.2%           563
+  line haul, faster vessel speed             21.2%   34.9%   51.8%           186

@@ -183,5 +183,18 @@ for pk in ("Refrigerated dairy", "Fresh beef", "Fresh poultry"):
             s = (k*H0 - E)/(52*V*(emb - k))
             say(f"  {pk:<22} vs {lk:<24}: above {100*max(s,0):.2f}% of stock value per week")
 
+# ------------------------------------------------------------------ carbon share of priced cost (Proposition prop:path)
+say("\nCARBON SHARE OF PRICED COST, s = tau r / (1 + tau r), at central ratios; and the price at which s = 1/2")
+share_rows = [("holding, ambient packaged goods", r_h(products["Ambient packaged goods"][0][1], "ambient")),
+              ("facilities, ambient DC", facility["ambient"][1]),
+              ("last mile, diesel local truck", last_mile["diesel local truck"][1]),
+              ("last mile, diesel van", last_mile["diesel van / courier"][1]),
+              ("line haul, truck instead of intermodal", speed_levers["intermodal -> truckload"][1]),
+              ("line haul, faster vessel speed", speed_levers["ocean vessel speed"][1])]
+say(f"  {'activity':<40}{'$50/t':>8}{'$100/t':>8}{'$200/t':>8}{'s=1/2 at $/t':>14}")
+for nm_, r in share_rows:
+    sh = [100*t*r/(1+t*r) for t in (0.05, 0.10, 0.20)]
+    say(f"  {nm_:<40}{sh[0]:7.1f}%{sh[1]:7.1f}%{sh[2]:7.1f}%{1000/r:14,.0f}")
+
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "calibration_v2_output.txt"), "w") as fh:
     fh.write("\n".join(out) + "\n")
