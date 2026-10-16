@@ -1245,41 +1245,47 @@ all four activities.
 
 \section{Discussion and Conclusion}\label{sec:discussion}
 
-We have studied a distribution network that provides two services, availability and proximity, each of
-which the firm can provide through more than one operational activity: safety stock or replenishment speed
-for availability, facilities or last-mile distance for proximity. The carbon-minimizing configuration
-depends on which activity provides each service at lower carbon intensity per dollar. The contribution of
-the paper is to make these two substitutions explicit and to give the thresholds at which the
-carbon-minimizing configuration departs from the cost-minimizing one.
+A firm that distributes through regional distribution centers provides availability through safety stock or
+replenishment speed and proximity through facilities or last-mile travel, and a carbon price or cap can change
+which activity provides each. We have shown that the joint design has a single best solution at every carbon
+price, that the carbon-minimizing direction of both decisions follows from four carbon-intensity-per-dollar
+ratios and the share of a distribution center's marginal cost that is lost pooling, and that the carbon intensity
+of line-haul freight enters the density decision through the speed that recovers lost pooling. Calibrated to
+public US data, the classification turns less on the product than on how speed is bought and how the last mile
+is driven: speed bought with fuel is slowed and speed bought with labor is favored, while heavy diesel delivery
+calls for more distribution centers and electric vans for fewer. Because carbon is a small share of each
+activity's priced cost at current prices, a carbon price moves the design little, whereas a cap that binds can
+change it substantially. Several documented moves in practice are consistent with these directions, but practice
+judges each move by its cost and its transport carbon; the carbon of the inventory a slower chain holds, and the
+link between speed and density, are the elements the model adds.
 
-\paragraph{Limitations.} The thresholds apply to an average, symmetric distribution environment, so their use
-in a heterogeneous network is diagnostic rather than mechanical. Heterogeneous markets or discrete facility
-sites replace $d(n)=\delta n^{-1/2}$ with the realized last-mile profile; this can move the density threshold,
-but it leaves the underlying comparison between facility carbon per dollar and last-mile carbon per dollar
-unchanged. The representative inbound distance isolates the proximity effect of adding DCs. If density also
-changes inbound routing, shipment consolidation, or facility scale economies, those mechanisms add
-centralizing forces and can move a near-boundary case toward consolidation. The base model keeps last-mile
-rates fill-independent; the load-factor sensitivity of Section~\ref{sec:analysis} shows how this assumption
-matters: common fill penalties consolidate both optima, while fill penalties that fall more heavily on carbon
-can reverse the density comparison. Service enters as a cycle-service requirement; if service or fill rate is chosen
-endogenously, safety stock becomes an additional design margin and the speed threshold should be evaluated at
-the chosen service level. Finally, the calibration is regime-representative rather than firm-estimated, so the
-numerical values illustrate the order of magnitude of the threshold movements under documented rate ranges.
-The thresholds are therefore diagnostics to be evaluated with product- and network-specific rate data.
+\paragraph{Limitations.} The model describes an average, symmetric distribution environment, so its
+classification is a diagnostic for a heterogeneous network rather than a design for it. Heterogeneous markets or
+discrete facility sites replace $d(n)=\delta n^{-1/2}$ with the realized last-mile profile; this can move the
+density threshold but leaves the comparison between facility and last-mile carbon per dollar intact. The
+representative inbound distance isolates the proximity effect of adding distribution centers; if more centers also
+mean smaller inbound shipments, lower vehicle fill, or lost facility scale, those forces favor consolidation and
+can move a case near the threshold, as last-mile fill does (Section~\ref{sec:analysis}). We treat speed as a
+continuous index between real options on a lane; a firm that splits volume between modes faces a mixture of lead
+times, which our safety-stock expression does not represent. The model ties last-mile distance to the number of
+stocking distribution centers, whereas networks that deliver through cross-docks or hubs separate stocking density
+from delivery density. Service enters as a cycle-service requirement; if it is chosen, safety stock becomes a
+further design margin. Finally, the carbon intensities are calibrated to public industry data rather than to any
+firm's records, so the classification should be computed with a firm's own rates, and the magnitudes in
+Section~\ref{sec:numerical} describe the network we calibrate.
 
-\paragraph{Future research.} The most direct extensions are those that can move the threshold boundaries.
-Multi-product and multi-echelon settings would show how a shared network accommodates products in different
-regimes and where safety stock should be held. Explicit load-factor, shipment-consolidation, and routing
-models would quantify the centralizing force represented here by the load sensitivity. Heterogeneous geography
-and discrete sites would replace the continuous density curve with network-specific last-mile profiles.
-Empirical calibration with firm-level logistics-emissions data would estimate where real products fall
-relative to the speed and density boundaries, and endogenous service choice would make the cycle-service target
-a design decision rather than an input.
+\paragraph{Future research.} Multi-product and multi-echelon settings would show how a shared network serves
+products in different regimes and where safety stock should be held. Separating stocking from delivery density,
+and modeling shipment consolidation and routing explicitly, would quantify the centralizing forces represented
+here by fill sensitivity. Firm-level logistics-emissions data, which accounting under ISO 14083 makes increasingly
+available \citep{iso2023_14083}, would locate real products relative to the speed and density thresholds.
+Endogenous service choice and explicit mode mixes would make the service target and a lane's mode split design
+decisions rather than inputs.
 
-The model identifies which operational activity supplies availability and which supplies proximity at
-lower carbon intensity per dollar, and shows how the two substitutions interact in the joint distribution
-design: the speed threshold prices the availability margin, the pooling-adjusted density threshold prices
-the proximity margin, and complementarity links the two in the final configuration.
+Carbon accounting asks a distribution network two questions, how fast to replenish and how many distribution
+centers to operate, and the answer depends on which activity provides availability and proximity at the lower
+carbon intensity per dollar. In the US data we calibrate, that comparison favors slower fuel-bought freight for
+every product and, where the last mile runs on heavy diesel vehicles, more distribution centers closer to demand.
 
 \appendix
 \section{Proofs}\label{app:proofs}
