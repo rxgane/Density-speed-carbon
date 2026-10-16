@@ -83,6 +83,7 @@ last_mile = {
     "diesel van / courier": (0.15, 0.30, 0.45, "EEIO couriers 0.303; fuel share x 2.79 kg/$"),
     "diesel local truck":   (0.30, 0.50, 0.60, "EEIO local trucking 0.595; ATRI fuel share 21% -> 0.59"),
     "electric van":         (0.05, 0.075, 0.10, "0.37-0.39 kWh/mile x 0.371 kg/kWh over van cost per mile [EVAN]"),
+    "electric truck":       (0.12, 0.16, 0.20, "about 1.2 kWh/mile x 0.371 kg/kWh over about 2.75 $/mile; driver-dominated cost"),
 }
 say("\nLAST MILE: r_L (kg/$)")
 for k, (lo, c, hi, how) in last_mile.items():
@@ -96,7 +97,9 @@ for k, kwh in kwh_per_ft2.items():
     rent = 10.12 if k == "ambient" else 2.0 * 10.12                 # [CW]; refrigerated rent premium assumed 2x
     rent_only = kg_ft2 / rent
     full_fixed = kg_ft2 / (rent / 0.4)                              # rent assumed 40% of a DC's fixed operating cost
-    facility[k] = (full_fixed, (full_fixed + min(rent_only, 0.28)) / 2, min(rent_only, 0.28))
+    # the model's F is the full fixed operating cost of a DC, so the central value uses full fixed cost;
+    # the range runs from 70% of that value up to the rent-only ratio (capped at Lineage's 0.28)
+    facility[k] = (0.7 * full_fixed, full_fixed, min(rent_only, 0.28))
 say("\nFACILITIES: r_F (kg/$)  [ESTAR site energy x grid factor, over fixed cost]")
 for k, (lo, c, hi) in facility.items():
     say(f"  {k:<26} {c:5.3f}  (range {lo:.2f}-{hi:.2f})   cross-check: EEIO warehousing 0.244, Lineage 0.28")
@@ -130,19 +133,15 @@ for k, (val, st, emb) in products.items():
     say(f"  {k:<26} {r_h(val[1], st):5.3f}  (range {lo:.3f}-{hi:.3f})")
 
 # ------------------------------------------------------------------ classification by Proposition prop:classify
-# cost-side quantities from the baseline cost structure (numerics.Params): omega and the speed bands
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-import numerics as nm
-from scipy.optimize import minimize_scalar
-p0 = nm.Params()
-def vopt(n, p, tau): return minimize_scalar(lambda v: nm.J(n, v, p, tau), bounds=(p.vmin, p.vmax), method="bounded",
-                                            options={"xatol": 1e-12}).x
-nK = minimize_scalar(lambda n: nm.J(n, vopt(n, p0, 0.0), p0, 0.0), bounds=(1, p0.N), method="bounded").x
-vK = vopt(nK, p0, 0.0)
-G = p0.z*p0.sigma*np.sqrt(p0.D/vK)*np.sqrt(p0.N)*(1-p0.rho)/(2*np.sqrt(nm.Psi(nK, p0)))
-OMEGA = p0.h*G/(p0.F + p0.h*G)
-RLOW, RHIGH = np.sqrt(nm.Psi(nK, p0)/p0.N), np.sqrt(nm.Psi(nK, p0)/nm.Psi(1.0, p0))
-say(f"\nCOST SIDE (baseline cost structure): omega = {OMEGA:.3f}; speed bands {RLOW:.3f} / {RHIGH:.3f}")
+# cost side (pooling weight, speed bands) from the calibrated network of application_v2.py
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import contextlib, io
+with contextlib.redirect_stdout(io.StringIO()):
+    import application_v2 as app
+_, _, OMEGA, RLOW, RHIGH = app.cost_side(dict(app.base, **app.lane("fuel")))
+OMEGAS = (OMEGA, 0.1, 0.3, 0.6)
+say(f"\nCOST SIDE (calibrated network): omega = {OMEGA:.3f}; speed bands {RLOW:.3f} / {RHIGH:.3f}; "
+    f"robustness also over omega in {OMEGAS[1:]}")
 
 def classify(rh, rt, rL, rF, omega=OMEGA, lo=RLOW, hi=RHIGH):
     thr = (1-omega)*rF + omega*(rh**0.8)*(max(rt, 1e-12)**0.2)
@@ -150,31 +149,24 @@ def classify(rh, rt, rL, rF, omega=OMEGA, lo=RLOW, hi=RHIGH):
     Rs = rh/max(rt, 1e-12)
     if Rs > hi or (Rs >= 1 and disperse): spd = "faster"
     elif Rs < lo or (Rs <= 1 and not disperse): spd = "slower"
-    else: spd = "speed depends on size of density move"
-    return spd, ("more dispersed" if disperse else "more consolidated"), Rs, thr
+    else: spd = "depends"
+    return spd, ("more DCs" if disperse else "fewer DCs"), Rs, thr
 
-say("\nCLASSIFICATION AT CENTRAL VALUES (Proposition prop:classify)")
-say(f"  {'product':<28}{'speed lever':<25}{'last mile':<22}{'R_speed':>8}{'thr':>7}{'r_L':>7}  result")
-rows = []
-for (pk, (val, st, emb)), (lk, lv), (mk, mv) in itertools.product(products.items(), speed_levers.items(), last_mile.items()):
-    if pk == "Bulky low-value goods" and mk == "diesel van / courier": continue
-    if pk != "Bulky low-value goods" and mk == "diesel local truck": continue
-    rh = r_h(val[1], st); rt = lv[1]; rL = mv[1]; rF = facility[st][1]
-    spd, den, Rs, thr = classify(rh, rt, rL, rF)
-    rows.append((pk, lk, mk, Rs, thr, rL, spd, den))
-    say(f"  {pk:<28}{lk:<25}{mk:<22}{Rs:8.3f}{thr:7.3f}{rL:7.3f}  {spd}, {den}")
-
-# robustness of each cell over the full ranges and over omega in [0.1, 0.6]
-say("\nROBUSTNESS: share of range corners (r_h, r_t, r_L, r_F, omega) giving the central-value classification")
-for (pk, lk, mk, Rs, thr, rL, spd, den) in rows:
-    val, st, emb = products[pk]
-    rhs = r_h_range(val, st); rts = (speed_levers[lk][0], speed_levers[lk][2]); rLs = (last_mile[mk][0], last_mile[mk][2])
-    rFs = (facility[st][0], facility[st][2])
-    agree = tot = 0
-    for rh_, rt_, rL_, rF_, om in itertools.product(rhs, rts, rLs, rFs, (0.1, OMEGA, 0.6)):
-        s2, d2, *_ = classify(rh_, rt_, rL_, rF_, omega=om)
-        tot += 1; agree += (s2 == spd and d2 == den)
-    say(f"  {pk:<28}{lk:<25}{mk:<22}{100*agree/tot:5.0f}%")
+say("\nTABLE: classification; each cell = direction at most range corners (share of corners agreeing)")
+say(f"  {'product':<28}{'fuel speed':>14}{'labor speed':>14}{'diesel truck':>15}{'diesel van':>13}{'elec. truck':>13}{'elec. van':>12}")
+for pk, (val, st, emb) in products.items():
+    rhs = r_h_range(val, st); rFs = (facility[st][0], facility[st][2]); cells = []
+    for lk in ("intermodal -> truckload", "solo -> team drivers"):
+        rts = (speed_levers[lk][0], speed_levers[lk][2]); cnt = {}; t = 0
+        for rh_, rt_, rL_, rF_, o in itertools.product(rhs, rts, (0.15, 0.6), rFs, OMEGAS):
+            s2, *_ = classify(rh_, rt_, rL_, rF_, omega=o); cnt[s2] = cnt.get(s2, 0)+1; t += 1
+        best = max(cnt, key=cnt.get); cells.append(f"{best} {round(100*cnt[best]/t)}%")
+    for mk in ("diesel local truck", "diesel van / courier", "electric truck", "electric van"):
+        rLs = (last_mile[mk][0], last_mile[mk][2]); cnt = {}; t = 0
+        for rh_, rt_, rL_, rF_, o in itertools.product(rhs, (0.03, 1.1, 1.78, 5.4), rLs, rFs, OMEGAS):
+            _, d2, *_ = classify(rh_, rt_, rL_, rF_, omega=o); cnt[d2] = cnt.get(d2, 0)+1; t += 1
+        best = max(cnt, key=cnt.get); cells.append(f"{best.split()[0]} {round(100*cnt[best]/t)}%")
+    say(f"  {pk:<28}" + "".join(f"{x:>14}" for x in cells))
 
 # ------------------------------------------------------------------ spoilage break-even
 say("\nSPOILAGE BREAK-EVEN: weekly spoilage (share of stock value lost per week held) at which faster")

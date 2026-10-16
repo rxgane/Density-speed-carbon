@@ -1,0 +1,29 @@
+COST SIDE (ambient goods, fuel lane): n_K = 4.09, v_K = 200 mi/day, omega = 0.010, speed bands 0.610 / 1.082
+
+TABLE: cost- and carbon-minimizing designs (energy-only holding ratio 0.077 throughout)
+  holding $/pal-yr speed bought with store delivery   DCs: cost -> carbon  mi/day: cost -> carbon  carbon at min  cost at min  carbon at $100/t
+               390 fuel (IM/truck)   diesel                   4.1 -> 12.2              200 -> 200         -12.5%        19.0%            -0.57%
+               390 fuel (IM/truck)   electric                  4.1 -> 5.7              200 -> 200          -0.9%         1.4%            -0.02%
+               390 labor (team)      diesel                   4.1 -> 12.2              450 -> 450          -6.9%        16.9%            -0.32%
+               390 labor (team)      electric                  4.1 -> 5.7              450 -> 450          -0.4%         1.3%            -0.01%
+              3000 fuel (IM/truck)   diesel                   3.9 -> 11.8              223 -> 200         -15.3%        17.8%            -2.46%
+              3000 fuel (IM/truck)   electric                  3.9 -> 5.5              223 -> 200          -5.9%         1.5%            -3.07%
+              3000 labor (team)      diesel                   4.0 -> 12.0              450 -> 668          -7.1%        17.3%            -0.32%
+              3000 labor (team)      electric                  4.0 -> 5.6              450 -> 636          -0.5%         2.2%            -0.01%
+
+PRICE PATH (ambient goods, fuel lane, diesel store delivery)
+  cost minimum     DCs  4.09  speed  200 mi/day (5.0 days)  cost $73.58M/yr  carbon 22,517 t/yr
+  $50/t            DCs  4.15  speed  200 mi/day (5.0 days)  cost $73.58M/yr  carbon 22,452 t/yr
+  $100/t           DCs  4.20  speed  200 mi/day (5.0 days)  cost $73.59M/yr  carbon 22,389 t/yr
+  $200/t           DCs  4.31  speed  200 mi/day (5.0 days)  cost $73.60M/yr  carbon 22,270 t/yr
+  carbon minimum   DCs 12.16  speed  200 mi/day (5.0 days)  cost $87.59M/yr  carbon 19,699 t/yr
+
+ROUNDING the DC count to the best integer
+  fuel  r_L=0.50 cost  : n* =  4.09 ->  4, penalty 0.007%
+  fuel  r_L=0.50 carbon: n* = 12.16 -> 12, penalty 0.002%
+  fuel  r_L=0.16 cost  : n* =  4.09 ->  4, penalty 0.007%
+  fuel  r_L=0.16 carbon: n* =  5.68 ->  6, penalty 0.027%
+  labor r_L=0.50 cost  : n* =  4.10 ->  4, penalty 0.007%
+  labor r_L=0.50 carbon: n* = 12.17 -> 12, penalty 0.001%
+  labor r_L=0.16 cost  : n* =  4.10 ->  4, penalty 0.007%
+  labor r_L=0.16 carbon: n* =  5.69 ->  6, penalty 0.011%
