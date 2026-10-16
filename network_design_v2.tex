@@ -376,7 +376,9 @@ continuously optimized decision, chosen jointly with network density, couples th
 
 \paragraph{Inventory and service.} Each DC operates a base-stock policy and must meet a cycle service level
 $\alpha$ --- the in-stock probability at the end of a period, the Type-1 (cycle) service measure. With normally distributed demand the safety factor is $z = \Phi^{-1}(\alpha)$, with $\alpha>\tfrac12$ so
-that $z>0$, taken here as a service requirement (a parameter). A DC that pools $g = N/n$ markets faces aggregate per-period demand with
+that $z>0$, taken here as a service requirement (a parameter). Demand is independent across periods, and each DC reviews its
+inventory continuously, so safety stock protects against demand over the replenishment lead time; under periodic
+review the protection interval would also include the review period. A DC that pools $g = N/n$ markets faces aggregate per-period demand with
 standard deviation $\sigma\sqrt{g\,[\,1+(g-1)\rho\,]}$, the statistical economy of scale in inventory
 \citep{eppen1979effects}. Covering lead-time demand, each DC holds safety stock
 $z\,\sigma\sqrt{L}\,\sqrt{g[1+(g-1)\rho]}$. Summing over the $n$ DCs and writing the \emph{pooling
@@ -480,8 +482,7 @@ under constant per-mile last-mile rates.
 $\varepsilon(v)N\mu D+\varepsilon_LN\mu d(n)$ and a facility-and-holding component $\varphi n+\eta\sstock(n,v)$;
 the cost function has the analogous partition. Slowing replenishment reduces inbound transport carbon but
 raises safety stock, while dispersion reduces last-mile distance but raises facility count and pooling loss.
-Three scope points follow. Cycle stock under a fixed review period is approximately $N\mu/2$ system-wide, or
-$(N\mu/n)/2$ per DC, and is invariant to both decisions. Pipeline inventory $N\mu D/v$ is omitted; when valued
+Three scope points follow. Cycle stock depends on the replenishment quantity, which we hold fixed, and is invariant to both decisions. Pipeline inventory $N\mu D/v$ is omitted; when valued
 at the same dollar and carbon holding rates as stored inventory, it changes the level of $v^*$ but not the
 speed threshold (Section~\ref{sec:analysis}). Production and procurement are also excluded because throughput
 is fixed at $N\mu$ and therefore constant in both decisions.
@@ -501,10 +502,12 @@ specified confidence (Proposition~\ref{prop:chance}).
 
 Equivalently, pricing carbon at $\tau \ge 0$ gives the priced objective $J=K+\tau C$. At an interior optimum,
 the cap multiplier equals the price ($\lambda=\tau$), as in carbon-constrained inventory models
-\citep{chen2013carbon}; sweeping $\tau$ traces the cost--carbon frontier, along which the optimal
-configuration moves continuously (Proposition~\ref{prop:unique}). Because carbon at the priced optimum then
-falls continuously from its cost-minimizing level to its minimum, every cap in that range is met by some price, and the capped and priced problems share the same unique solution.
-Jumps arise only from the integer number of distribution centers. Define the blended rates
+\citep{chen2013carbon}; sweeping $\tau$ traces the cost--carbon frontier, along which the optimal configuration moves continuously
+(Proposition~\ref{prop:unique}). Because cost and carbon are convex in the logarithms of $n$ and $v$
+(Proposition~\ref{prop:unique}), the capped problem \eqref{eq:Pcap} is a convex program in those variables: every
+cap above the carbon minimum is met by a finite carbon price, and the capped and priced problems share the same
+unique optimum. The carbon minimum itself is the limit as the price grows without bound. Jumps arise only from the
+integer number of distribution centers. Define the blended rates
 \[
   F_\tau=F+\tau\varphi,\qquad H_\tau=h+\tau\eta,\qquad
   T_\tau(v)=t(v)+\tau\varepsilon(v),\qquad
@@ -519,7 +522,7 @@ Setting $\tau=0$ recovers cost; the limit $\tau\to\infty$ recovers carbon up to 
 \section{Analysis}\label{sec:analysis}
 
 We now characterize how carbon pricing changes the joint design. We first show that the priced problem has
-a single best design at every carbon price (Proposition~\ref{prop:unique}). The first-order conditions then
+a unique optimum at every carbon price (Proposition~\ref{prop:unique}). The first-order conditions then
 decompose into two marginal substitutions, each analyzed with the other decision held fixed:
 Proposition~\ref{prop:speed} gives the speed threshold on the availability margin,
 Proposition~\ref{prop:service} records the service and volatility comparative static, and
@@ -557,28 +560,26 @@ margin}: facilities and last-mile distance are alternative ways to reach markets
 compare the carbon intensity per dollar of the activities on each margin, and complementarity determines how
 the two margins interact in the joint configuration.
 
-The stationarity conditions identify the optimum because the priced problem has a single best design at every
-carbon price, although $J$ is not jointly convex over the whole feasible region. Let
+The stationarity conditions identify the optimum because the priced problem has a unique optimum at every
+carbon price. The objective is not jointly convex in $n$ and $v$, but it is convex in their logarithms. Let
 $J^{\mathrm r}(n;\tau)=\min_{v_{\min}\le v\le v_{\max}}J(n,v;\tau)$ be the \emph{reduced objective}, the
 priced cost of operating $n$ distribution centers when speed is chosen optimally for that network. A function
 on an interval is \emph{strictly quasiconvex} if it strictly decreases and then strictly increases, either
 phase possibly empty, so that it has a single minimizer.
 
-\begin{proposition}[A single best design]\label{prop:unique}
+\begin{proposition}[A unique optimum]\label{prop:unique}
 Let $t$ and $\varepsilon$ be increasing, differentiable, and convex, let all cost and carbon rates be
 positive, and let $v_{\min}>0$. For every carbon price $\tau\ge0$, and for the carbon objective $C$:
-\textup{(i)} for each $n$, the objective is strictly convex in $v$, and the speed response $v^*(n)$ is unique,
-continuous, and nondecreasing in $n$;
-\textup{(ii)} the objective at any fixed speed, and the reduced objective, are strictly quasiconvex in $n$ on
-$[1,N]$;
-\textup{(iii)} the problem has a unique minimizer, and for the priced problem the minimizer
-$\big(n^*(\tau),v^*(\tau)\big)$ is continuous in $\tau$.
+\textup{(i)} the objective is strictly convex in $(\ln n,\ln v)$ on the feasible region;
+\textup{(ii)} the problem has a unique minimizer, and for the priced problem the minimizer
+$\big(n^*(\tau),v^*(\tau)\big)$ is continuous in $\tau$;
+\textup{(iii)} the speed response $v^*(n)$ is unique, continuous, and nondecreasing in $n$, and the objective at
+any fixed speed and the reduced objective are strictly quasiconvex in $n$ on $[1,N]$.
 \end{proposition}
 
-\noindent Proposition~\ref{prop:unique} has a direct reading. Adding a distribution center shortens every
-delivery but adds a facility charge and the safety stock lost to pooling. Scaled by $n^{3/2}$, these marginal
-costs rise with the size of the network while the marginal last-mile saving does not, so once an additional
-center stops paying for itself, no larger network makes it pay again. Three consequences follow. First, the stationarity conditions \eqref{eq:focn}--\eqref{eq:focv} identify the
+\noindent Proposition~\ref{prop:unique} has a direct reading. Adding a distribution center shortens every delivery but adds a facility charge and the safety stock lost to
+pooling. Measured in proportional changes of the network and of speed, each of these effects is convex, so once an
+additional center stops paying for itself, no larger network makes it pay again. Three consequences follow. First, the stationarity conditions \eqref{eq:focn}--\eqref{eq:focv} identify the
 optimum whenever it is interior. Second, the comparative statics below are global, not local to a particular
 optimum. Third, in the continuous model the design moves without jumps as the carbon price rises, so
 discontinuities arise only from the integer number of distribution centers. Because the reduced objective is flat near its minimum, treating that number as continuous costs little. In the calibrated network of Section~\ref{sec:numerical},
@@ -861,8 +862,8 @@ the speed ratio becomes $R_{\mathrm{speed}}/m$ and the density condition \eqref{
 $m\,r_L>(1-\omega)\,r_F+\omega\,m^{1/5}r_h^{4/5}r_t^{1/5}$. Under the normal approximation, $m\ge 1$ for
 $\beta_c\le\tfrac12$, with equality at $\beta_c=\tfrac12$, so the chance constraint tightens the speed-reversal
 threshold and relaxes the dispersion threshold relative to the expected-value cap, and the effect grows as $m$ rises with the demand
-coefficient of variation $\sigma/\mu$, the correlation $\rho$, and the confidence $1-\beta_c$. In the joint design
-the carbon-minimizing speed itself falls as $m$ rises.
+coefficient of variation $\sigma/\mu$, the correlation $\rho$, and the confidence $1-\beta_c$. In the joint design the carbon-minimizing speed is nonincreasing in $m$, and strictly decreasing where $n_C$ and
+$v_C$ are interior.
 \end{corollary}
 
 \noindent Demand uncertainty therefore affects carbon through two channels. It enters the inventory-holding component through the safety stock
@@ -1271,32 +1272,31 @@ carbon-intensity comparisons used below.
 \end{proof}
 
 \begin{proof}[Proof of Proposition~\ref{prop:unique}]
-We give the argument for $J$; for $C$ replace each blended rate by its carbon rate. (i) With
-$k=z\sigma\sqrt{ND}$, the holding term $H_\tau\sstock(n,v)=H_\tau k\sqrt{\Psi(n)}\,v^{-1/2}$ is strictly
-convex in $v$ and $T_\tau$ is convex, so the minimizer over $[v_{\min},v_{\max}]$ is unique and, by the
-maximum theorem, continuous in $n$. It depends on $n$ only through $\Psi(n)$: the marginal holding saving
-$\tfrac12H_\tau k\sqrt{\Psi}\,v^{-3/2}$ rises in $\Psi$, while the marginal transport cost $N\mu D\,T_\tau'(v)$
-does not depend on it, so $v^*$ is nondecreasing in $\Psi$ and therefore in $n$.
-(ii) By the envelope theorem in the form of Danskin's theorem, which applies because the speed response is
-unique, $J^{\mathrm r}$ is differentiable with $J^{\mathrm r}_n(n)=J_n\big(n,v^*(n)\big)$.
-Multiplying by $n^{3/2}>0$ preserves its sign:
+We give the argument for $J$; for $C$ replace each blended rate by its carbon rate. Let $x=\ln n$ and $y=\ln v$,
+which range over a box, and let $k=z\sigma\sqrt{ND}$. Then
 \[
-  n^{3/2}J^{\mathrm r}_n(n)=F_\tau\,n^{3/2}+H_\tau\,n^{3/2}G\big(n,v^*(n)\big)-\tfrac12\,\ell_\tau N\mu\delta ,
+  J=F_\tau e^{x}+H_\tau k\,e^{g(x,y)}+T_\tau(e^{y})\,N\mu D+\ell_\tau N\mu\delta\,e^{-x/2},
+  \qquad g(x,y)=\tfrac12\ln\big(N\rho+(1-\rho)e^{x}\big)-\tfrac12y .
 \]
-with $G=\partial\sstock/\partial n$ as in \eqref{eq:focn}. The first term is strictly
-increasing. Where $v^*$ is interior, \eqref{eq:focv} gives $H_\tau k\,v^{-1/2}=2N\mu D\,T_\tau'(v)\,v/\sqrt{\Psi}$, so
-\[
-  H_\tau\,n^{3/2}G\big(n,v^*(n)\big)=(1-\rho)\,N\mu D\;\frac{n^{3/2}}{\Psi(n)}\;T_\tau'\big(v^*(n)\big)\,v^*(n).
-\]
-The factor $n^{3/2}/\Psi(n)$ is strictly increasing, since its elasticity in $n$ is
-$\tfrac32-n(1-\rho)/\Psi(n)\ge\tfrac12$, and $T_\tau'(v)\,v$ is nonnegative and nondecreasing in $v$ by
-convexity, hence nondecreasing in $n$ by (i). Where a speed bound binds,
-$H_\tau n^{3/2}G\propto n^{3/2}\Psi(n)^{-1/2}$, which is also strictly increasing. The middle term is
-continuous in $n$, so $n^{3/2}J^{\mathrm r}_n$ is strictly increasing on $[1,N]$ and changes sign at most once,
-from negative to positive. At a fixed speed the same argument applies with $v$ constant.
-(iii) The minimizer of $J^{\mathrm r}$ over $[1,N]$ is therefore unique, and with (i) so is the joint
-minimizer. Since $J$ is continuous in $(n,v,\tau)$ and the minimizer over the compact feasible set is unique,
-it is continuous in $\tau$ by the maximum theorem.
+(i) The facility and last-mile terms are strictly convex in $x$. The function $g$ is convex, because
+$\ln(a+be^{x})$ is convex for $a\ge0$ and $b>0$, so the holding term is log-convex and therefore convex. The
+transport term is convex in $y$, because $T_\tau$ is convex and nondecreasing and $e^{y}$ is convex. For strict
+convexity, let $S=H_\tau k\,e^{g}$; its Hessian is $S\big(\nabla^2g+\nabla g\,\nabla g^{\mathsf T}\big)$, with
+$\nabla g=(g_x,-\tfrac12)$ and $\nabla^2g=\mathrm{diag}(g_{xx},0)$, $g_{xx}\ge0$. The Hessian of the facility,
+holding, and last-mile terms therefore has $(x,x)$ entry
+$A=F_\tau e^{x}+\tfrac14\ell_\tau N\mu\delta e^{-x/2}+S(g_{xx}+g_x^2)>0$, $(y,y)$ entry $S/4$, and off-diagonal
+entry $-Sg_x/2$, so its determinant is $\big(F_\tau e^{x}+\tfrac14\ell_\tau N\mu\delta e^{-x/2}\big)S/4+S^2g_{xx}/4>0$.
+These terms are strictly convex, and adding the convex transport term preserves strict convexity.
+(ii) A strictly convex continuous function has a unique minimizer on a compact convex set. Since $J$ is continuous
+in $(x,y,\tau)$, the minimizer is continuous in $\tau$ by the maximum theorem.
+(iii) For fixed $x$, $J$ is strictly convex in $y$, so the speed response is unique and, by the maximum theorem,
+continuous. The transport, facility, and last-mile terms are additively separable in $x$ and $y$, and the
+cross-partial of the holding term is $-Sg_x/2\le0$, so $J$ has decreasing differences in $(x,y)$ and the minimizing
+$y$ is nondecreasing in $x$. At a fixed speed, $J$ is strictly convex in $x$; the reduced objective is the partial
+minimum of a strictly convex function over a convex set and is therefore strictly convex in $x$. A strictly convex
+function of $\ln n$ is strictly quasiconvex in $n$. By Danskin's theorem, which applies because the speed response
+is unique, $J^{\mathrm r}$ is differentiable with $J^{\mathrm r}_n(n)=J_n\big(n,v^*(n)\big)$, and by strict
+quasiconvexity $J^{\mathrm r}_n$ changes sign at most once, from negative to positive.
 \end{proof}
 
 \begin{proof}[Proof of Proposition~\ref{prop:speed}]
@@ -1320,14 +1320,13 @@ Let $s=z\sigma$. From \eqref{eq:vstar}, $v^*(n;s)\propto s^{2/5}$, so speed rise
 volatility. Along this speed response, $J^{\mathrm r}_n(n;s)=J_n\big(n,v^*(n;s);s\big)$ because $J_v=0$. The
 holding marginal term in \eqref{eq:focn} is proportional to
 $s(v^*)^{-1/2}(1-\rho)/\sqrt{\Psi(n)}\propto s^{4/5}(1-\rho)/\sqrt{\Psi(n)}$, hence rises in $s$ even after
-the induced speed increase. Thus $J^{\mathrm r}_{ns}>0$. By Proposition~\ref{prop:unique},
-$n^{3/2}J^{\mathrm r}_n(n;s)$ is strictly increasing in $n$, and it is increasing in $s$; its single sign change
-therefore occurs at a lower $n$ when $s$ rises, so the optimal density is nonincreasing in $s$, and strictly
-decreasing where it is interior.
+the induced speed increase. Thus $J^{\mathrm r}_{ns}>0$. By Proposition~\ref{prop:unique}(iii), $J^{\mathrm r}_n(\cdot\,;s)$ changes sign at most once, from negative to
+positive, and it is increasing in $s$; its sign change therefore occurs at a lower $n$ when $s$ rises, so the
+optimal density is nonincreasing in $s$, and strictly decreasing where it is interior.
 \end{proof}
 
 \begin{proof}[Proof of Proposition~\ref{prop:density}]
-By Proposition~\ref{prop:unique}(ii), $J(\cdot,v)$ and $C(\cdot,v)$ are strictly quasiconvex on $[1,N]$, which
+By Proposition~\ref{prop:unique}(iii), $J(\cdot,v)$ and $C(\cdot,v)$ are strictly quasiconvex on $[1,N]$, which
 gives uniqueness and the interior/boundary characterization. For the threshold, take $\tau=0$ for cost and
 $\tau\to\infty$ for carbon. The cost density satisfies $\partial_n K=F+h\,G(n_K,v)-
 t_L N\mu\delta/(2n_K^{3/2})=0$, so the last-mile marginal $t_L N\mu\delta/(2n_K^{3/2})=F+h\,G(n_K,v)$.
@@ -1349,9 +1348,9 @@ $R'(G)=(\eta F-h\varphi)/(F+hG)^2$, so $R$ is monotone with $\operatorname{sign}
 Since $G(n,v)\propto v^{-1/2}$, the cross-partial is $J_{nv}=H_\tau G_v$, which equals
 $-H_\tau G(n,v)/(2v)<0$ for $\rho<1$. For the speed response, where $v^*$ is interior \eqref{eq:focv} holds; its right side strictly
 increases in $n$ and strictly decreases in $v$, while its left side does not depend on $n$ and is nondecreasing
-in $v$, so $v^*$ strictly increases in $n$, and projection onto the speed bounds preserves monotonicity. For the density response, $n^{3/2}J_n(n,v)$ is strictly increasing in $n$
-(Proposition~\ref{prop:unique}) and, since $J_{nv}<0$, decreasing in $v$; its single sign change therefore
-occurs at a higher $n$ when $v$ rises.
+in $v$, so $v^*$ strictly increases in $n$, and projection onto the speed bounds preserves monotonicity. For the density response, $J_n(\cdot,v)$ changes sign at most once, from negative to positive
+(Proposition~\ref{prop:unique}(iii)), and $J_{nv}<0$; its sign change therefore occurs at a higher $n$ when $v$
+rises.
 \end{proof}
 
 \begin{proof}[Proof of Proposition~\ref{prop:classify}]
@@ -1392,14 +1391,15 @@ expanding $x=e^{u_1}$ and $y=e^{u_2}$ to second order gives the last statement.
 do not depend on $\tau$, and $\mathrm d\ln(h+\tau\eta)/\mathrm d\ln\tau=s_h$. (ii) The same computation
 applies to $n^*=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$. (iii) By \eqref{eq:vstar}, along the speed response
 $H_\tau G\big(n,v^*(n)\big)=c\,(1-\rho)\,H_\tau^{4/5}b_\tau^{1/5}\Psi(n)^{-3/5}$, with $b_\tau=t_1+\tau\varepsilon_0$
-and $c>0$ depending on neither $n$ nor $\tau$. Dividing the expression for $n^{3/2}J^{\mathrm r}_n$ in the
-proof of Proposition~\ref{prop:unique} by $\ell_\tau>0$,
+and $c>0$ depending on neither $n$ nor $\tau$. By the envelope theorem, $J^{\mathrm r}_n=F_\tau+H_\tau G\big(n,v^*(n)\big)-\tfrac12\ell_\tau N\mu\delta n^{-3/2}$;
+multiplying by $n^{3/2}/\ell_\tau>0$ preserves its sign,
 \[
   \frac{n^{3/2}J^{\mathrm r}_n}{\ell_\tau}=\frac{F_\tau}{\ell_\tau}\,n^{3/2}
   +c\,(1-\rho)\,\frac{H_\tau^{4/5}b_\tau^{1/5}}{\ell_\tau}\,\frac{n^{3/2}}{\Psi(n)^{3/5}}-\tfrac12N\mu\delta .
 \]
-If both coefficients are nonincreasing in $\tau$, the expression is pointwise nonincreasing in $\tau$, so its
-single sign change moves weakly to higher $n$ and $n^*(\tau)$ is nondecreasing. The logarithmic derivatives of
+This expression changes sign at most once, from negative to positive (Proposition~\ref{prop:unique}(iii)). If
+both coefficients are nonincreasing in $\tau$, the expression is pointwise nonincreasing in $\tau$, so its sign
+change moves weakly to higher $n$ and $n^*(\tau)$ is nondecreasing. The logarithmic derivatives of
 the coefficients are $1/(r_F^{-1}+\tau)-1/(r_L^{-1}+\tau)$ and
 $\tfrac45/(r_h^{-1}+\tau)+\tfrac15/(r_t^{-1}+\tau)-1/(r_L^{-1}+\tau)$. Since $1/(r^{-1}+\tau)$ is increasing in
 $r$, both are nonpositive at every $\tau$ when $r_L$ exceeds $r_F$, $r_h$, and $r_t$, and nonnegative when it
