@@ -1,0 +1,31 @@
+A  Unique joint design (single crossing of n^{3/2} J^r_n)
+   960 (draw, bounds, price) cases; reduced objectives with more than one interior local minimum: 0
+   cases where the fixed-speed second-order condition fails somewhere on [1,N]: 284 (uniqueness still holds)
+
+B  Exact joint classification (independent 2-D optimization, interior optima)
+   draws: 300
+   density direction n_C>n_K iff r_L > (1-w) r_F + w r_h^(4/5) r_t^(1/5): 300/300
+   speed identity ln(vC/vK) = (2/5)ln R_speed + (1/5)ln(Psi_C/Psi_K): max abs error 7.5e-08
+   aligned cells (faster&disperse / slower&consolidate) violations: 0
+   R_speed >= sqrt(Psi_K/Psi(1)) => faster, violations: 0
+   R_speed <= sqrt(Psi_K/N)      => slower, violations: 0
+   draws in the indeterminate band (mixed cell, between the two bounds): 21/300
+
+C  Pooling weight identity w = 1 - (n_K/n_K^np)^(3/2): max abs error 1.2e-07
+
+D  Analytical classification of the baseline and the four archetypes
+   shared cost optimum (n_K, v_K) = (7.84, 1.03);  pooling weight w = 0.313;  speed bands: slower if R_speed <= 0.661, faster if R_speed >= 1.174
+   case                                           R_speed    r_L    thr  predicted                    computed (n_C, v_C)
+   Baseline                                         0.375   0.30  0.389  slower, consolidate                 (6.55, 0.69)  agrees
+   Cold-chain pharma (refrig., diesel last mile)    1.900   1.40  0.502  faster, disperse                   (16.49, 1.42)  agrees
+   Ambient dry goods (stable, rail/efficient LM)    0.375   0.25  0.389  slower, consolidate                 (5.78, 0.69)  agrees
+   Bulky low-value (cheap storage, diesel LM)       0.444   1.30  0.280  slower, disperse                   (22.84, 0.82)  agrees
+   E-grocery perishables (refrig., van LM)          1.545   1.50  0.450  faster, disperse                   (18.87, 1.32)  agrees
+
+E  No-pooling limit (rho = 1): closed-form magnitudes
+   n_C/n_K = R_density^(2/3) and v_C/v_K = R_speed^(2/5): max abs error 4.9e-07 over 57 draws
+   abatement formula C_min/C(n_K,v_K): max abs error 1.8e-08
+
+F  Carbon-price path of the density decision
+   r_L > max(r_F, r_h, r_t): density nondecreasing along the whole price path in 18/18 draws
+   r_L < min(r_F, r_h, r_t): density nonincreasing along the whole price path in 42/42 draws
