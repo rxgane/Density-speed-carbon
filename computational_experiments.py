@@ -95,3 +95,19 @@ for cv, lbl in [(0.40, "baseline"), (0.80, "high-CV")]:
         z = NormalDist().inv_cdf(conf); qstar = muQ + z * sigmaQ
         vn, vg = np.mean(Qn > qstar), np.mean(Qg > qstar)
         print(f"    nominal viol={1-conf:.3f}  normal-demand={vn:.4f}  gamma-demand={vg:.4f}")
+
+print("="*70, "\n5. ACCOUNTING-BOUNDARY CHECK AND CAP HORIZON")
+def transport_carbon(n, v, pp):
+    return (pp.eps0*v**2)*pp.N*pp.mu*pp.D + pp.epsL*pp.N*pp.mu*d_last(n, pp)
+ngT = np.linspace(1, p.N, 1961); vgT = np.linspace(p.vmin, p.vmax, 1201)
+NNT, VVT = np.meshgrid(ngT, vgT, indexing="ij")
+nK5, vK5, KK5, CK5 = minimize_obj(p, 0.0); CTK = transport_carbon(nK5, vK5, p)
+for tau in [5.0]:
+    J = cost_K(NNT, VVT, p) + tau*transport_carbon(NNT, VVT, p)
+    i, j = np.unravel_index(np.argmin(J), J.shape); nT, vT = ngT[i], vgT[j]
+    Ctot = carbon_C(nT, vT, p); Ct = transport_carbon(nT, vT, p)
+    print(f"  tau={tau:.0f}: transport-only opt (n={nT:.2f},v={vT:.2f}): transport {100*(Ct/CTK-1):+.1f}%, "
+          f"holding+facility {100*((Ctot-Ct)/(CK5-CTK)-1):+.1f}%, TOTAL {100*(Ctot/CK5-1):+.1f}%")
+CVQh = (p.sigma/p.mu)*np.sqrt((1+(p.N-1)*p.rho)/p.N)
+z95h = NormalDist().inv_cdf(0.95)
+print(f"  cap horizon: m@95 weekly={1+z95h*CVQh:.3f};  annual cap, T=52 independent weeks: m@95={1+z95h*CVQh/np.sqrt(52):.3f}")

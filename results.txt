@@ -9,7 +9,7 @@ A. BASELINE CALIBRATION  (representative product)
   diagnostics:  R_speed=0.38   R_density=0.75
 --------------------------------------------------------------------------
   cost-min   : n*= 7.84  v*= 1.03   K=$1,244,125   C=160,484 kg
-               carbon split: transport=85,592 kg  holding=74,891 kg
+               carbon split: transport=85,592 kg  facility+holding=74,891 kg
   carbon-min : n*= 6.55  v*= 0.69   K=$1,259,588   C=152,353 kg
   direction carbon-min vs cost-min :  speed slower,  density consolidate
   cost of carbon-min config : +1.2% over cost-min  for 5.1% less carbon
@@ -50,10 +50,10 @@ B. FOUR-REGIME MAP  (carbon-min direction vs cost-min, joint optima)
       2.5  |     FC     FC     FC     FC     FC     FC     FD
 
 ==========================================================================
-C. VALUE OF JOINT REDESIGN  (single-lever reach vs. joint, then common target)
+C. VALUE OF JOINT REDESIGN  (one-decision reach vs. joint, then common target)
 ==========================================================================
   product: E-grocery perishables (refrig., van LM)
-  R_speed=1.55, R_density=5.00 (carbon-min wants faster + disperse -> levers reinforce)
+  R_speed=1.55, R_density=5.00 (carbon-min wants faster + disperse -> decisions reinforce)
   cost-min: n=7.84, v=1.03, K=$1,244,125, C=443,723 kg
 
   Maximum achievable carbon reduction by policy:
@@ -61,18 +61,18 @@ C. VALUE OF JOINT REDESIGN  (single-lever reach vs. joint, then common target)
     speed only (n fixed)    : floor C=441,379 kg   max cut = 0.53%
     density only (v fixed)  : floor C=406,268 kg   max cut = 8.44%
 
-  Target moderate (90% of best single lever): cut 7.60%  (B = 410,013 kg). Cost to comply:
+  Target moderate (90% of best single decision): cut 7.60%  (B = 410,013 kg). Cost to comply:
     joint (n,v)             : n=12.76 v= 1.17  K=$1,260,808  (+1.34%)
-    speed only (n fixed)    : INFEASIBLE (lever cannot reach this cut)
+    speed only (n fixed)    : INFEASIBLE (this adjustment cannot reach the cut)
     density only (v fixed)  : n=13.93 v= 1.03  K=$1,266,727  (+1.82%)
 
   Target deep (95% of joint reach): cut 9.12%  (B = 403,238 kg). Cost to comply:
     joint (n,v)             : n=15.61 v= 1.25  K=$1,279,167  (+2.82%)
-    speed only (n fixed)    : INFEASIBLE (lever cannot reach this cut)
-    density only (v fixed)  : INFEASIBLE (lever cannot reach this cut)
+    speed only (n fixed)    : INFEASIBLE (this adjustment cannot reach the cut)
+    density only (v fixed)  : INFEASIBLE (this adjustment cannot reach the cut)
 
-  Reading: each single lever has a bounded reach; the deep target lies
-  beyond both single levers and is met only by adjusting speed and density
+  Reading: each single decision has a bounded reach; the deep target lies
+  beyond both and is met only by adjusting speed and density
   together -- the complementarity result.
 
 ==========================================================================
@@ -115,3 +115,9 @@ E. PRODUCT ARCHETYPES  (carbon-min direction + cost at 80% of own max cut)
     ratios: eta/h=0.85 eps0/t1=0.55 epsL/tL=1.50 phi/F=0.30  -> R_speed=1.55, R_density=5.00
     cost-min (n=7.8,v=1.03) -> carbon-min (n=18.9,v=1.32): faster, disperse   (max cut 9.6%)
     cost to cut 7.7% carbon (joint): +1.39%
+
+==========================================================================
+F. ACCOUNTING-BOUNDARY CHECK AND CAP HORIZON
+==========================================================================
+  tau=5: transport-only opt (n=13.83,v=0.57): transport -42.7%, holding+facility +58.4%, TOTAL +4.5%
+  cap horizon: m@95 weekly=1.371; annual cap, T=52 independent weeks: m@95=1.051

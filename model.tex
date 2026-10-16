@@ -1,31 +1,26 @@
 \documentclass[11pt]{article}
-
-% ----- Geometry and spacing
 \usepackage[margin=1in]{geometry}
 \usepackage{setspace}
 \onehalfspacing
-
-% ----- Math
+\usepackage[bottom]{footmisc}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
-
-% ----- Tables and figures
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{graphicx}
-\usepackage[section]{placeins} % keep floats within their section
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage[section]{placeins}
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\bottomfraction}{0.85}
 \renewcommand{\textfraction}{0.08}
 \renewcommand{\floatpagefraction}{0.75}
 \setcounter{topnumber}{3}
 \setcounter{totalnumber}{6}
-
-% ----- References and links
 \usepackage[round,authoryear]{natbib}
+\bibpunct{(}{)}{;}{a}{}{,}
+\setlength{\bibsep}{2pt}
 \usepackage[hidelinks]{hyperref}
-
-% ----- Theorem environments
 \newtheorem{proposition}{Proposition}
 \newtheorem{corollary}[proposition]{Corollary}
 \newtheorem{lemma}[proposition]{Lemma}
@@ -34,38 +29,37 @@
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
 \theoremstyle{plain}
-
-% ----- Macros
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\sstock}{\mathrm{SS}}
 
 \title{Cost, Carbon, and the Speed of Replenishment\\ in Distribution Network Design}
 \author{Ram Ganeshan\thanks{Corresponding author. E-mail: rxgane@wm.edu.} \\
+\small D. Hillsdon Ryan Professor of Business \\
 \small Raymond A. Mason School of Business \\
 \small William \& Mary, Williamsburg, VA 23187, USA}
-\date{June 2026}
+\date{July 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-\noindent A firm distributes a product through a network of distribution centers; how densely it places them
-and how fast it replenishes them shape both its cost and its distribution carbon. We study how carbon
-accounting changes these two levers for a single product distributed from one source to many markets;
-distribution carbon arises from moving goods and from holding inventory. The firm chooses replenishment speed
-and network density to minimize cost subject to a carbon cap and a service requirement. The transport-side configuration of slower replenishment and network
-consolidation acts on more than transport: slower replenishment enlarges the safety stock whose holding also
-emits, and consolidation lengthens the last mile, so whether total carbon falls depends on which activity is
-more carbon-intensive per dollar. A carbon price can select \emph{faster} replenishment --- when holding is the more carbon-intensive
-mode of availability --- and a \emph{more dispersed} network --- when a long last mile is the more
-carbon-intensive way to reach markets. Because speed and density are complements, both directions can arise
-at once. Transport-only carbon measures, such as fuel taxes or vehicle speed mandates, can shift emissions
-into inventory and warehousing that they do not price; a total-logistics accounting boundary prices both
-sources and preserves the speed--density trade-off. Closed-form thresholds --- a speed threshold and a
-pooling-adjusted density threshold --- classify products by the operational substitute through which carbon
-is reduced, and a chance-constrained cap on realized carbon shifts both thresholds through a throughput-risk
-multiplier.
+\noindent We develop a quantitative decision model for carbon-induced operational substitution in distribution
+network design. A firm distributes a single product from one source through a network of distribution centers
+to many markets and chooses replenishment speed and network density to minimize cost subject to a carbon cap
+and a service requirement. Distribution carbon arises from moving goods, operating facilities, and holding
+inventory. The model treats availability and proximity as services that can each be provided by two activities:
+availability through safety stock or replenishment speed, and proximity through facilities or last-mile travel.
+Carbon accounting can select a different activity than cost minimization because each substitution reduces one
+source of emissions while increasing another. Slower replenishment reduces freight emissions but increases
+safety stock; consolidation reduces facility carbon and improves risk pooling but lengthens the last mile. We
+derive closed-form thresholds that identify the carbon-minimizing direction of each decision for a given
+product. The speed threshold compares holding carbon per dollar with inbound-transport carbon per dollar. The
+density threshold compares last-mile carbon per dollar with a pooling-adjusted combination of facility and
+holding intensities. Speed and density are complements, so the final configuration follows from the joint
+decision. A chance-constrained cap on realized carbon shifts both thresholds through a throughput-risk
+multiplier. Numerical illustrations show how the thresholds classify product archetypes and support
+activity-level carbon accounting.
 \end{abstract}
 
 \vspace{1em}
@@ -75,12 +69,12 @@ multiplier.
 
 \section{Introduction}\label{sec:intro}
 
-A firm serves its markets from a network of distribution centers that it replenishes over time. Among the operational choices this involves, we study two: the \emph{density} of the network --- how many distribution centers the firm operates --- and the \emph{speed} with which those centers are replenished. Both shape the firm's cost, and both shape the carbon its distribution emits. As carbon is increasingly priced and reported \citep{mckinnon2012setting}, a firm sets these levers with carbon in view alongside cost, and we study how a carbon price shapes that choice.
+A firm serves its markets from a network of distribution centers that it replenishes over time. Among the operational choices this involves, we study two: the \emph{density} of the network --- how many distribution centers the firm operates --- and the \emph{speed} with which those centers are replenished. Both shape the firm's cost, and both shape the carbon its distribution emits. As carbon is increasingly priced and reported \citep{mckinnon2012setting}, a firm sets both with carbon as well as cost in view, and we study how a carbon price shapes that choice.
 
-Each lever operates through a standard cost--carbon trade-off. Network density governs proximity to markets: operating more distribution centers shortens the last-mile distance and changes the warehouse energy the network consumes. Replenishment speed governs availability: replenishing faster shortens the lead time that inventory must cover and changes the emissions of the freight that serves the network. Distribution emits carbon both when goods move and when they are held, and each lever affects both the firm's cost and its carbon. Cost balances these effects one way; with a price on carbon, the carbon-minimizing balance can fall elsewhere, and how it does so is the central question this paper addresses.
+Each decision carries a standard cost--carbon trade-off. Network density governs proximity to markets: operating more distribution centers shortens the last-mile distance and changes the warehouse energy the network consumes. Replenishment speed governs availability: replenishing faster shortens the lead time that inventory must cover and changes the emissions of the freight that serves the network. Distribution emits carbon both when goods move and when they are held, and each affects both the firm's cost and its carbon. Cost balances these effects one way; with a price on carbon, the carbon-minimizing balance can fall elsewhere, and how it does so is the central question this paper addresses.
 
-Slowing replenishment and consolidating the network are the common transport-side levers: slowing moves
-freight by slower, lower-emission modes, the logic of slow steaming in shipping
+Slowing replenishment and consolidating the network are the common transport-side responses: slowing moves
+freight by slower, lower-emission modes, as in slow steaming in shipping
 \citep{psaraftis2013speed, cariou2011slow}, and consolidating serves markets from fewer, larger distribution
 centers \citep{mckinnon2012setting}. Each response also affects inventory. A unit held in a warehouse consumes
 energy --- refrigeration, climate control, handling --- for as long as it is held. Slowing replenishment
@@ -89,56 +83,59 @@ rises with the square root of that lead time; consolidating pools demand across 
 \citep{eppen1979effects} and saves facility energy while lengthening the last mile. Each substitution thus lowers one
 source of carbon and raises another, and whether it lowers the total depends on which source is larger.
 
-The choice between the two sources is fundamentally a choice between two operational substitutions. A firm
+The choice between the two sources is a choice between two operational substitutions. A firm
 provides \emph{availability} either by holding safety stock or by replenishing faster --- a shorter lead
 time leaves less for the buffer to cover, so speed and inventory are substitutes for the same service ---
 and it provides market \emph{proximity} either by operating more local facilities or by delivering farther
-from fewer, so facilities and last-mile travel are substitutes for the same access. Cost selects one mix of
-these operational priorities; carbon, weighting the emissions of each, can select another. When safety stock is more
-carbon-intensive per dollar than the inbound transport that would replace it, carbon favors buying
-availability with speed --- replenishing \emph{faster}. When last-mile travel is more
-carbon-intensive per dollar than the facilities that would shorten it, carbon favors buying proximity with
+from fewer, so facilities and last-mile travel are substitutes for the same access. The cost-minimizing configuration uses one mix of
+these activities; when carbon is priced, the optimal mix can differ. When safety stock is more
+carbon-intensive per dollar than the inbound transport that would replace it, the carbon-minimizing chain
+provides availability through \emph{faster} replenishment. When last-mile travel is more carbon-intensive
+per dollar than the facilities that would shorten it, the carbon-minimizing chain provides proximity through
 facilities --- a \emph{more dispersed} network. The lowest-carbon distribution system thus depends on the
 product: a cold-chain grocer and a bulk dry-goods shipper have different optimal configurations.
 
-We formalize this in a model of a firm that distributes a single product from one source through a network
-of distribution centers to its markets under stochastic demand. The firm chooses how dense to make the
-network and how fast to replenish it, so as to minimize cost subject to a carbon cap and a
-service-level requirement. Cost and carbon each comprise the same four components --- facilities, holding, inbound
-transport, and last-mile transport. This is in the tradition of the location--inventory problem \citep{daskin2002inventory, shen2003joint} --- here
-in a continuous-approximation form \citep{daganzo2005logistics} subject to a
-carbon constraint, with a distinguishing addition: the replenishment \emph{speed} is a decision.
-Because speed sets the lead time that stochastic safety stock must cover, it is the firm's direct lever on
-inventory carbon, and it couples the four components together.
+We formalize this in a single-product location--inventory model with stochastic demand. The firm chooses
+network density and replenishment speed to minimize cost subject to a carbon cap and a service-level
+requirement. Cost and carbon each comprise the same four components --- facilities, holding, inbound
+transport, and last-mile transport. The model follows the location--inventory tradition
+\citep{daskin2002inventory, shen2003joint} in a continuous-approximation form
+\citep{daganzo2005logistics}, with a distinguishing addition: replenishment speed is a decision. Because
+speed sets the lead time that stochastic safety stock must cover, it directly determines inventory
+carbon and couples the four components together.
 
-The analysis is organized around the \emph{marginal carbon intensity per dollar} of each activity and yields
-three structural results. First, a \emph{speed reversal} in the availability substitution: holding
+The paper contributes a threshold model for this joint decision. The organizing quantity is the
+\emph{marginal carbon intensity per dollar} of each activity, and the model yields three structural results.
+First, a \emph{speed reversal} in the availability substitution: holding
 the network fixed, total carbon is U-shaped in speed, and the carbon-minimizing speed exceeds the
 cost-minimizing one when holding is more carbon-intensive per dollar than inbound transport at the margin, so
-a carbon constraint can call for faster rather than slower replenishment --- a distinct configuration from the
+a carbon constraint can raise the optimal replenishment speed --- a distinct configuration from the
 slow-steaming literature. Second, a \emph{pooling-adjusted density threshold} in the proximity substitution. The
 carbon-minimizing network is more dispersed when the last mile is carbon-intensive per dollar relative to
 facilities. Adding a facility, however, also gives up some demand pooling, so the threshold is not that
 facility comparison alone: it blends in the holding intensity, and therefore depends on demand correlation,
-service, and volatility. Third, the two levers are \emph{complements}: faster replenishment shrinks safety stock
+service, and volatility. Third, the two decisions are \emph{complements}: faster replenishment shrinks safety stock
 and lowers the inventory penalty of dispersing, so the carbon-minimizing response adjusts both together rather
-than one alone. Together, the two thresholds give managers a product-specific rule for setting both
-levers: each compares the carbon intensity per dollar of the two competing activities and
+than one alone. Together, the two thresholds give a product-specific diagnostic for the joint
+design problem: each compares the carbon intensity per dollar of the two competing activities and
 identifies the carbon-minimizing direction --- faster or slower replenishment, a denser
-or more dispersed network --- placing a product in one of four regimes. In one regime, both thresholds select a network that is at once faster \emph{and} more dispersed, rather than slower and more consolidated. A chance-constrained extension, in which the cap bounds realized rather than expected carbon, tightens the speed threshold and relaxes the density one.
+or more dispersed network --- placing a product in one of four regimes. Scientifically, the thresholds
+characterize when carbon accounting changes the operational activity selected by an optimal distribution
+design. Practically, they require activity-level cost and carbon rates that firms can estimate from logistics
+data. In one regime, both comparisons point to a network that is at once faster \emph{and} more dispersed. A
+chance-constrained extension, in which the cap bounds realized rather than expected carbon, tightens the speed
+threshold and relaxes the density one.
 
 The remainder of the paper proceeds as follows. Section~\ref{sec:related} positions the paper relative to
 the location--inventory, carbon-network-design, and inventory--transport--emissions literatures.
 Section~\ref{sec:model} develops the model, Section~\ref{sec:analysis} establishes the results,
 Section~\ref{sec:numerical} reports numerical illustrations, Section~\ref{sec:managerial} draws out the
 managerial implications, and Section~\ref{sec:discussion} concludes.
-
-% =====================================================================
-\section{Related Work}\label{sec:related}
+\section{Related Literature}\label{sec:related}
 
 This study connects four streams: location--inventory design with risk pooling, carbon-aware network design,
 the joint control of inventory and transport mode under emissions regulation, and carbon as a priced
-operational lever in service-constrained inventory systems. Each develops an element of the two substitutions
+operational cost in service-constrained inventory systems. Each develops an element of the two substitutions
 examined here --- availability (inventory versus replenishment speed) and proximity (facilities versus
 last-mile travel). Each of these streams is well developed, and we draw on all four; we position the contribution by what it adds
 to each: the joint design of network density and replenishment speed under a carbon cap and a service
@@ -163,9 +160,9 @@ approximation. The centralize-versus-decentralize question these models pose can
 demand pooling: \citet{schmitt2015centralization} show analytically that supply-disruption risk diversification
 can favor decentralization for a risk-averse firm, in contrast to the classical pooling result. These works
 develop network density and safety-stock placement under risk pooling, with a cost or service objective and no
-carbon; replenishment speed is taken as given, or, where lead time appears, fixed by exogenous fulfillment. The
-present study retains the risk-pooling structure and the density decision and adds an endogenous replenishment
-speed together with a carbon objective.
+carbon; they do not make replenishment speed a continuous decision coupled with carbon. The present study
+retains the risk-pooling structure and the density decision and adds an endogenous replenishment speed together
+with a carbon objective.
 
 \subsection{Carbon-aware network design}
 
@@ -178,10 +175,13 @@ production scale economies; \citet{harris2011assessing} compare cost-optimal and
 designs numerically; \citet{wang2020carbon} develop a carbon-compliant location--inventory model under
 demand and carbon-price uncertainty; \citet{li2017joint} jointly optimize distribution-network design and
 two-echelon inventory under a CO\textsubscript{2} emission tax; and \citet{hacardiaux2020assessing} assess the
-transport-emission savings of a shared, consolidated location--inventory network under horizontal cooperation.
+transport-emission savings of a shared, consolidated location--inventory network under horizontal cooperation,
+with \citet{hacardiaux2022balancing} balancing partner preferences over logistics cost and carbon footprint
+in the same cooperative setting.
 These studies make density or facility configuration the central decision and bring emissions into the
-objective, the constraints, or an ex post assessment; transport enters through discrete modes or lead-time
-parameters within numerical mixed-integer programs, not as a continuously optimized replenishment speed.
+objective, the constraints, or an ex post assessment; where transport is modeled as an operational choice, it
+enters through travel distances, discrete modes, or lead-time parameters rather than through a continuously
+optimized replenishment speed chosen jointly with density.
 The present study treats network density and replenishment speed as joint decisions and resolves the proximity
 substitution between facilities and last-mile travel analytically.
 
@@ -192,22 +192,22 @@ characterizing how carbon reshapes the trade-off between freight and the invento
 \citet{hoen2014effect} and \citet{chen2016effects} study transport mode selection alongside
 inventory under stochastic demand and emissions regulation; \citet{bektas2011pollution} formalize the
 load--emission relationship in the pollution-routing problem, embedding fuel use and emissions as a function
-of vehicle load in the routing objective; \citet{konur2014integrated} solve the economic
+of vehicle load in the routing objective; \citet{moradi2025load} optimize driving speed and path selection
+under load- and grade-dependent fuel use at the routing level; \citet{konur2014integrated} solve the economic
 order quantity model with less-than-truckload and truckload carriers under carbon cap, tax, and cap-and-trade
 regulation, and \citet{schaefer2015economic} extend this to a continuous-review, reorder-point inventory system under stochastic
 demand, characterizing the cost--emission Pareto frontier and analyzing lead-time and demand-variance
 sensitivity. \citet{drent2023efficient} analyze dynamic dual supply-mode selection under an emission target,
 and \citet{hammami2015carbon} bring carbon from manufacturing, ordering, and inventory into a multi-echelon
-production--inventory model with lead-time constraints. In all of these models lead time enters as a
-parameter, a constraint, or a discrete-mode outcome --- in \citet{schaefer2015economic} a sensitivity and
-``green-investment'' target rather than a decision --- so replenishment speed is not a continuous decision
-chosen jointly with network density. The present study adds to this stream the continuous speed--density
+production--inventory model with lead-time constraints. Across these papers, transport service is represented
+through route/load physics, carrier class, discrete supply mode, or lead-time parameters and constraints; replenishment
+speed is not a continuous decision chosen jointly with network density. The present study adds to this stream the continuous speed--density
 threshold that results when replenishment speed and network density are chosen jointly under a carbon cap
 and a service requirement.
 
 \citet{boone2025freight} choose a discrete freight mode against inventory under an emission cap at a single
-location, with no network-density decision. The present study extends traditional mode choice models to a continuous
-replenishment speed, prices carbon on the holding as well as the transport side, embeds it in a network
+location, with no network-density decision. The present study replaces the finite mode set with a continuous
+replenishment-speed decision, prices carbon on the holding as well as the transport side, embeds it in a network
 whose density is chosen jointly, and characterizes the resulting continuous speed--density threshold and
 complementarity.
 
@@ -217,7 +217,7 @@ A fourth stream prices carbon directly into inventory and service decisions, sho
 shifts order quantities and safety-stock placement.
 \citet{hua2011managing} and \citet{bouchery2012including} develop carbon-aware order-quantity models under
 cap-and-trade and multi-objective formulations, and \citet{benjaafar2013carbon} position cap, tax, and
-cap-and-trade as priced operational levers in simple supply-chain models; \citet{chen2013carbon} derive the
+cap-and-trade as priced operational instruments in simple supply-chain models; \citet{chen2013carbon} derive the
 closed-form carbon-constrained economic order quantity, the single-location analog of the marginal
 carbon-intensity logic we extend to a network, and \citet{arikan2014single} impose a product carbon-footprint
 constraint on a dual-sourcing newsvendor. \citet{silbermayr2017inventory} bring environmental constraints into
@@ -227,18 +227,17 @@ guaranteed-service framework, and \citet{wang2025inventory} incorporate cap-and-
 placement. Probabilistic carbon limits have been modeled through chance constraints in lot sizing
 \citep{koca2021stochastic} and in supply-chain network design \citep{shaw2016low}, typically inside large
 mixed-integer programs; we instead obtain a closed-form deterministic equivalent that scales the transport component by a single factor. A recent review \citep{sebatjane2025sustainable} surveys carbon-aware inventory
-models and the regulatory instruments they treat; across this body of work, the literature remains fragmented
-across transport-emission modeling, service and inventory, network design, and demand or carbon uncertainty,
-and we bring these strands together. The service-placement models in particular price carbon against service
+models and the regulatory instruments they treat; across this body of work, transport-emission modeling, service and inventory, network design, and demand or
+carbon uncertainty have developed in largely separate streams, and we bring these strands together. The service-placement models in particular price carbon against service
 and safety stock, with the joint design of network density and replenishment speed outside their scope. 
 
-Prior work thus covers each of these ingredients: carbon-aware
-density, mode or speed choice, lead-time effects, service-constrained placement, and chance-constrained carbon.
-The present study couples an endogenous replenishment speed with the network-density decision under a carbon cap and a service requirement, and derives marginal carbon-intensity thresholds: a speed threshold comparing the carbon intensity per dollar of holding
-with that of inbound transport, a pooling-adjusted density threshold comparing last-mile intensity with a
-weighted average of the facility and holding intensities, and the complementarity that links them.
-
-% =====================================================================
+Prior work covers carbon-aware density, mode and lead-time choice, service-constrained placement, and chance
+constraints on carbon. The present study couples endogenous replenishment speed with network density under
+carbon and service constraints and derives marginal carbon-intensity thresholds for the joint design. The
+resulting diagnostic identifies which activity supplies availability and proximity when carbon is priced: a
+speed threshold comparing the carbon intensity per dollar of holding with that of inbound transport, a
+pooling-adjusted density threshold comparing last-mile intensity with a weighted average of facility and
+holding intensities, and the complementarity that links them.
 \section{The Model}\label{sec:model}
 
 \subsection{Operational environment}
@@ -249,6 +248,7 @@ identically distributed across markets with common pairwise correlation $\rho \i
 stationary and the setting is single-product. Markets and distribution centers are treated symmetrically, the standard
 simplification that admits closed-form continuous-approximation results \citep{daganzo2005logistics}.
 
+
 \paragraph{Distribution centers and geography.} The firm opens $n$ identical distribution centers (DCs), $1 \le n \le N$, each
 serving a sub-region of area $A/n$. By the continuous-approximation spatial law, the mean last-mile
 (DC-to-market) distance falls as the square root of the served area,
@@ -257,11 +257,11 @@ serving a sub-region of area $A/n$. By the continuous-approximation spatial law,
 \end{equation}
 so a denser network shortens delivery but only at a decreasing rate \citep{daganzo2005logistics}.
 
-\paragraph{Replenishment and the speed lever.} Each DC is replenished directly from the source at a chosen
+\paragraph{Replenishment and the speed decision.} Each DC is replenished directly from the source at a chosen
 speed $v \in [v_{\min}, v_{\max}]$. Individual DCs sit at different distances from the source; what enters
-cost and carbon is total inbound freight, $\sum_j (\text{throughput}_j)\,D_j = N\mu\,\bar D$, the total
-throughput times the \emph{mean} source-to-DC distance $\bar D$, since the heterogeneous distances enter
-only through this average once throughput is conserved at $N\mu$. Because the DCs fill a region of fixed
+cost and carbon is total inbound freight: with identical DCs each carrying throughput $N\mu/n$, this is
+$\sum_j (N\mu/n)\,D_j = N\mu\,\bar D$, the total throughput times the \emph{mean} source-to-DC distance
+$\bar D$. Because the DCs fill a region of fixed
 size served from a fixed source, $\bar D$ is set by the region's geometry (order $\sqrt A$) and is
 approximately invariant to $n$; we write $D \equiv \bar D$ and treat it as constant.\footnote{Two
 modeling reductions are embedded here. First, the symmetric-DC reduction assigns every DC the representative lead
@@ -271,7 +271,10 @@ concave in distance, so by Jensen's inequality $\sqrt{\bar D} \ge n^{-1}\sum_j \
 gap that is second-order in the dispersion of the $D_j$ and reduces as the distances equalize. Second, replenishment is
 point-to-point; were the DCs served on a consolidated route, the inbound distance would grow as $\sqrt{n}$ in
 the manner of the store-delivery tour of \citet{cachon2014retail}, adding a term that reinforces centralization
-in Proposition~\ref{prop:density} but leaving the speed result of Proposition~\ref{prop:speed} unchanged.}
+in Proposition~\ref{prop:density} and leaving the fixed-density speed comparison of
+Proposition~\ref{prop:speed} unchanged; with inbound distance varying in $n$, however, the speed response
+would depend on density through $D(n)$, so the complementarity of Proposition~\ref{prop:complement} need not
+carry over unchanged.}
 The replenishment lead time is then
 \begin{equation}\label{eq:lead}
   L(v) \;=\; D/v .
@@ -283,14 +286,89 @@ $\varepsilon(v)=\varepsilon_0 v^2$ and $t(v)=t_0+t_1 v^2$, the canonical form mo
 fuel-speed law of slow steaming \citep{psaraftis2013speed, cariou2011slow}. We read $v$ as a general index
 of replenishment speed --- vessel speed, or equivalently a faster and more carbon-intensive mode --- so
 slow steaming is a motivating special case, not the only interpretation. Treating replenishment speed as a
-continuously optimized decision, chosen jointly with network density, couples the transport and holding components in this distribution setting.
+continuously optimized decision, chosen jointly with network density, couples the transport and facility-and-holding components in this distribution setting.
+
+\begin{figure}[b]
+\centering
+\begin{tikzpicture}[x=0.52pt, y=-0.52pt,
+  region/.style={rounded corners=5pt, draw=black!45, thin},
+  part/.style={draw=black!45, thin, dash pattern=on 4pt off 3pt},
+  dcbox/.style={draw=black!55, fill=black!8, rounded corners=2pt, thin},
+  stock/.style={fill=black!40},
+  spoke/.style={line width=0.45pt, draw=black!85},
+  llink/.style={line width=1.0pt, draw=black, -{Stealth[length=5pt]}},
+  mkt/.style={circle, fill=black, inner sep=0pt, minimum size=4.4pt},
+  lbl/.style={font=\scriptsize, inner sep=1pt},
+  wlbl/.style={font=\scriptsize, inner sep=1pt, fill=white},
+  pcap/.style={font=\footnotesize, inner sep=1pt}]
+\draw[region] (45,45) rectangle (345,345);
+\draw[part] (195,46) -- (195,344);
+\foreach \p in {(83,90),(150,78),(70,160),(78,280),(140,310),(172,250)} \draw[spoke] (113,192) -- \p;
+\foreach \p in {(242,85),(308,100),(322,165),(312,278),(252,308),(218,255)} \draw[spoke] (277,192) -- \p;
+\node[wlbl] at (80,244) {$d(2)$};
+\draw[dcbox] (92,172) rectangle (134,212);
+\node[lbl] at (113,181) {DC 1};
+\foreach \yy in {188,196,204} \fill[stock] (102,\yy) rectangle +(22,6);
+\draw[dcbox] (256,172) rectangle (298,212);
+\node[lbl] at (277,181) {DC 2};
+\foreach \yy in {188,196,204} \fill[stock] (266,\yy) rectangle +(22,6);
+\fill[black, rounded corners=2pt] (170,177) rectangle (220,197);
+\node[lbl, text=white] at (195,187) {Source};
+\draw[llink] (170,187) -- (138,190);
+\node[wlbl] at (152,174) {$L$};
+\draw[llink] (220,187) -- (252,190);
+\node[wlbl] at (238,174) {$L$};
+\foreach \p in {(83,90),(150,78),(70,160),(78,280),(140,310),(172,250),(242,85),(308,100),(322,165),(312,278),(252,308),(218,255)} \node[mkt] at \p {};
+\node[pcap] at (195,367) {$n=2$: each DC serves 6 markets};
+\node[pcap, text=black!60] at (195,385) {more stock per DC, longer delivery legs};
+\begin{scope}[shift={(370,0)}]
+\draw[region] (45,45) rectangle (345,345);
+\draw[part] (195,46) -- (195,344);
+\draw[part] (46,195) -- (344,195);
+\foreach \p in {(83,90),(150,78),(70,160)} \draw[spoke] (140,119) -- \p;
+\foreach \p in {(242,85),(308,100),(322,165)} \draw[spoke] (250,119) -- \p;
+\foreach \p in {(78,280),(140,310),(172,250)} \draw[spoke] (140,255) -- \p;
+\foreach \p in {(312,278),(252,308),(218,255)} \draw[spoke] (250,255) -- \p;
+\node[wlbl] at (95,132) {$d(4)$};
+\draw[dcbox] (119,102) rectangle (161,136);
+\node[lbl] at (140,111) {DC 1};
+\foreach \yy in {118,126} \fill[stock] (129,\yy) rectangle +(22,6);
+\draw[dcbox] (229,102) rectangle (271,136);
+\node[lbl] at (250,111) {DC 2};
+\foreach \yy in {118,126} \fill[stock] (239,\yy) rectangle +(22,6);
+\draw[dcbox] (119,238) rectangle (161,272);
+\node[lbl] at (140,247) {DC 3};
+\foreach \yy in {254,262} \fill[stock] (129,\yy) rectangle +(22,6);
+\draw[dcbox] (229,238) rectangle (271,272);
+\node[lbl] at (250,247) {DC 4};
+\foreach \yy in {254,262} \fill[stock] (239,\yy) rectangle +(22,6);
+\fill[black, rounded corners=2pt] (170,177) rectangle (220,197);
+\node[lbl, text=white] at (195,187) {Source};
+\draw[llink] (183,177) -- (158,142);
+\node[wlbl] at (163,162) {$L$};
+\draw[llink] (207,177) -- (232,142);
+\node[wlbl] at (227,162) {$L$};
+\draw[llink] (183,197) -- (158,232);
+\draw[llink] (207,197) -- (232,232);
+\foreach \p in {(83,90),(150,78),(70,160),(78,280),(140,310),(172,250),(242,85),(308,100),(322,165),(312,278),(252,308),(218,255)} \node[mkt] at \p {};
+\node[pcap] at (195,367) {$n=4$: each DC serves 3 markets};
+\node[pcap, text=black!60] at (195,385) {less stock per DC, shorter delivery legs};
+\end{scope}
+\node[pcap, font=\footnotesize\bfseries] at (380,418) {Faster replenishment (shorter $L$), at a given density:};
+\node[pcap] at (380,436) {system-wide safety stock shrinks, so holding cost and carbon fall, while freight cost and carbon rise.};
+\node[pcap, font=\footnotesize\bfseries] at (380,462) {More DCs (higher $n$), at a given speed:};
+\node[pcap] at (380,480) {delivery legs $d(n)$ shorten with territory area, so system-wide last-mile cost and carbon fall,};
+\node[pcap] at (380,496) {while facility cost and carbon rise and weaker pooling raises system-wide holding cost and carbon.};
+\end{tikzpicture}
+\caption{Model representation for 12 markets ($N$) and 2 or 4 DCs ($n=2$ or $4$).}
+\label{fig:setting}
+\end{figure}
 
 \paragraph{Inventory and service.} Each DC operates a base-stock policy and must meet a cycle service level
-$\alpha$ --- the in-stock probability at the end of a period, the Type-1 (cycle) service measure. With normally distributed demand the safety factor is $z = \Phi^{-1}(\alpha)$,
-taken here as a service requirement (a parameter). A DC that pools $g = N/n$ markets faces aggregate per-period demand with
+$\alpha$ --- the in-stock probability at the end of a period, the Type-1 (cycle) service measure. With normally distributed demand the safety factor is $z = \Phi^{-1}(\alpha)$, with $\alpha>\tfrac12$ so
+that $z>0$, taken here as a service requirement (a parameter). A DC that pools $g = N/n$ markets faces aggregate per-period demand with
 standard deviation $\sigma\sqrt{g\,[\,1+(g-1)\rho\,]}$, the statistical economy of scale in inventory
-\citep{eppen1979effects}. Covering lead-time demand --- the review period is short relative to the
-replenishment lead time $L=D/v$, so the protection interval is $L$ --- each DC holds safety stock
+\citep{eppen1979effects}. Covering lead-time demand, each DC holds safety stock
 $z\,\sigma\sqrt{L}\,\sqrt{g[1+(g-1)\rho]}$. Summing over the $n$ DCs and writing the \emph{pooling
 expression}
 \begin{equation}\label{eq:psi}
@@ -302,13 +380,13 @@ the system-wide safety stock is
 \end{equation}
 At $\rho = 0$, \eqref{eq:ss} reduces to $z\sigma\sqrt{L}\sqrt{nN}$, the square-root law: decentralizing
 from $1$ to $N$ DCs multiplies safety stock by $\sqrt{N}$. As $\rho \to 1$, $\Psi(n) \to N$ and safety stock
-becomes invariant to $n$ --- pooling buys nothing.
+becomes invariant to $n$ --- the pooling benefit vanishes.
 
 \paragraph{Decisions.} The firm chooses the network density $n \in [1,N]$ (relaxed to a continuous
 variable and rounded) and the replenishment speed $v \in [v_{\min}, v_{\max}]$. Service is a requirement,
 so $\alpha$ (hence $z$) is a parameter in our model. Table~\ref{tab:notation} collects the notation.
 
-\begin{table}[h]
+\begin{table}[t]
 \centering\small
 \caption{Notation. The decision variables are the network density $n$ and the replenishment speed $v$;
 all other quantities are exogenous parameters or derived.}
@@ -347,12 +425,13 @@ all other quantities are exogenous parameters or derived.}
 
 \subsection{Cost and carbon}
 
-Both the cost and carbon functions are flows defined over a single
-representative period, consistent with the stationary single-product environment of Section~\ref{sec:model}:
+Both the cost and carbon functions are system-wide flows over a single
+representative period, consistent with the stationary single-product environment above:
 $F,\varphi$ are charged per DC per period, $h,\eta$ per unit held per period, and the transport terms accrue
-against the per-period throughput. Throughput itself is conserved at $N\mu$ regardless of the configuration:
-the firm moves the mean demand of all $N$ markets through the network, whatever density $n$ and speed $v$ it
-chooses. With per-period throughput
+against the per-period throughput. The representative distances in Figure~\ref{fig:setting} therefore enter
+global cost and carbon through aggregate freight tasks, not through a per-territory objective. Throughput
+itself is conserved at $N\mu$ regardless of the configuration: the firm moves the mean demand of all $N$
+markets through the network, whatever density $n$ and speed $v$ it chooses. With per-period throughput
 $N\mu$,
 \begin{align}
   K(n,v) &= \underbrace{F\,n}_{\text{fixed}} + \underbrace{h\,\sstock(n,v)}_{\text{holding}}
@@ -364,68 +443,38 @@ $N\mu$,
 \end{align}
 where $F,\varphi$ are fixed cost/carbon per DC, $h,\eta$ are holding cost/carbon per unit per period, and
 $t_L,\varepsilon_L$ are last-mile cost/carbon rates \citep{shen2003joint, hua2011managing,
-benjaafar2013carbon}. Each term is computed by multiplying a rate by the physical quantity it prices, and the
-two functions differ only in whether that rate is in dollars or in kilograms. We take the four terms in turn,
-in the order facilities, holding, inbound, last-mile, and then collect them into the two components used in the
-analysis.
+benjaafar2013carbon}. Each term multiplies a rate by the activity it prices; the two functions differ only in
+whether the rate is measured in dollars or kilograms.
 
-\paragraph{Facilities.} The first term is the periodic charge of operating the network. On the cost side
-$F\,n$ scales the per-DC fixed cost $F$ --- the amortized lease or capital recovery, baseline staffing, and
-the building's fixed operating expense --- by the number of open DCs; on the carbon side $\varphi\,n$ scales
-the per-DC facility carbon $\varphi$ the same way. With $F$ in dollars per DC per period and $\varphi$ in
-kilograms per DC per period, the cost term carries units of dollars per period and the carbon term kilograms
-per period. Both rise linearly in $n$ and do not depend on $v$: each additional DC adds a full increment $F$
-(resp.\ $\varphi$). The facility-side carbon $\varphi$ and the holding-side carbon $\eta$ below are distinct
-and not double-counted: $\varphi$ is the baseline energy of operating a DC (building lighting and climate
-control, amortized embodied carbon), independent of the inventory held, whereas $\eta$ in the holding term is
-the additional energy per unit stored (refrigeration, handling).
+\paragraph{Facilities.} The facility terms $F n$ and $\varphi n$ are the periodic cost and carbon of operating
+the open DCs. They rise linearly in $n$ and do not depend on $v$. Facility carbon $\varphi$ is distinct from
+holding carbon $\eta$: $\varphi$ captures baseline building energy and embodied carbon, whereas $\eta$ prices
+the incremental carbon of storing a unit (for example refrigeration or handling).
 
-\paragraph{Holding.} The second term values the safety stock carried across the network. It multiplies the
-system-wide safety stock $\sstock(n,v)$ of \eqref{eq:ss} by the holding cost rate $h$ (dollars per unit per
-period) in $K$ and by the holding carbon rate $\eta$ (kilograms per unit per period) in $C$, so the term is
-in dollars per period and kilograms per period respectively. By \eqref{eq:ss} the stock itself is
-$\sstock(n,v)=z\,\sigma\,\sqrt{D/v}\,\sqrt{N\,\Psi(n)}$, so the term is computed from the service factor $z$,
-the per-market demand variability $\sigma$, the lead time $L=D/v$ of \eqref{eq:lead} induced by the
-source-to-DC distance $D$ and the chosen speed $v$, and the pooling expression $\Psi(n)=N\rho+n(1-\rho)$ of
-\eqref{eq:psi}. The term rises in $n$ and falls in $v$: through $\Psi(n)$ it is increasing and concave in $n$,
-so spreading inventory over more DCs forgoes the statistical economy of scale \citep{eppen1979effects}, the
-more so the lower the correlation $\rho$; and through the $\sqrt{D/v}$ factor it falls in $v$ as $\sqrt{1/v}$,
-since faster replenishment shortens the lead time the safety stock must cover. This is the channel through
-which the speed lever enters the holding side and couples it to inbound transport.
+\paragraph{Holding.} The holding terms $h\sstock(n,v)$ and $\eta\sstock(n,v)$ value the system-wide safety
+stock of \eqref{eq:ss}. They rise in $n$ through the loss of pooling in $\Psi(n)$ and fall in $v$ through the
+lead-time factor $\sqrt{D/v}$. This is the channel through which replenishment speed couples transport and
+inventory.
 
-\paragraph{Inbound transport.} The third term is the cost and carbon of moving goods from the source to the
-DCs. It multiplies the per-unit-mile inbound rate --- $t(v)$ in dollars per unit per mile for cost,
-$\varepsilon(v)$ in kilograms per unit per mile for carbon --- by the inbound freight task $N\mu D$, the
-per-period throughput $N\mu$ carried over the representative source-to-DC distance $D$, so the term is again
-dollars (resp.\ kilograms) per period. Since $D$ is set by the region's geometry and treated as approximately
-invariant to $n$, the freight quantity $N\mu D$ does not vary with network density and the term varies through
-the rate. Both $t(v)$ and $\varepsilon(v)$ are increasing and convex in $v$ --- in the quadratic instantiation
-$\varepsilon(v)=\varepsilon_0 v^2$ and $t(v)=t_0+t_1 v^2$ --- so the inbound term rises, at
-an increasing rate, in $v$ and opposes the holding term, which falls in $v$.
+\paragraph{Inbound transport.} The inbound terms multiply the representative freight task $N\mu D$ by the
+speed-dependent rates $t(v)$ and $\varepsilon(v)$. Since $D$ is treated as invariant to $n$, inbound transport
+does not vary with network density; it rises in $v$ through the increasing convex rates
+$t(v)$ and $\varepsilon(v)$, opposing the holding term that falls in $v$.
 
-\paragraph{Last-mile transport.} The fourth term is the cost and carbon of the final DC-to-market leg. It
-multiplies the per-unit-mile last-mile rate --- $t_L$ in dollars per unit per mile for cost,
-$\varepsilon_L$ in kilograms per unit per mile for carbon --- by the delivery task $N\mu\,d(n)$, the same
-throughput $N\mu$ carried over the mean last-mile distance $d(n)=\delta\,n^{-1/2}$ of \eqref{eq:dn}, so the
-term is again dollars (resp.\ kilograms) per period. Unlike inbound freight, this term depends on $n$ through
-$d(n)$: a denser network shortens the average delivery distance as the square root of the served area, so the
-last-mile term is decreasing and convex in $n$ \citep{daganzo2005logistics}. A constant per-mile last-mile
-rate leaves it independent of $v$, which acts only on the inbound leg. The last-mile term therefore decreases
-in $n$, partially offsetting the increase in the facility term.
+\paragraph{Last-mile transport.} The last-mile terms multiply throughput $N\mu$ by the mean DC-to-market
+distance $d(n)=\delta n^{-1/2}$ and the rates $t_L,\varepsilon_L$. A denser network shortens this leg at the
+continuous-approximation rate, so the last-mile term is decreasing and convex in $n$ and independent of $v$
+under constant per-mile last-mile rates.
 
-\paragraph{Decomposition and scope.} The carbon in \eqref{eq:C} splits into a \emph{transport component}
-($\varepsilon(v)N\mu D + \varepsilon_L N\mu\, d(n)$, rising in $v$, falling in $n$) and a \emph{holding component} ($\varphi n + \eta\,\sstock$, falling in $v$, rising in $n$); the same partition organizes the cost
-in \eqref{eq:K}, with the inbound and last-mile terms forming the transport component and the fixed and holding
-terms the holding component. The tension that organizes the analysis is that both ways to shrink the transport component --- slow down ($v\downarrow$) or spread out ($n\uparrow$) --- inflate the holding component; treating
-replenishment speed as a decision, which couples the inbound transport term to the holding term through the
-lead time $L=D/v$, is what links the two components in this distribution setting. Two further points about scope
-frame what the four terms cover. The inventory side carries safety stock through $\sstock(n,v)$. Cycle
-(working) stock under a fixed review period is proportional to total mean demand, approximately $N\mu/2$
-system-wide, or $(N\mu/n)/2$ per DC, and is therefore invariant to both $n$ and $v$ in our model; it enters
-as a constant. In-transit (pipeline) inventory, $N\mu L=N\mu D/v$, does vary with $v$ and is omitted from our model; Section~\ref{sec:analysis} shows that including it at the same dollar and carbon holding rates
-shifts the level of $v^*$ but leaves the carbon-intensity threshold unchanged. And, as noted above, production and procurement cost is held outside \eqref{eq:K}--\eqref{eq:C}: with
-throughput conserved at $N\mu$, the quantity sourced and produced is invariant to $n$ and $v$, so it enters as
-a constant that does not affect either lever and is set aside for the optimization.
+\paragraph{Decomposition and scope.} The carbon function splits into a transport component
+$\varepsilon(v)N\mu D+\varepsilon_LN\mu d(n)$ and a facility-and-holding component $\varphi n+\eta\sstock(n,v)$;
+the cost function has the analogous partition. Slowing replenishment reduces inbound transport carbon but
+raises safety stock, while dispersion reduces last-mile distance but raises facility count and pooling loss.
+Three scope points follow. Cycle stock under a fixed review period is approximately $N\mu/2$ system-wide, or
+$(N\mu/n)/2$ per DC, and is invariant to both decisions. Pipeline inventory $N\mu D/v$ is omitted; when valued
+at the same dollar and carbon holding rates as stored inventory, it changes the level of $v^*$ but not the
+speed threshold (Section~\ref{sec:analysis}). Production and procurement are also excluded because throughput
+is fixed at $N\mu$ and therefore constant in both decisions.
 
 \subsection{The program}
 
@@ -434,91 +483,85 @@ The firm minimizes cost subject to a carbon cap $B$ and the service requirement,
   \min_{\,1\le n\le N,\ v_{\min}\le v\le v_{\max}}\ K(n,v)
   \quad\text{s.t.}\quad C(n,v)\le B .
 \end{equation}
-Here $K$ and $C$ are expected per-period flows: under the stationary demand of Section~\ref{sec:model} they are the long-run average cost and carbon of a configuration, so the cap in \eqref{eq:Pcap} bounds \emph{expected} carbon, the form annual carbon accounting and most regulation take. Because demand is random, realized carbon fluctuates about $C(n,v)$; we develop the analysis for the expected-value cap and return below to a chance-constrained cap that bounds realized carbon with prescribed confidence (Proposition~\ref{prop:chance}).
+Here $K$ and $C$ are expected flows over the model's accounting period: under the stationary demand assumption they are the long-run average cost and carbon of a configuration, and they can be
+scaled to an annual expected-carbon cap by multiplying by the number of periods. Because demand is random,
+realized carbon over a specified accounting horizon fluctuates about its expectation; we develop the analysis
+for the expected-value cap and return below to a chance-constrained cap that bounds realized carbon with
+specified confidence (Proposition~\ref{prop:chance}).
 
-Equivalently, pricing carbon at $\tau \ge 0$ gives the \emph{priced objective} $J = K + \tau C$ --- total cost
-plus priced carbon --- which the firm minimizes over $n$ and $v$; by Lagrangian duality the cap multiplier equals the price ($\lambda = \tau$) at an
-interior optimum, as in the carbon-constrained inventory models of \citet{chen2013carbon}, and sweeping $\tau$
-from $0$ to $\infty$ traces the cost--carbon Pareto frontier. Because $J$ can be non-convex in $n$ (the
-pooling term is concave) and $n$ is ultimately integer, the price--cap correspondence $\lambda=\tau$ holds
-within a regime where the optimal configuration is interior and stable; across a regime switch the frontier
-has a kink and the correspondence can jump. Because \eqref{eq:K}--\eqref{eq:C} share the
-four-component structure, the priced objective is the \emph{same} four components with each rate blended,
-$\widetilde{\text{rate}} = \text{rate}_\$ + \tau\,\text{rate}_{\text{kg}}$:
+Equivalently, pricing carbon at $\tau \ge 0$ gives the priced objective $J=K+\tau C$. At an interior optimum,
+the cap multiplier equals the price ($\lambda=\tau$), as in carbon-constrained inventory models
+\citep{chen2013carbon}; sweeping $\tau$ traces the cost--carbon frontier within a stable interior regime,
+with jumps possible at regime switches or integer-density changes. Define the blended rates
+\[
+  F_\tau=F+\tau\varphi,\qquad H_\tau=h+\tau\eta,\qquad
+  T_\tau(v)=t(v)+\tau\varepsilon(v),\qquad
+  \ell_\tau=t_L+\tau\varepsilon_L .
+\]
+Then
 \begin{equation}\label{eq:J}
-  J(n,v;\tau) \;=\; a\,n \;+\; b(v)\,\sqrt{\Psi(n)} \;+\; c(v) \;+\; e\,n^{-1/2},
+  J(n,v;\tau) \;=\; F_\tau n + H_\tau\,\sstock(n,v)
+     + T_\tau(v)N\mu D + \ell_\tau N\mu d(n).
 \end{equation}
-with $a = F + \tau\varphi$, \ $b(v) = (h+\tau\eta)\,z\sigma\sqrt{N}\,\sqrt{D/v}$, \
-$c(v) = (t(v)+\tau\varepsilon(v))\,N\mu D$, and $e = (t_L+\tau\varepsilon_L)\,N\mu\delta$. Setting $\tau=0$
-recovers cost; $\tau\to\infty$ recovers carbon.
-
-% =====================================================================
+Setting $\tau=0$ recovers cost; the limit $\tau\to\infty$ recovers carbon up to scale.
 \section{Analysis}\label{sec:analysis}
 
-We now analyze the firm's problem to characterize the carbon-minimizing design and the
-logic a manager would use to reach it. Two structural facts organize the analysis. First,
-cost and carbon share the same four components, so a carbon price acts through a small set
-of carbon-intensity-per-dollar ratios. Second, the two levers --- inventory against speed
-for availability, facilities against last-mile travel for proximity --- are coupled, so a
-carbon-minimizing chain adjusts both together rather than one at a time.
-
-When a carbon constraint binds, the firm must decide how fast to replenish, how to size its network, whether to adjust one lever or both, and which way a given product's configuration should shift. The results below take these decisions in turn: holding the network fixed, Proposition~\ref{prop:speed} characterizes the replenishment speed and Proposition~\ref{prop:service} ties it to the service level and demand variability; holding speed fixed, Proposition~\ref{prop:density} characterizes the density; Proposition~\ref{prop:complement} shows the two levers are coupled; and Corollary~\ref{cor:corner} combines the comparisons, whose direction is set throughout by the carbon-intensity-per-dollar ratios of Lemma~\ref{lem:blend}.
-
-All analytical comparisons below are made under the stated fixed-lever,
-interiority, and convexity conditions; the speed and density propositions identify directional forces ---
-comparative-static characterizations, not claims about the global design --- and the joint corollary
-establishes best-response dominance rather than global optimality in general. The numerical illustrations of
-Section~\ref{sec:numerical} then evaluate the full two-decision problem on calibrated grids and report the
-resulting cost--carbon trade-offs.
+We now characterize how carbon pricing changes the joint design. The joint first-order conditions
+decompose into two marginal substitutions: Proposition~\ref{prop:speed} gives the speed threshold on the
+availability margin, Proposition~\ref{prop:service} records the service and volatility comparative static,
+Proposition~\ref{prop:density} gives the pooling-adjusted density threshold on the proximity margin,
+Proposition~\ref{prop:complement} establishes the complementarity through which the two margins interact,
+and Corollary~\ref{cor:corner} characterizes the joint configuration when both comparisons agree. The
+results are analytical under the stated interiority and convexity conditions, each threshold derived on its
+margin with the other decision held at an arbitrary level; Section~\ref{sec:numerical} evaluates the joint
+problem in calibrated numerical illustrations.
 
 \begin{lemma}[Carbon intensity per dollar]\label{lem:blend}
 Pricing carbon at $\tau$ replaces each cost rate in \eqref{eq:K} by the blended rate
 $\mathrm{rate}_\$ + \tau\,\mathrm{rate}_{\mathrm{kg}}$, yielding the objective $J$ of \eqref{eq:J}. In the
-interior fixed-lever comparisons below, the \emph{direction} in which the carbon-minimizing choice departs
+interior comparisons below, each holding the other decision fixed, the \emph{direction} in which the carbon-minimizing choice departs
 from the cost-minimizing one is governed by four carbon-intensity-per-dollar ratios --- holding $\eta/h$,
 inbound transport $\varepsilon_0/t_1$, last-mile $\varepsilon_L/t_L$, and facilities $\varphi/F$ --- while the
 magnitude and the realized joint optimum also depend on pooling, the bounds, and the complementarity of the
-two levers.
+two decisions.
 \end{lemma}
 
 \begin{proof}
-Collecting \eqref{eq:K}--\eqref{eq:C}, the coefficient of each of the four terms of $K+\tau C$ is
-$\mathrm{rate}_\$ + \tau\,\mathrm{rate}_{\mathrm{kg}}$, giving \eqref{eq:J} with $a,b,c,e$ as stated. For
-the speed lever the cost optimum ($\tau=0$) and carbon optimum ($\tau\to\infty$) coincide iff the marginal
-holding and inbound-transport intensities are equal, $\eta/h=\varepsilon'(v_{\mathrm K})/t'(v_{\mathrm K})$
-(Proposition~\ref{prop:speed}), which the quadratic instantiation reduces to $\eta/h=\varepsilon_0/t_1$. The density lever combines three terms --- facilities, holding, and last
-mile --- so its comparison is governed not by a single two-pair proportionality but by the pooling-adjusted
-threshold of Proposition~\ref{prop:density}, a weighted average of $\varphi/F$ and $\eta/h$. For the joint
-problem, proportionality of all four ratios is sufficient for the two optima to coincide but is not shown to
-be necessary.
+The blended rates in \eqref{eq:J} follow by collecting coefficients in $K+\tau C$. The speed comparison sets
+holding against inbound transport at the margin (Proposition~\ref{prop:speed}); the density comparison sets
+last-mile transport against a pooling-adjusted blend of facilities and holding
+(Proposition~\ref{prop:density}). The four ratios listed in the statement are therefore the primitive
+carbon-intensity comparisons used below.
 \end{proof}
 
-\noindent The carbon-minimizing choice on each lever therefore depends on each activity's carbon intensity
+\noindent The carbon-minimizing choice on each decision therefore depends on each activity's carbon intensity
 \emph{relative to its cost}, not on its absolute rates.
 
-Differentiating $J$ in \eqref{eq:J}, with $\Psi'(n)=1-\rho$ and $b'(v)=-b(v)/2v$, gives the stationarity
-conditions
+Writing $G(n,v)=\partial\sstock(n,v)/\partial n$, differentiation gives the stationarity conditions
 \begin{align}
-  a + \frac{b(v)\,(1-\rho)}{2\sqrt{\Psi(n)}} &= \frac{e}{2}\,n^{-3/2}, \label{eq:focn}\\[2pt]
-  \big(t'(v)+\tau\varepsilon'(v)\big) N\mu D &= \frac{b(v)\,\sqrt{\Psi(n)}}{2v}, \label{eq:focv}
+  F_\tau + H_\tau G(n,v) &= \frac{\ell_\tau N\mu\delta}{2}\,n^{-3/2}, \label{eq:focn}\\[2pt]
+  N\mu D\,T_\tau'(v) &= \frac{H_\tau\,\sstock(n,v)}{2v}, \label{eq:focv}
 \end{align}
-the first balancing the marginal cost of opening a DC --- the facility term $a$ plus the lost-pooling
-holding term, scaled by $(1-\rho)$ so it vanishes when pooling yields no benefit --- against the marginal
-last-mile saving; the second balancing the marginal transport cost-and-carbon of speed against the marginal
-holding saving it buys.
+the first balancing the marginal facility and lost-pooling costs against the marginal last-mile saving, and
+the second balancing the marginal transport cost of speed against the marginal holding saving it obtains.
+The joint first-order conditions thus reveal two marginal substitutions. The speed condition
+\eqref{eq:focv} governs the \emph{availability margin}: safety stock and replenishment speed are
+alternative ways to provide service. The density condition \eqref{eq:focn} governs the \emph{proximity
+margin}: facilities and last-mile distance are alternative ways to reach markets. The thresholds below
+compare the carbon intensity per dollar of the activities on each margin, and complementarity determines how
+the two margins interact in the joint configuration.
 
-\paragraph{Availability: inventory or speed.} Hold the network at any density $n$ and ask how fast to replenish; the speed
-subproblem is convex.
-
-Under a carbon cap or guidance to adopt slower modes, the transport-side rationale is that slowing replenishment lowers the transport component of distribution carbon. Whether it lowers the total is less clear, because the longer lead time enlarges the safety stock, whose holding is itself carbon-intensive, so one source rises while the other falls.
+\paragraph{Availability: inventory or speed.} The speed condition isolates the availability margin.
+Increasing speed raises inbound transport cost and carbon but lowers the safety stock required for service;
+the speed threshold identifies which activity is more carbon-intensive per dollar on this margin.
 
 \begin{proposition}[Speed reversal]\label{prop:speed}
 Fix the density $n$ and write the speed-dependent cost and carbon as
 \[
-  K_v(v)=h\,\kappa(n)\,v^{-1/2}+T\,t(v), \qquad C_v(v)=\eta\,\kappa(n)\,v^{-1/2}+T\,\varepsilon(v),
+  \hat K(v)=h\,\kappa(n)\,v^{-1/2}+N\mu D\,t(v), \qquad \hat C(v)=\eta\,\kappa(n)\,v^{-1/2}+N\mu D\,\varepsilon(v),
 \]
-with $\kappa(n)=z\sigma\sqrt{ND}\,\sqrt{\Psi(n)}$ and $T=N\mu D$. If $t$ and $\varepsilon$ are increasing,
-differentiable, and convex and each objective is strictly convex in $v$, then at a common density and for
+with $\kappa(n)=z\sigma\sqrt{ND}\,\sqrt{\Psi(n)}$. If $t$ and $\varepsilon$ are increasing,
+differentiable, and convex, then at a common density and for
 interior optima the carbon-minimizing speed exceeds the cost-minimizing speed if and only if holding is more
 carbon-intensive per dollar than inbound transport \emph{at the margin},
 \begin{equation}\label{eq:speedthreshold}
@@ -537,13 +580,13 @@ neither projection binds.
 \end{proposition}
 
 \begin{proof}
-$T\,t(v)$ and $T\,\varepsilon(v)$ are convex and $\kappa(n)v^{-1/2}$ has $\partial_v^2=\tfrac34 \kappa(n)v^{-5/2}>0$, so
-both objectives are strictly convex in $v$. The cost optimum satisfies $K_v'(v_{\mathrm K})=0$, i.e.\
-$T\,t'(v_{\mathrm K})=\tfrac12 h\,\kappa(n)\,v_{\mathrm K}^{-3/2}$, so that $\tfrac12 \kappa(n)v_{\mathrm K}^{-3/2}=
-T\,t'(v_{\mathrm K})/h$. Evaluating the carbon derivative there,
+$N\mu D\,t(v)$ and $N\mu D\,\varepsilon(v)$ are convex and $\kappa(n)v^{-1/2}$ has $\partial_v^2=\tfrac34 \kappa(n)v^{-5/2}>0$, so
+both objectives are strictly convex in $v$. The cost optimum satisfies $\hat K'(v_{\mathrm K})=0$, i.e.\
+$N\mu D\,t'(v_{\mathrm K})=\tfrac12 h\,\kappa(n)\,v_{\mathrm K}^{-3/2}$, so that $\tfrac12 \kappa(n)v_{\mathrm K}^{-3/2}=
+N\mu D\,t'(v_{\mathrm K})/h$. Evaluating the carbon derivative there,
 \[
-  C_v'(v_{\mathrm K})=-\eta\,\tfrac12 \kappa(n)v_{\mathrm K}^{-3/2}+T\,\varepsilon'(v_{\mathrm K})
-  =T\big(\varepsilon'(v_{\mathrm K})-(\eta/h)\,t'(v_{\mathrm K})\big),
+  \hat C'(v_{\mathrm K})=-\eta\,\tfrac12 \kappa(n)v_{\mathrm K}^{-3/2}+N\mu D\,\varepsilon'(v_{\mathrm K})
+  =N\mu D\big(\varepsilon'(v_{\mathrm K})-(\eta/h)\,t'(v_{\mathrm K})\big),
 \]
 which is negative --- so $v_C>v_{\mathrm K}$ by strict convexity --- if and only if \eqref{eq:speedthreshold}.
 With $t'=2t_1 v$ and $\varepsilon'=2\varepsilon_0 v$ the marginal ratio is $\varepsilon_0/t_1$, and the priced
@@ -552,20 +595,22 @@ $v^{5/2}=(h+\tau\eta)z\sigma\sqrt{ND}\,\sqrt{\Psi}/[4(t_1+\tau\varepsilon_0)N\mu
 \eqref{eq:vstar}. The projection and the boundary qualification are immediate.
 \end{proof}
 
-\noindent Total carbon is U-shaped in the replenishment speed: faster replenishment is more carbon-intensive in transport but less inventory-intensive,
-because it shrinks the safety stock that a longer lead time would require. For a product whose inventory is
-the emissions-intensive component --- refrigerated, volatile, or held to a high service level --- the carbon-minimizing
-response to a tighter cap is to ship \emph{faster}. This is a distinct configuration from the one the
-slow-steaming literature describes \citep{psaraftis2013speed, cariou2011slow}, and it extends the
-finding that shorter lead times lower both inventory cost and emissions \citep{schaefer2015economic} by
-pricing the transport carbon that speed costs, which turns a one-directional saving into an interior
-optimum. The comparison is stated at a common density; at the joint optimum the densities differ, but since
-$v^*$ rises in $n$ (Proposition~\ref{prop:complement}) the density channel reinforces the reversal when
-carbon also disperses the network and attenuates it otherwise.
+\noindent Because \eqref{eq:vstar} depends on the carbon price only through the blended ratio
+$(h+\tau\eta)/(t_1+\tau\varepsilon_0)$, which is monotone in $\tau$, the fixed-density speed optimum moves
+monotonically between the cost and carbon endpoints as the carbon price rises: the endpoint comparison of the
+proposition also orders every finite price.
 
-Setting a cycle-service target, or accepting a more volatile item, is ordinarily treated as an inventory-cost decision; the same closed form shows that it also shifts the carbon-minimizing configuration and so belongs in the carbon design rather than only the cost budget. Write $J^{\mathrm r}(n;s)\equiv J\big(n,v^*(n;s);s\big)$, with $s=z\sigma$, for the reduced objective obtained by substituting the speed response $v^*(n;s)$ into the priced objective.
+\noindent Total carbon is U-shaped in speed. For products whose inventory is emissions-intensive ---
+refrigerated, volatile, or held to a high service level --- a tighter carbon target can select \emph{faster}
+replenishment. The comparison is at common density; in the joint problem, the density channel reinforces the
+speed reversal when carbon also disperses the network and attenuates it otherwise
+(Proposition~\ref{prop:complement}).
 
-\begin{proposition}[Service and volatility are carbon parameters]\label{prop:service}
+Service and volatility enter through the same channel. Write
+$J^{\mathrm r}(n;s)\equiv J\big(n,v^*(n;s);s\big)$, with $s=z\sigma$, for the reduced objective obtained after
+substituting the speed response into the priced objective.
+
+\begin{proposition}[Service and volatility as carbon parameters]\label{prop:service}
 Under the quadratic instantiation and for an interior speed response $v^*(n)\in(v_{\min},v_{\max})$,
 $v^*(n)$ is increasing in the safety factor $z=\Phi^{-1}(\alpha)$ and in the demand standard deviation
 $\sigma$, and both raise the holding term in \eqref{eq:focn}. At an interior reduced optimum (reduced
@@ -574,37 +619,23 @@ comparative-static result: a higher $z$ or $\sigma$ raises the inventory penalty
 \end{proposition}
 
 \begin{proof}
-From \eqref{eq:vstar}, $v^*\propto(z\sigma)^{2/5}$, so $z$ and $\sigma$ raise the optimal speed. Because that
-speed increase by itself lowers the holding term, the net effect on density must be read along the speed
-response. Because the speed condition \eqref{eq:focv} uniquely determines $v^*(n;s)$ for each $n$ independently of the
-density condition, we may substitute it into the density condition before differentiating; the resulting
-reduced first-order condition $J^{\mathrm r}_n(n;s)=J_n\big(n,v^*(n;s);s\big)=0$ needs no separate envelope
-term in $n$ (since \eqref{eq:focv}, i.e.\ $J_v=0$, holds identically along $v^*(n;s)$), and its total
-$s$-derivative already carries the induced speed change inside $v^*(n;s)$. In this reduced condition (with
-$s=z\sigma$) the holding term is $b(v^*(n))(1-\rho)/(2\sqrt{\Psi(n)})$ with $b(v^*(n))\propto s\,(v^*)^{-1/2}
-\propto s^{4/5}$, increasing in $s$ even after the induced rise in speed. By the implicit function theorem
-applied to this reduced condition, and with the reduced second-order condition $J^{\mathrm r}_{nn}>0$ --- the
-curvature in $n$ of the reduced objective $J^{\mathrm r}(n;s)=J\big(n,v^*(n;s);s\big)$, assumed to hold locally
-and checked at the calibrated instances --- one has $\mathrm{d}n^*/\mathrm{d}s=
--J^{\mathrm r}_{ns}/J^{\mathrm r}_{nn}<0$, since the only $s$-dependent term, $\propto s^{4/5}$, raises
-$J^{\mathrm r}_{n}$. Thus a
-higher service factor or volatility raises the carbon-minimizing speed at any given density and lowers the
-carbon-minimizing density; the consolidation force survives the induced speed increase rather than being
-offset by it.
+Let $s=z\sigma$. From \eqref{eq:vstar}, $v^*(n;s)\propto s^{2/5}$, so speed rises with service and demand
+volatility. Along this speed response, $J^{\mathrm r}_n(n;s)=J_n\big(n,v^*(n;s);s\big)$ because $J_v=0$. The
+holding marginal term in \eqref{eq:focn} is proportional to
+$s(v^*)^{-1/2}(1-\rho)/\sqrt{\Psi(n)}\propto s^{4/5}(1-\rho)/\sqrt{\Psi(n)}$, hence rises in $s$ even after
+the induced speed increase. Thus $J^{\mathrm r}_{ns}>0$. Under the reduced second-order condition
+$J^{\mathrm r}_{nn}>0$, the implicit-function theorem gives
+$\mathrm{d}n^*/\mathrm{d}s=-J^{\mathrm r}_{ns}/J^{\mathrm r}_{nn}<0$.
 \end{proof}
 
-\noindent A service requirement is therefore not only an inventory-cost decision. Raising a product's
-cycle-service target from $95\%$ to $99\%$, or carrying a more erratic item, enlarges safety stock and so --- under
-carbon --- raises its optimal replenishment speed and, in the network decision, strengthens the pull toward
-consolidation (more pooling) --- a distinct force from the dispersing force of demand correlation.
-Service level and demand variability belong in the carbon design, not only the cost budget; treating the
-service target as a third decision, set jointly with speed and density, is a natural extension
-(Section~\ref{sec:discussion}).
+\noindent A service requirement therefore affects the carbon-minimizing design as well as inventory cost;
+endogenous service choice is a natural extension (Section~\ref{sec:discussion}).
 
-\paragraph{Proximity: facilities or last-mile travel.} Now hold speed fixed and choose the density; pooling makes this
-problem less uniform than the speed problem.
-
-Holding speed fixed, the firm chooses how many DCs to operate, and consolidation carries two carbon effects with different signs: it pools demand and saves facility energy, but it lengthens the last mile.
+\paragraph{Proximity: facilities or last-mile travel.} The density condition isolates the proximity
+margin. Increasing density shortens the last mile but raises facility cost and carbon and weakens pooling;
+the density threshold identifies when carbon places more weight on last-mile distance than on the
+facility-and-pooling cost of proximity, and pooling keeps the comparison from reducing to a single pair of
+rates.
 
 \begin{proposition}[Density and dispersion]\label{prop:density}
 Fix the speed $v$ and let
@@ -615,12 +646,13 @@ Fix the speed $v$ and let
 be the marginal safety-stock penalty of an additional DC. The priced objective $J(\cdot,v)$ is strictly
 convex in $n$ when
 \begin{equation}\label{eq:densitysoc}
-  3e\,n^{-5/2} \;>\; b(v)(1-\rho)^2\,\Psi(n)^{-3/2}\qquad\text{for all }n\in[1,N],
+  3\ell_\tau N\mu\delta\,n^{-5/2}
+  \;>\; H_\tau z\sigma\sqrt{D/v}\sqrt{N}\,(1-\rho)^2\,\Psi(n)^{-3/2}
+  \qquad\text{for all }n\in[1,N],
 \end{equation}
 in which case the stationary point is unique; the minimizer is interior if and only if, in addition,
 $J_n(1)<0<J_n(N)$, and otherwise lies at a boundary, $n^*\in\{1,N\}$. When \eqref{eq:densitysoc} holds at
-$\tau=0$ and in the limit $\tau\to\infty$ --- and hence, since $(t_L+\tau\varepsilon_L)/(h+\tau\eta)$ is
-monotone in $\tau$, for every $\tau$ --- and for interior cost and carbon
+$\tau=0$ and in the limit $\tau\to\infty$, and for interior cost and carbon
 density optima, the carbon-minimizing density exceeds the cost-minimizing density, $n_C(v)>n_K(v)$, if and
 only if last-mile transport is more carbon-intensive per dollar than the \emph{pooling-adjusted facility threshold},
 \begin{equation}\label{eq:densthreshpool}
@@ -628,9 +660,11 @@ only if last-mile transport is more carbon-intensive per dollar than the \emph{p
 \end{equation}
 The right-hand side is a weighted average of the facility ratio $\varphi/F$ and the holding ratio $\eta/h$,
 with weight on $\eta/h$ rising in the pooling penalty $G$: it equals $\varphi/F$ when pooling is absent and
-tilts monotonically toward $\eta/h$ as $G$ grows (lower correlation, higher service factor or volatility, or
-slower replenishment). In the no-pooling limit ($\rho=1$, $G=0$) the optimum is closed form,
-$n^*=(e/2a)^{2/3}$, and \eqref{eq:densthreshpool} reduces to
+tilts monotonically toward $\eta/h$ as $G$ grows (lower correlation, higher safety factor or volatility, or
+slower replenishment). In the no-pooling limit ($\rho\to1$, so $G\to0$) the optimum is closed form,
+$n^*=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$ (with the blended last-mile and facility rates
+$\ell_\tau=t_L+\tau\varepsilon_L$ and $F_\tau=F+\tau\varphi$ of \eqref{eq:J}), and
+\eqref{eq:densthreshpool} reduces to
 \begin{equation}\label{eq:densitythreshold}
   \frac{\varepsilon_L}{t_L} \;>\; \frac{\varphi}{F}.
 \end{equation}
@@ -639,10 +673,15 @@ it holds as a projected weak ordering.
 \end{proposition}
 
 \begin{proof}
-With $\tfrac{d^2}{dn^2}\sqrt{\Psi}=-\tfrac{(1-\rho)^2}{4}\Psi^{-3/2}$, $\partial_n^2 J=\tfrac34 e\,n^{-5/2}
--\tfrac14 b(v)(1-\rho)^2\Psi^{-3/2}$, positive on $[1,N]$ exactly under \eqref{eq:densitysoc}, so $J(\cdot,v)$
-is then strictly convex with a unique stationary point, interior iff $J_n(1)<0<J_n(N)$. For the threshold,
-take $\tau=0$ for cost and $\tau\to\infty$ for carbon. The cost density satisfies $\partial_n K=F+h\,G(n_K,v)-
+Since
+\[
+  J_{nn}=\frac34\,\ell_\tau N\mu\delta\,n^{-5/2}
+  -\frac14\,H_\tau z\sigma\sqrt{D/v}\sqrt{N}\,(1-\rho)^2\Psi(n)^{-3/2},
+\]
+\eqref{eq:densitysoc} gives strict convexity and the stated interior/boundary characterization. Because
+$(t_L+\tau\varepsilon_L)/(h+\tau\eta)$ is monotone in $\tau$, the condition at the two endpoints implies it
+for every $\tau$. For the
+threshold, take $\tau=0$ for cost and $\tau\to\infty$ for carbon. The cost density satisfies $\partial_n K=F+h\,G(n_K,v)-
 t_L N\mu\delta/(2n_K^{3/2})=0$, so the last-mile marginal $t_L N\mu\delta/(2n_K^{3/2})=F+h\,G(n_K,v)$.
 Evaluating the carbon derivative there,
 \[
@@ -653,63 +692,49 @@ Evaluating the carbon derivative there,
 which is negative --- so $n_C>n_K$ by convexity --- if and only if \eqref{eq:densthreshpool}. Writing
 $R(G)=(\varphi+\eta G)/(F+hG)$, we have $R(0)=\varphi/F$, $R(G)\to\eta/h$ as $G\to\infty$, and
 $R'(G)=(\eta F-h\varphi)/(F+hG)^2$, so $R$ is monotone with $\operatorname{sign}R'=\operatorname{sign}
-(\eta/h-\varphi/F)$ and lies between $\varphi/F$ and $\eta/h$. At $\rho=1$, $G=0$ and $\Psi\equiv N$, so
-\eqref{eq:focn} gives $n^*=(e/2a)^{2/3}$ and \eqref{eq:densthreshpool} becomes \eqref{eq:densitythreshold}.
+(\eta/h-\varphi/F)$ and lies between $\varphi/F$ and $\eta/h$. In the no-pooling limit $\rho\to1$, $G\to0$ and $\Psi\to N$, so
+\eqref{eq:focn} gives $n^*=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$ and \eqref{eq:densthreshpool} becomes \eqref{eq:densitythreshold}.
 \end{proof}
 
-\noindent The density decision is the centralize-versus-decentralize question in carbon terms.
-Centralizing pools demand, so safety stock falls with the square-root law \citep{eppen1979effects}, and it
-consolidates facility energy, while \emph{lengthening} the last mile. By \eqref{eq:densthreshpool} the
-carbon-minimizing network is more dispersed than the cost-minimizing one exactly when the last mile's carbon
-intensity per dollar, $\varepsilon_L/t_L$, exceeds a facility threshold that pooling shifts from $\varphi/F$
-toward the holding ratio $\eta/h$. Pooling thus enters the threshold explicitly, as a weight $G$ on $\eta/h$,
-rather than as a uniform centralizing force; strong pooling (low correlation, high service or volatility)
-raises the threshold for dispersion when holding is more carbon-intensive per dollar than facilities ($\eta/h>\varphi/F$), and lowers it otherwise. The classical
-location--inventory trade-off weighs the pooling economy against proximity
-\citep{daskin2002inventory, shen2003joint}; pricing carbon reweights it, and for a bulky, low-value good
-carried by diesel van the last-mile ratio clears the threshold, so the carbon-minimizing network holds more
-inventory in facilities closer to demand --- the firm-operated counterpart of \citet{cachon2014retail}, there
-through consumer travel and here through firm last-mile delivery. A corner optimum, when it arises, is itself
-well defined: fully centralize, or fully decentralize.
+\noindent The density decision is the centralize-versus-decentralize question in carbon terms. By
+\eqref{eq:densthreshpool}, the carbon-minimizing network is more dispersed when the last-mile ratio
+$\varepsilon_L/t_L$ exceeds a facility threshold that pooling shifts from $\varphi/F$ toward $\eta/h$.
+Pooling therefore enters as an explicit weight on the holding ratio, not as a uniform centralizing force: when
+holding is more carbon-intensive per dollar than facilities, stronger pooling raises the threshold for
+dispersion; otherwise it lowers it. A corner optimum, when it arises, is fully centralized or fully
+decentralized.
 
-\paragraph{Complementarity of speed and density.} The speed and density choices do not separate.
-
-A firm pursuing abatement might run a single program: a slow-steaming mandate that sets speed, or a consolidation initiative that sets density. This raises the question whether either lever can be tuned in isolation or whether the carbon-minimizing speed and density must be chosen together.
+\paragraph{Complementarity of speed and density.} The two margins interact through safety stock: faster
+replenishment reduces the inventory penalty of density, and higher density increases the inventory exposure
+affected by speed. Proposition~\ref{prop:complement} makes the interaction precise.
 
 \begin{proposition}[Complementarity]\label{prop:complement}
 $v^*(n)$ is increasing in $n$, and under the density second-order condition $n^*(v)$ is increasing in $v$.
 \end{proposition}
 
 \begin{proof}
-From \eqref{eq:vstar}, $v^*\propto\Psi(n)^{1/5}$ with $\Psi'(n)=1-\rho\ge0$, so $\partial v^*/\partial
-n\ge0$, strict for $\rho<1$. For the density response, apply the implicit function theorem to the first-order
-condition $J_n(n,v)=0$ of \eqref{eq:focn}: under the density second-order condition $J_{nn}>0$ of
-\eqref{eq:densitysoc}, $\mathrm{d}n^*/\mathrm{d}v=-J_{nv}/J_{nn}$. With $b(v)=B_0 v^{-1/2}$ and
-$B_0=(h+\tau\eta)z\sigma\sqrt{ND}$, the cross-partial
-$J_{nv}=b'(v)(1-\rho)/(2\sqrt{\Psi(n)})=-b(v)(1-\rho)/(4v\sqrt{\Psi(n)})$ is negative for $\rho<1$, so
-$\mathrm{d}n^*/\mathrm{d}v>0$.
+Since $G(n,v)\propto v^{-1/2}$, the cross-partial is $J_{nv}=H_\tau G_v=-H_\tau G(n,v)/(2v)<0$ for
+$\rho<1$. For the speed response, $J$ is strictly convex in $v$ (as in the proof of
+Proposition~\ref{prop:speed}), so by the implicit function theorem
+$\mathrm{d}v^*/\mathrm{d}n=-J_{nv}/J_{vv}>0$. For the density response, under the second-order condition
+$J_{nn}>0$ of \eqref{eq:densitysoc}, $\mathrm{d}n^*/\mathrm{d}v=-J_{nv}/J_{nn}>0$.
 \end{proof}
 
-\noindent Faster replenishment shrinks safety stock, lowering the inventory penalty of spreading out; a
-denser network raises the inventory at stake, raising the value of speed, so the two levers reinforce. The
-optimal degree of centralization is therefore contingent on replenishment speed: since $n^*(v)$ increases in
-$v$, a firm that can replenish faster can operate a more decentralized network at the same inventory burden,
-so an investment in speed and the choice of network density are best evaluated together. A program that
-adjusts only one --- speed or density --- attains part of the available abatement, whereas the
-carbon-minimizing response adjusts both.
+\noindent Faster replenishment shrinks safety stock and lowers the inventory penalty of dispersion; a denser
+network raises the inventory at stake and raises the value of speed. Speed investments and network density are
+therefore best evaluated jointly.
 
-\paragraph{The joint regime.} Combining the two comparisons identifies when carbon
-points away from slow-and-consolidated on both axes at once.
-
-For a single product under a tighter cap, the firm must decide which way to adjust each lever --- faster or slower, more dispersed or more consolidated --- and the two directions need not align. The carbon-intensity-per-dollar comparisons of Propositions~\ref{prop:speed} and~\ref{prop:density} --- holding against inbound transport, $\eta/h$ versus $\varepsilon_0/t_1$, and last mile against facilities, $\varepsilon_L/t_L$ versus the pooling-adjusted facility threshold \eqref{eq:densthreshpool}, which reduces to $\varphi/F$ in the no-pooling limit --- govern the direction on each axis; on density, when $\rho<1$ the last-mile comparison is the outward force and the holding ratio $\eta/h$ the inward one. The corollary below records the case in which both axes point outward.
+\paragraph{The joint regime.} The two marginal comparisons can point in any combination of directions.
+The corollary below records a sufficient condition under which the carbon best-response equilibrium lies
+weakly above the cost optimum in both network density and replenishment speed.
 
 \begin{corollary}[Faster and more dispersed]\label{cor:corner}
 Suppose, over the relevant range of configurations, the speed threshold of Proposition~\ref{prop:speed} holds
 at every density and the pooling-adjusted density threshold \eqref{eq:densthreshpool} of
 Proposition~\ref{prop:density} holds at every speed, so that the carbon-minimizing best responses dominate the
 cost-minimizing ones pointwise, $v_C(n)\ge v_K(n)$ for all $n$ and $n_C(v)\ge n_K(v)$ for all $v$. Suppose
-also that the carbon best responses are single-valued and continuous on the interval reached by the
-iteration. Then best-response iteration from the cost optimum converges to a carbon best-response
+also that the density second-order condition \eqref{eq:densitysoc} holds at the carbon rates and that the
+carbon best responses are single-valued and continuous on the interval reached by the iteration. Then best-response iteration from the cost optimum converges to a carbon best-response
 equilibrium that is weakly faster and weakly more dispersed than the cost-minimizing configuration, strictly
 so at interior optima.
 \end{corollary}
@@ -721,30 +746,23 @@ response is nondecreasing ($v^*(\cdot)$ in $n$, $n^*(\cdot)$ in $v$). Starting f
 $(n_K,v_K)$, a fixed point of the cost best responses, and iterating the carbon best responses gives a
 nondecreasing sequence: $v_C(n_K)\ge v_K(n_K)=v_K$, then $n_C\!\big(v_C(n_K)\big)\ge n_C(v_K)\ge n_K(v_K)=n_K$,
 and so on. The iterates are monotone and bounded, hence converge; by continuity of the single-valued
-best-response maps, the limit is a fixed point of the carbon best-response map and dominates $(n_K,v_K)$
-\citep{topkis1998}, with strict inequalities at interior optima. The corollary establishes best-response
-dominance under the stated conditions. Global optimality is not asserted in general: the priced objective need not be convex over the whole feasible box
-$[1,N]\times[v_{\min},v_{\max}]$, because the speed--pooling cross term
-$J_{nv}=-b(v)(1-\rho)/(4v\sqrt{\Psi(n)})$ contributes a Hessian deficit $-J_{nv}^2=-\tfrac{1}{16} b(v)^2(1-\rho)^2
-v^{-2}\Psi(n)^{-1}$ that the own curvatures fail to cover in the extreme high-density, low-speed corner.
+best-response maps, the limit is a fixed point of the carbon best-response map and is weakly no smaller than
+$(n_K,v_K)$
+\citep{topkis1998}, with strict inequalities at interior optima.
 \end{proof}
 
-\noindent For the calibrated instances in Section~\ref{sec:numerical}, the same finite-grid computation used in
-the illustrations reports the lowest sampled priced objective at the stated configuration: on a rectangle $R$
-containing the cost optimum and the carbon equilibrium the priced Hessian is positive definite over the grid
-($J_{nn}>0$ and $J_{nn}J_{vv}-J_{nv}^2>0$), and the configuration attains a lower priced objective than every
-sampled boundary point, with $J_n(1)<0<J_n(N)$. This computation is illustrative and does not constitute a
-proof of continuous global optimality, which would require interval or analytic bounds on the Hessian
-determinant and the boundary values across $R$.
+\noindent The corollary is a best-response result under the stated conditions. A global optimum statement
+would require convexity over the whole feasible box $[1,N]\times[v_{\min},v_{\max}]$; the speed--pooling
+cross term $J_{nv}=H_\tau G_v$ can exceed the own curvatures in the extreme high-density, low-speed corner.
+
+\noindent In the calibrated illustrations, the finite-grid computation finds the stated configuration as the
+lowest sampled priced objective and verifies positive Hessian minors at the sampled points around the reported
+optimum. These checks document the sampled configurations used in Section~\ref{sec:numerical} rather than
+extend the analytical corollary.
 
 \noindent A refrigerated, volatile, high-service product delivered by diesel van illustrates this regime: its
-carbon-minimizing chain replenishes faster and holds stock closer to demand, rather than slower and more consolidated. We state this as a
-sufficient condition rather than a law --- the contribution is not that this corner is universal but that
-the carbon-minimizing \emph{direction} on each axis is set by a carbon-intensity-per-dollar comparison, and
-one of the four resulting regimes is this inverted one. Those two comparisons --- holding against inbound
-transport, and last mile against facilities --- place any product into one of four regimes and indicate the
-direction in which carbon shifts its speed and its network. We draw out the resulting carbon strategy in
-Section~\ref{sec:managerial}.
+carbon-minimizing chain replenishes faster and holds stock closer to demand. The contribution is the
+diagnostic structure, not the universality of this regime (Section~\ref{sec:managerial}).
 
 \paragraph{Demand uncertainty: a chance-constrained cap.} The cost and carbon functions are expected
 per-period flows, so the cap in \eqref{eq:Pcap} bounds \emph{expected} carbon. Because demand is random,
@@ -774,10 +792,10 @@ $m\ge 1$ whenever $\beta_c\le\tfrac12$.
 \end{proposition}
 
 \begin{proof}
-In \eqref{eq:Ctilde} the throughput coefficient $g(n,v)=\varepsilon(v)D+\varepsilon_L d(n)>0$, so
-$\{\tilde C\le B\}=\{Q\le(B-\varphi n-\eta\sstock)/g\}$, and $\Pr\{\tilde C\le B\}\ge 1-\beta_c$ holds iff
-$(B-\varphi n-\eta\sstock)/g\ge q_{1-\beta_c}$, i.e.\ $\varphi n+\eta\sstock+g\,q_{1-\beta_c}\le B$. Writing
-$g\,q_{1-\beta_c}=(q_{1-\beta_c}/N\mu)\,[\varepsilon(v)N\mu D+\varepsilon_L N\mu d(n)]$ gives \eqref{eq:chancecap}.
+In \eqref{eq:Ctilde} the throughput coefficient $\gamma(n,v)=\varepsilon(v)D+\varepsilon_L d(n)>0$, so
+$\{\tilde C\le B\}=\{Q\le(B-\varphi n-\eta\sstock)/\gamma\}$, and $\Pr\{\tilde C\le B\}\ge 1-\beta_c$ holds iff
+$(B-\varphi n-\eta\sstock)/\gamma\ge q_{1-\beta_c}$, i.e.\ $\varphi n+\eta\sstock+\gamma\,q_{1-\beta_c}\le B$. Writing
+$\gamma\,q_{1-\beta_c}=(q_{1-\beta_c}/N\mu)\,[\varepsilon(v)N\mu D+\varepsilon_L N\mu d(n)]$ gives \eqref{eq:chancecap}.
 Under normality $q_{1-\beta_c}=N\mu+z_{\beta_c}\sigma_Q$, so $m=1+z_{\beta_c}\,\mathrm{CV}_Q$.
 \end{proof}
 
@@ -796,7 +814,7 @@ pooling-adjusted density threshold \eqref{eq:densthreshpool} becomes
 \begin{equation}\label{eq:chancedensthresh}
   m\,\frac{\varepsilon_L}{t_L} \;>\; \frac{\varphi+\eta\,G\big(n_K(v),v\big)}{F+h\,G\big(n_K(v),v\big)},
 \end{equation}
-which reduces to $m\,\varepsilon_L/t_L>\varphi/F$ in the no-pooling limit ($\rho=1$). Under the normal approximation, $m\ge 1$ for
+which reduces to $m\,\varepsilon_L/t_L>\varphi/F$ in the no-pooling limit ($\rho\to1$). Under the normal approximation, $m\ge 1$ for
 $\beta_c\le\tfrac12$, with equality at $\beta_c=\tfrac12$, so the chance constraint tightens the speed-reversal
 threshold and relaxes the dispersion threshold relative to the expected-value cap, and the effect grows as $m$ rises with the demand
 coefficient of variation $\sigma/\mu$, the correlation $\rho$, and the confidence $1-\beta_c$.
@@ -812,52 +830,52 @@ increasing in $\sigma/\mu$ and, for $N>1$, in $\rho$, and $z_{\beta_c}$ is incre
 $m=1+z_{\beta_c}\mathrm{CV}_Q$ is increasing in all three.
 \end{proof}
 
-\noindent Demand uncertainty thus enters carbon twice. It enters the holding component through the safety stock
+\noindent Demand uncertainty therefore affects carbon through two channels. It enters the inventory-holding component through the safety stock
 $z\sigma\sqrt{L}$, the channel behind the speed reversal, and, under a chance-constrained cap, it enters the
 transport component through the margin $z_{\beta_c}\,\mathrm{CV}_Q$ that the firm holds against realized emissions
 just as it holds safety stock against demand. More variable or more correlated demand raises this margin and,
 like a higher service requirement, shifts the carbon-minimizing configuration; the expected-value cap is the
 limiting case $m=1$. Carrying the realized variability of on-hand inventory as well would place an analogous
-margin on the holding component; we keep the safety stock at its planned level, consistent with the base-stock
+margin on the inventory-holding component; we keep the safety stock at its planned level, consistent with the base-stock
 policy. The deterministic equivalent itself is distribution-free in the throughput quantile $q_{1-\beta_c}$;
 the normal approximation enters only through the closed form $m=1+z_{\beta_c}\,\mathrm{CV}_Q$, which is most
 accurate for moderate $N$ and modest $\mathrm{CV}_Q$ and which a firm with strongly skewed demand can replace
 by the empirical throughput quantile without altering the structure.
 
+The cap applies over the same accounting period as the flow model --- here a week. For a cap on cumulative
+carbon over $T$ periods with demands independent across periods, aggregate throughput has coefficient of
+variation $\mathrm{CV}_Q/\sqrt{T}$, so the multiplier tightens toward one as the horizon lengthens: at the
+baseline calibration, the $95\%$ multiplier falls from $m=1.37$ for a weekly cap to $m=1.05$ for an annual
+cap ($T=52$). The chance-constrained results are therefore most relevant to high-frequency operational
+carbon budgets, shipment-cycle accounting, and corporate carbon controls, and less binding for annual
+compliance accounting.
+
 \paragraph{In-transit inventory.} The holding term is modeled through safety stock; in-transit (pipeline)
 inventory, $N\mu L = N\mu D/v$, falls in $v$ and is omitted from our model. If pipeline inventory were carried at the warehouse
-holding rates, it would add $(h+\tau\eta)\,N\mu D/v$ to the holding term, and the speed first-order condition
-would become
-\[
-  2(t_1+\tau\varepsilon_0)N\mu D\,v \;=\; (h+\tau\eta)\Big[\tfrac12\,z\sigma\sqrt{ND}\,\sqrt{\Psi}\,v^{-3/2}
-  + N\mu D\,v^{-2}\Big],
-\]
-so $(h+\tau\eta)/(t_1+\tau\varepsilon_0)$ again equals a quantity strictly increasing in $v$ --- the same ratio
-that governs \eqref{eq:speedthreshold}. Two cases follow. When pipeline inventory is valued at the same dollar
-and carbon holding rates as stored inventory, it enters both objectives through this ratio: the optimal speed
-shifts in level --- $v^*$ solves the condition above, available numerically rather than in the closed form
-\eqref{eq:vstar} --- while the carbon-intensity threshold is preserved. When pipeline inventory carries capital
-cost but negligible warehouse carbon, only the cost objective gains the term: the cost-minimizing speed rises
-while the carbon-minimizing speed is unchanged, so the threshold $\eta/h>\varepsilon_0/t_1$ shifts and the speed
-reversal becomes harder to obtain. We therefore treat pipeline inventory as a level effect under the equal-rate
-convention and leave alternative carbon accounting for in-transit stock as a modeling extension.
+holding rates, it would add $(h+\tau\eta)\,N\mu D/v$ to the holding term; the speed first-order condition
+then acquires a $v^{-2}$ term, and stationarity again equates $(h+\tau\eta)/(t_1+\tau\varepsilon_0)$ to a
+quantity strictly increasing in $v$ --- the same ratio that governs \eqref{eq:speedthreshold}. Valued at
+common rates, pipeline inventory therefore shifts the level of $v^*$ (the closed form \eqref{eq:vstar} is
+replaced by a numerical root) but preserves the carbon-intensity threshold; carrying capital cost with
+negligible warehouse carbon instead raises only the cost-minimizing speed, shifting the threshold against
+the speed reversal. We treat pipeline inventory as a level effect under the equal-rate convention and leave
+alternative carbon accounting for in-transit stock as an extension.
 
 \paragraph{Load-factor sensitivity.} Our model treats the per-unit last-mile rates $t_L$ and $\varepsilon_L$
 as independent of shipment size. Last-mile cost and carbon, however, accrue largely per \emph{vehicle}-mile
 --- driver time and fuel --- so the per-unit rates scale with vehicle-miles per unit, which rise as
-dispersion thins each territory's dispatch volume and vehicles run emptier; load-sensitive rates therefore
+dispersion thins each territory's dispatch volume and average vehicle fill falls; load-sensitive rates therefore
 introduce a consolidation force outside the constant-rate model. Because a fill multiplier depends on $n$,
 it enters the marginal density condition through both the level and the derivative of the last-mile term.
 When a common fill multiplier is applied to the cost and the carbon rate alike, both optima shift toward
 consolidation in the reported computation, while their relative direction remains consistent with the
-carbon-intensity comparison. When the multiplier falls more heavily on carbon than on cost --- fuel use
-falls somewhat in an emptier vehicle, the basis of tonne-kilometre emission accounting
-\citep{glec2022framework}, while cost per mile is dominated by driver time --- the density comparison can
-shift toward consolidation. Section~\ref{sec:numerical} reports a reduced-form sensitivity computation for
-both cases; a full treatment would make shipment size, routing, and consolidation additional decisions,
-which we leave as an extension.
-
-% =====================================================================
+carbon-intensity comparison. Per vehicle-mile, cost is dominated by driver time while fuel use falls somewhat in an
+emptier vehicle --- the basis of tonne-kilometre emission accounting \citep{glec2022framework} --- so when
+fill deteriorates, the per-unit cost rate typically inflates at least as strongly as the per-unit carbon
+rate. A multiplier falling more heavily on carbon is therefore a stress case for the dispersion result; under
+it, the density comparison can shift toward consolidation. Section~\ref{sec:numerical} reports
+a reduced-form sensitivity computation for both cases; a full treatment would make shipment size, routing,
+and consolidation additional decisions, which we leave as an extension.
 \section{Numerical Illustrations}\label{sec:numerical}
 
 This section applies the analytical thresholds to calibrated products, reports the implied
@@ -871,21 +889,24 @@ decision variables $n$ and $v$.
 
 \subsection{Calibration}
 
-Table~\ref{tab:calib} lists the baseline parameters. The four ratios give $R_{\mathrm{speed}}=(\eta/h)/
+Table~\ref{tab:calib} lists the baseline parameters. Units are normalized: the period is a week, and the
+inbound leg is the unit of distance ($D=1$), so $t_0$, $t_1$, and $\varepsilon_0$ are per-unit coefficients
+over that leg rather than per mile, while the last-mile rates $t_L$ and $\varepsilon_L$ are per unit-mile
+against the $d(n)=\delta n^{-1/2}$ miles of the delivery leg. The four ratios give $R_{\mathrm{speed}}=(\eta/h)/
 (\varepsilon_0/t_1)=0.375$ and $R_{\mathrm{density}}=(\varepsilon_L/t_L)/(\varphi/F)=0.75$, placing the
 baseline in the slower-and-more-consolidated regime, where both comparisons fall short of one. Solving \eqref{eq:Pcap}, the
 cost-minimizing configuration is $n^*=7.8$ distribution centers replenished at speed $v^*=1.03$, with weekly
-cost \$1.24M and carbon $160.5$~t, divided between a transport component of $85.6$~t and a holding component of
+cost \$1.24M and carbon $160.5$~t, divided between a transport component of $85.6$~t and a facility-and-holding component of
 $74.9$~t. The carbon-minimizing configuration is slower and more consolidated, $n^*=6.6$ and $v^*=0.69$,
 lowering carbon by $5.1\%$ at a cost increase of $1.2\%$. The movement is modest because the two components
 substitute: slowing or consolidating shifts carbon from one component to the other rather than removing it, so
 for a product in this regime the net change is small. The magnitude of available abatement is
 regime-dependent, as the archetypes below show. The strict-convexity condition \eqref{eq:densitysoc} compares
-the last-mile curvature $3e\,n^{-5/2}$ against the holding pooling-loss term $b(v)(1-\rho)^2\Psi^{-3/2}$, so it
-is guaranteed when the last-mile coefficient $e$ is large relative to $b(v)(1-\rho)^2$ --- a geographically
-spread region (large $\delta$) or low demand variability (small $\sigma/\mu$) --- and weakest when pooling is
-strong and the region compact.\footnote{Explicitly, at a given speed $v$ the binding case of
-\eqref{eq:densitysoc} is $n=N$, where it reduces to $\delta>b(v)(1-\rho)^2/[3(t_L+\tau\varepsilon_L)\mu]$. At
+last-mile curvature with the holding pooling-loss term, and is favored by a geographically spread region
+(large $\delta$) or lower demand variability (small $\sigma/\mu$); it is weakest when pooling is strong and the
+region compact.\footnote{Explicitly, at a given speed $v$ the binding case of
+\eqref{eq:densitysoc} is $n=N$, where it reduces to
+$\delta>H_\tau z\sigma\sqrt{D/v}\sqrt{N}(1-\rho)^2/[3\ell_\tau\mu]$. At
 the baseline this requires $\delta>82$ at the carbon optimum and $\delta>67$ at the cost optimum, both met by
 $\delta=120$; only the slowest speeds at the highest density (the non-convex corner noted after
 Corollary~\ref{cor:corner}) require a larger region.} It holds at every configuration reported in this section --- the baseline and all four archetypes --- so each density
@@ -925,156 +946,100 @@ $R_{\mathrm{speed}}$ rises: by the pooling-adjusted threshold \eqref{eq:densthre
 the last-mile ratio to clear a facility threshold that pooling pulls toward $\eta/h$, so the boundary lies to
 the right of $R_{\mathrm{density}}=1$ where holding is more carbon-intensive per dollar than facilities
 ($\eta/h>\varphi/F$) and near or left of it otherwise. The computed
-boundary thus traces the mediant of Proposition~\ref{prop:density}.
+boundary thus traces the mediant --- the ratio of summed numerators to summed denominators --- of the
+facility and holding comparisons in Proposition~\ref{prop:density}.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.70\linewidth]{fig_regimes.pdf}
+\includegraphics[width=0.66\linewidth]{fig_regimes.pdf}
 \caption{Computed regime boundaries in the plane of the two carbon-intensity-per-dollar ratios. Solid curves
 are the speed boundary ($v_C=v_K$) and the density boundary ($n_C=n_K$) at $\rho=0.30$; dashed lines are the
 no-pooling thresholds $R_{\mathrm{speed}}=1$ and $R_{\mathrm{density}}=1$. The pooling-adjusted density
 boundary tilts further right as $R_{\mathrm{speed}}$ rises, lying to the right of $R_{\mathrm{density}}=1$
 where $\eta/h>\varphi/F$ and near or left of it otherwise, tracing the mediant of \eqref{eq:densthreshpool}. The shaded region is the faster-and-more-dispersed regime;
-points locate the four archetypes of Table~\ref{tab:archcalib} and the baseline.}
+points locate the four archetypes of Table~\ref{tab:archetypes} and the baseline.}
 \label{fig:regimes}
 \end{figure}
 
-\subsection{Constructing the product archetypes}
-
-The four archetypes are guided by external benchmarks. Their two diagnostic ratios are
-carbon intensities per dollar, whose components are measurable, and Table~\ref{tab:calibemp} maps published
-emission factors and costs into those ratios. The emission factors are well established (national inventories
-and standard conversion-factor sets) and the cost figures order-of-magnitude (industry benchmarks), so the
-benchmarks set the \emph{relative} magnitudes of the ratios across archetypes rather than estimate parameters.
-
-\begin{table}[t]
-\centering\small
-\setlength{\tabcolsep}{4pt}
-\caption{From published benchmarks to the model's diagnostic ratios. Emission factors are from national
-inventories and conversion-factor sets (high confidence); costs are industry benchmarks
-(order-of-magnitude). The final column lists the archetypes each anchor informs.}
-\label{tab:calibemp}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.21\linewidth}
-                   >{\raggedright\arraybackslash}p{0.27\linewidth}
-                   >{\raggedright\arraybackslash}p{0.30\linewidth}
-                   >{\raggedright\arraybackslash}p{0.14\linewidth}@{}}
-\toprule
-Empirical anchor & Observed pattern & Model implication & Archetypes \\
-\midrule
-Warehouse energy, cold vs.\ ambient \citep{energystar2024medians, epa2025egrid}
- & refrigerated $\approx 3.7\times$ ambient carbon ($\approx 8.6$ vs.\ $2.3$ kg CO$_2$e/ft$^2$/yr)
- & raises holding carbon $\eta$, so larger $\eta/h$ (favors faster replenishment)
- & cold-chain, e-grocery \\
-\addlinespace
-Last-mile van vs.\ HGV \citep{defra2024ghg, defra2024methodology, glec2022framework}
- & van $\approx 0.62$ kg CO$_2$e/t-km, $\approx 6$--$8\times$ HGV, $37$--$41\%$ fill
- & raises last-mile $\varepsilon_L$, so larger $\varepsilon_L/t_L$ (favors dispersion)
- & e-grocery, pharma, bulky \\
-\addlinespace
-Bulky, ambient, low-value \citep{usgs2025stone}
- & crushed stone $\approx \$17.5$/tonne; minimal, inexpensive storage
- & low storage carbon keeps $\eta/h$ low; dispersion is driven by high $\varepsilon_L/t_L$, not $\eta/h$
- & bulky low-value \\
-\addlinespace
-High value density \citep{faf2023framework}
- & pharma $\approx \$49{,}000$/tonne
- & large $h$ damps $\eta/h$; pharma's high $\eta/h$ relies on cold-chain/compliance energy dominating $h$
- & cold-chain pharma \\
-\addlinespace
-Line-haul mode factors \citep{defra2025ghg}
- & ocean $0.016 <$ rail $0.028 <$ road $0.10$--$0.21$ kg CO$_2$e/t-km
- & orders inbound carbon against speed; $\varepsilon_0/t_1$ not identified
- & inbound (all) \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The two strongest anchors (Table~\ref{tab:calibemp}) are the refrigerated-warehouse energy premium, which
-places cold-chain and e-grocery in the high-$\eta/h$ band, and the low-fill diesel last mile, which raises
-$\varepsilon_L/t_L$ and underlies the load-factor result reported below. Value density enters through the holding cost, since the capital cost of inventory is
-part of $h$: a higher-value product carries a larger $h$ and, at equal carbon, a smaller $\eta/h$. Cold-chain
-pharma is therefore the one archetype whose holding placement is assumption-dependent: its high value density
-enlarges $h$, so its high $\eta/h$ relies on the cold-chain energy and compliance component (refrigeration,
-ultra-low-temperature, continuous monitoring) dominating the capital-cost denominator.
-
-Using these anchors, we choose the normalized carbon-intensity ratios in Table~\ref{tab:archcalib}, which span
-the four theoretical regimes; these values are regime-representative calibrations consistent with the relative
-magnitudes above.
-
-\begin{table}[t]
-\centering\small
-\caption{Carbon-intensity-per-dollar ratios for the four archetypes --- representative calibrations for the
-four regimes --- and the diagnostics $R_{\mathrm{speed}}=(\eta/h)/(\varepsilon_0/t_1)$ and
-$R_{\mathrm{density}}=(\varepsilon_L/t_L)/(\varphi/F)$ they imply.}
-\label{tab:archcalib}
-\begin{tabular}{@{}lcccccc@{}}
-\toprule
-Archetype & $\eta/h$ & $\varepsilon_0/t_1$ & $\varepsilon_L/t_L$ & $\varphi/F$
- & $R_{\mathrm{speed}}$ & $R_{\mathrm{density}}$\\
-\midrule
-Ambient dry goods    & $0.30$ & $0.80$ & $0.25$ & $0.40$ & $0.375$ & $0.625$\\
-Cold-chain pharma    & $0.95$ & $0.50$ & $1.40$ & $0.35$ & $1.90$ & $4.00$\\
-Bulky low-value      & $0.20$ & $0.45$ & $1.30$ & $0.30$ & $0.44$ & $4.33$\\
-E-grocery perishable & $0.85$ & $0.55$ & $1.50$ & $0.30$ & $1.55$ & $5.00$\\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \subsection{Product archetypes}
 
-Table~\ref{tab:archetypes} reports the carbon-minimizing configuration for the four archetypes constructed
-above. Because they share the cost rates, all four have the same cost-minimizing configuration ($n^*=7.8$,
+The four archetypes are guided by external benchmarks: the refrigerated-warehouse energy premium places
+cold-chain and e-grocery goods in the high-$\eta/h$ band; low-fill diesel vans raise $\varepsilon_L/t_L$ for
+e-grocery, pharmaceutical, and bulky goods; value density enters through the capital component of $h$; and
+the line-haul mode factors order inbound carbon against speed.\footnote{Refrigerated warehouses run at
+roughly $3.7\times$ the ambient energy intensity ($\approx 8.6$ versus $2.3$ kg CO$_2$e/ft$^2$/yr)
+\citep{energystar2024medians, epa2025egrid}. A delivery van emits $\approx 0.62$ kg CO$_2$e/t-km at
+$37$--$41\%$ fill, roughly $6$--$8\times$ an articulated HGV
+\citep{defra2024ghg, defra2024methodology, glec2022framework}. Value density spans crushed stone at
+$\approx\$17.5$/tonne \citep{usgs2025stone} to pharmaceuticals at $\approx\$49{,}000$/tonne
+\citep{faf2023framework}; because the capital cost of inventory is part of $h$, cold-chain pharma's high
+$\eta/h$ assumes its refrigeration and compliance energy dominates the capital denominator. Line-haul
+factors order ocean $0.016<$ rail $0.028<$ road $0.10$--$0.21$ kg CO$_2$e/t-km \citep{defra2025ghg};
+$\varepsilon_0/t_1$ is not separately identified. Supporting value, fill, and cost benchmarks are from
+\citet{worldbank2023roadfreight,bts2012cfs,cushman2026industrial}. The assumed ratios
+$(\eta/h,\,\varepsilon_0/t_1,\,\varepsilon_L/t_L,\,\varphi/F)$ are $(0.30,0.80,0.25,0.40)$ for ambient dry
+goods, $(0.95,0.50,1.40,0.35)$ for cold-chain pharma, $(0.20,0.45,1.30,0.30)$ for bulky low-value goods, and
+$(0.85,0.55,1.50,0.30)$ for e-grocery perishables.} The emission factors are well established, while the
+dollar denominators are normalized order-of-magnitude cost proxies, so the benchmarks set the
+\emph{relative} magnitudes of the ratios across archetypes; the chosen values are regime-representative
+calibrations that span the four regimes.
+
+Table~\ref{tab:archetypes} reports the diagnostics and the carbon-minimizing outcomes. Because the
+archetypes share the cost rates, all four have the same cost-minimizing configuration ($n^*=7.8$,
 $v^*=1.03$) and differ only in the direction and magnitude by which the carbon-minimizing configuration
 departs from it. Slowing and consolidating is carbon-minimizing for the ambient dry-goods archetype; the
 cold-chain and e-grocery archetypes call for faster and more dispersed networks; and the bulky, low-value
 archetype, with inexpensive storage but a carbon-intensive last mile, disperses while slowing. Available
-abatement ranges from about $6\%$ to $17\%$ of total carbon across the four; reaching $80\%$ of that abatement
-costs between $0.5\%$ and $2.2\%$, while reaching the carbon minimum costs between $1.5\%$ and $7.8\%$, the
-larger premiums attaching to the products that disperse most. All four archetypes have interior density optima
-($J_n(1)<0<J_n(N)$), so none is a corner solution.
+abatement ranges from about $6\%$ to $17\%$ of total carbon across the four; reaching $80\%$ of that
+abatement costs between $0.5\%$ and $2.2\%$, while reaching the carbon minimum costs between $1.5\%$ and
+$7.8\%$, the larger premiums attaching to the products that disperse most. All four archetypes have interior
+density optima ($J_n(1)<0<J_n(N)$), so none is a corner solution.
 
 \begin{table}[t]
 \centering\small
 \setlength{\tabcolsep}{4.5pt}
-\caption{Carbon-minimizing outcomes for the four archetypes calibrated in Table~\ref{tab:archcalib}: the
-direction relative to the cost optimum, the largest attainable carbon reduction (``Max.\ reduction''), and the cost
-premium to reach $80\%$ of that reduction and to reach the carbon minimum.}
+\caption{The four product archetypes: the diagnostics
+$R_{\mathrm{speed}}=(\eta/h)/(\varepsilon_0/t_1)$ and
+$R_{\mathrm{density}}=(\varepsilon_L/t_L)/(\varphi/F)$, the carbon-minimizing configuration $(n_C,v_C)$ and
+its direction relative to the shared cost optimum ($n_K=7.8$, $v_K=1.03$), the largest attainable carbon
+reduction, and the cost premium at the carbon minimum.}
 \label{tab:archetypes}
-\begin{tabular}{@{}llccc@{}}
+\begin{tabular}{@{}lcclccc@{}}
 \toprule
-Archetype & Carbon-min direction & Max.\ reduction & Cost @ $80\%$ & Cost @ min\\
+Archetype & $R_{\mathrm{speed}}$ & $R_{\mathrm{density}}$ & Carbon-min direction & $(n_C,\,v_C)$
+ & Max.\ reduction & Cost @ min\\
 \midrule
-Ambient dry goods    & slower, consolidate & $6.1\%$  & $+0.5\%$ & $+1.5\%$\\
-Cold-chain pharma    & faster, disperse    & $7.7\%$  & $+1.1\%$ & $+3.8\%$\\
-Bulky low-value      & slower, disperse    & $17.4\%$ & $+2.2\%$ & $+7.8\%$\\
-E-grocery perishable & faster, disperse    & $9.6\%$  & $+1.4\%$ & $+4.8\%$\\
+Ambient dry goods    & $0.375$ & $0.625$ & slower, consolidate & $(5.8,\,0.69)$  & $6.1\%$  & $+1.5\%$\\
+Cold-chain pharma    & $1.90$  & $4.00$  & faster, disperse    & $(16.5,\,1.42)$ & $7.7\%$  & $+3.8\%$\\
+Bulky low-value      & $0.44$  & $4.33$  & slower, disperse    & $(22.8,\,0.82)$ & $17.4\%$ & $+7.8\%$\\
+E-grocery perishable & $1.55$  & $5.00$  & faster, disperse    & $(18.9,\,1.32)$ & $9.6\%$  & $+4.8\%$\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Value of joint redesign}
 
-The two levers are complements (Proposition~\ref{prop:complement}); in this illustration, adjusting them together reaches
-abatement levels and target costs that neither single-lever adjustment reaches. Table~\ref{tab:joint} reports this for a product in
+The two decisions are complements (Proposition~\ref{prop:complement}); in this illustration, adjusting them together reaches
+abatement levels and target costs that adjusting either alone does not reach. Table~\ref{tab:joint} reports this for a product in
 the faster-and-more-dispersed regime (e-grocery perishables, $R_{\mathrm{speed}}=1.55$,
 $R_{\mathrm{density}}=5.0$). Holding the network fixed and varying only speed lowers carbon by at most
 $0.5\%$; holding speed fixed and varying only density reaches $8.4\%$; adjusting both reaches $9.6\%$. We
-report two targets: a \emph{moderate} target of $7.6\%$, set at $90\%$ of the best single lever's attainable
-abatement (here density, $0.90\times8.4\%$), and a \emph{deep} target of $9.1\%$, set at $95\%$ of the joint
-attainable abatement ($0.95\times9.6\%$). The moderate target is infeasible on the speed lever alone and costs
-$1.8\%$ on the density lever alone, but only $1.3\%$ when both are adjusted; the deep target lies beyond either
-single lever and is met only by adjusting both. Faster replenishment lowers the inventory penalty of
-dispersing, so the joint redesign extends the reach of each lever.
+report two targets: a \emph{moderate} target of $7.6\%$, set at $90\%$ of the largest abatement attainable by adjusting one
+decision alone (here density, $0.90\times8.4\%$), and a \emph{deep} target of $9.1\%$, set at $95\%$ of the joint
+attainable abatement ($0.95\times9.6\%$). The moderate target is infeasible by adjusting speed alone and costs
+$1.8\%$ by adjusting density alone, but only $1.3\%$ when both are adjusted; the deep target lies beyond
+either single adjustment and is met only by adjusting both. In this illustration, the speed margin has limited isolated abatement value, but it expands the
+cost-effective range of density adjustment by reducing the inventory penalty of dispersion.
 
 \begin{table}[t]
 \centering\small
-\caption{Value of adjusting both levers, for the e-grocery archetype. ``Max.\ reduction'' is the largest carbon
+\caption{Value of adjusting both decisions, for the e-grocery archetype. ``Max.\ reduction'' is the largest carbon
 reduction the policy attains; the last two columns give the cost increase to meet a moderate and a deep
 carbon target.}
 \label{tab:joint}
 \begin{tabular}{@{}lccc@{}}
 \toprule
-Policy & Max carbon cut & Cost at $7.6\%$ target & Cost at $9.1\%$ target\\
+Policy & Max.\ reduction & Cost at $7.6\%$ target & Cost at $9.1\%$ target\\
 \midrule
 Speed only ($n$ fixed)   & $0.5\%$ & infeasible & infeasible\\
 Density only ($v$ fixed) & $8.4\%$ & $+1.8\%$   & infeasible\\
@@ -1082,23 +1047,6 @@ Joint $(n,v)$            & $9.6\%$ & $+1.3\%$   & $+2.8\%$\\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\subsection{Carbon-price path}
-
-Figure~\ref{fig:frontier} traces the cost--carbon frontier as the carbon price $\tau$ rises from zero, for
-the baseline product. The configuration shifts from the cost-minimizing point to the carbon-minimizing one,
-with both levers moving inward together --- the network consolidates from $7.8$ to $6.6$ DCs and the speed
-falls from $1.03$ to $0.69$ --- and most of the movement occurs at low prices, the frontier flattening as
-the configuration approaches the carbon-minimizing one.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.64\linewidth]{fig_frontier.pdf}
-\caption{Cost--carbon frontier for the baseline product, tracing the cost--carbon Pareto frontier as the
-carbon price $\tau$ increases from $0$ to $\infty$. The endpoints
-are the cost-minimizing ($\tau=0$) and carbon-minimizing ($\tau\to\infty$) configurations.}
-\label{fig:frontier}
-\end{figure}
 
 \subsection{Chance-constrained carbon caps}
 
@@ -1157,7 +1105,7 @@ $99\%$             & $1.52$ & $1.22$ & $0.46$ & $0.59$ & $8.6$ & slower & disper
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.64\linewidth]{fig_chance.pdf}
+\includegraphics[width=0.60\linewidth]{fig_chance.pdf}
 \caption{Carbon-minimizing speed $v_C$ (left axis, solid) and density $n_C$ (right axis, dashed) under
 increasingly stringent confidence levels for the baseline product. Dotted lines mark the cost-optimal speed
 $v_K$ and density $n_K$; the carbon-minimizing speed stays below $v_K$ throughout, while the carbon-minimizing
@@ -1165,99 +1113,49 @@ density rises through $n_K$ between the $90\%$ and $95\%$ confidence levels.}
 \label{fig:chance}
 \end{figure}
 
-\paragraph{Sensitivity to demand variability.} The transport scalar $m=1+z_{\beta_c}\,\mathrm{CV}_Q$ rises with
-the demand coefficient of variation, since $\mathrm{CV}_Q=(\sigma/\mu)\sqrt{[1+(N-1)\rho]/N}$ is increasing in
-$\sigma/\mu$. Table~\ref{tab:chancecv} repeats the $95\%$ cap at three demand CVs. A more variable demand
-raises $m$ --- from $1.19$ at $\mathrm{CV}=0.20$ to $1.56$ at $\mathrm{CV}=0.60$ --- and so deepens the
-transport reweighting and the reduction in carbon-minimizing speed. The carbon-minimizing density at the
-$95\%$ cap is roughly flat near eight DCs, while the cost optimum consolidates as variability grows (more
-safety stock raises the value of pooling), so relative to the cost optimum the high-confidence network is
-more consolidated at low CV and more dispersed at high CV.
-
-\begin{table}[t]
-\centering\small
-\caption{Chance-constrained cap at $95\%$ confidence across demand variability. Higher demand CV raises the
-throughput-risk scalar $m$; the network direction is stated relative to the (CV-dependent) cost optimum.}
-\label{tab:chancecv}
-\begin{tabular}{@{}cccccc@{}}
-\toprule
-Demand CV & $\mathrm{CV}_Q$ & cost opt.\ $(n_K,v_K)$ & $m$ at $95\%$ & carbon-min $(n_C,v_C)$ & Network vs.\ cost\\
-\midrule
-$0.20$ & $0.113$ & $(8.7,\,0.79)$ & $1.19$ & $(8.0,\,0.50)$ & consolidate\\
-$0.40$ & $0.225$ & $(7.8,\,1.03)$ & $1.37$ & $(8.0,\,0.62)$ & disperse\\
-$0.60$ & $0.338$ & $(7.2,\,1.21)$ & $1.56$ & $(8.1,\,0.69)$ & disperse\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Monte Carlo check.} The chance constraint has an exact deterministic equivalent in quantile form,
-so no simulation is needed to establish the result; a Monte Carlo check ($5\times10^5$ throughput draws,
-design fixed at the cost optimum, cap at the normal deterministic equivalent) serves only as a diagnostic
-for the normal approximation. Under normally distributed throughput the empirical violation rate matches the
-nominal $\beta_c$ to within sampling error; under right-skewed (gamma) throughput of equal mean and variance
-it exceeds the nominal level, and the gap widens with confidence and demand CV --- the $99\%$ cap admits a
-$1.9\%$ violation at $\mathrm{CV}=0.40$ and $2.6\%$ at $\mathrm{CV}=0.80$ --- so a firm facing strongly
-skewed demand should set $z_{\beta_c}$ from the empirical throughput quantile, as the distribution-free form
-of Proposition~\ref{prop:chance} permits. The full violation-frequency computation is in the replication
-scripts.
+More variable demand deepens these effects: repeating the $95\%$ cap at demand CVs of $0.20$, $0.40$, and
+$0.60$ raises $m$ from $1.19$ to $1.56$, widens the speed reduction, and shifts the network from relatively
+consolidated to relatively dispersed as the cost optimum consolidates with variability.\footnote{A Monte Carlo
+check with $5\times10^5$ throughput draws returns the nominal violation rates under normally distributed
+throughput and shows under-coverage under right-skewed throughput; in such cases the firm can set
+$z_{\beta_c}$ from the empirical throughput quantile, as the distribution-free form of
+Proposition~\ref{prop:chance} permits.}
 
 \subsection{Robustness}
 
-The robustness analysis comprises four checks. Table~\ref{tab:robust} reports the first three. Restricting the
-network to an integer number of DCs returns the continuous result rounded (cost eight, carbon seven).
-Restricting replenishment to three discrete modes ($v\in\{0.5,1.0,2.0\}$) leaves the cost optimum at the
-standard mode and shifts the carbon optimum to the slow mode, the discrete counterpart of the continuous speed
-reduction. Varying the demand correlation $\rho$ shifts both optima toward more facilities as pooling weakens,
-with the carbon optimum consolidated relative to the cost optimum throughout. The fourth check is the load-factor
+The robustness analysis comprises four checks. Restricting the network to an integer number of DCs returns
+the continuous result rounded: cost $(8,\,1.04)$, carbon $(7,\,0.69)$. Restricting replenishment to three
+discrete modes ($v\in\{0.5,1.0,2.0\}$) leaves the cost optimum at the standard mode, $(7.8,\,1.0)$, and
+shifts the carbon optimum to the slow mode, $(6.3,\,0.5)$, the discrete counterpart of the continuous speed
+reduction. As the demand correlation rises from $\rho=0$ to $\rho=0.9$, both optima add facilities as
+pooling weakens --- the cost-minimizing density from $5.9$ to $9.8$ and the carbon-minimizing density from
+$4.8$ to $8.1$ --- with the carbon optimum consolidated relative to the cost optimum throughout.
+The fourth check is the load-factor
 sensitivity of Section~\ref{sec:analysis}, computed with the reduced-form fill multiplier
 $0.5+0.5\,(n/n_{\mathrm{ref}})$, $n_{\mathrm{ref}}=8$ (half load-sensitive at the reference density).
-Applying the multiplier to the carbon rate only lowers the carbon-minimizing density sharply, from $6.6$ to
+Applying the multiplier to the carbon rate only --- the stress case of Section~\ref{sec:analysis} --- lowers
+the carbon-minimizing density sharply, from $6.6$ to
 $3.0$ DCs for the baseline and from $22.8$ to $5.8$ for the bulky archetype, reversing the bulky archetype's
 dispersion relative to the unadjusted cost optimum. Applying the same multiplier to the cost and carbon
 rates alike consolidates the cost optimum as well, from $7.8$ to $3.4$ DCs, and in this computation each
 product's direction is preserved: the baseline still consolidates and the bulky archetype still disperses
-relative to the load-adjusted cost optimum. Load sensitivity thus shifts the levels of both optima toward
-consolidation; in these illustrations, reversal occurs only when the fill multiplier falls differentially on
-carbon.
-
-\begin{table}[t]
-\centering\small
-\caption{Robustness of the baseline cost- and carbon-minimizing designs to integer density, discrete speed
-modes, and demand correlation. Entries are $(n,v)$ except the correlation rows, which report density $n$.}
-\label{tab:robust}
-\begin{tabular}{@{}lcc@{}}
-\toprule
-Variation & Cost-min & Carbon-min\\
-\midrule
-Continuous baseline               & $(7.8,\,1.03)$ & $(6.6,\,0.69)$\\
-Integer $n$                       & $(8,\,1.04)$   & $(7,\,0.69)$\\
-Discrete modes $v\in\{0.5,1,2\}$  & $(7.8,\,1.0)$  & $(6.3,\,0.5)$\\
-\addlinespace
-Correlation $\rho=0.0$            & $n=5.9$ & $n=4.8$\\
-Correlation $\rho=0.3$            & $n=7.8$ & $n=6.6$\\
-Correlation $\rho=0.6$            & $n=8.9$ & $n=7.4$\\
-Correlation $\rho=0.9$            & $n=9.8$ & $n=8.1$\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-% =====================================================================
+relative to the load-adjusted cost optimum. Load sensitivity thus shifts both optima toward consolidation;
+in these illustrations, reversal occurs only in the stress case, when the fill multiplier falls more heavily
+on carbon.
 \section{Managerial Implications}\label{sec:managerial}
 
-The carbon-minimizing configuration of speed and density depends on the two carbon-intensity-per-dollar
-comparisons established in Section~\ref{sec:analysis}: holding against inbound transport, which governs speed,
-and last-mile delivery against facilities, which governs density. Table~\ref{tab:regimes} arranges the four
-combinations; slowing and consolidating --- the common transport levers --- correspond to the lower-left cell,
-and the carbon-minimizing direction differs in the other three.
+Table~\ref{tab:regimes} translates the two marginal comparisons into a product-level diagnostic map. The
+rows describe the availability margin (holding against inbound transport); the columns describe the
+proximity margin (last-mile delivery against facilities). Each cell indicates the direction of carbon
+pressure relative to the cost optimum; slowing and consolidating correspond to the lower-left cell. The
+final configuration follows from the joint speed--density design problem with these marginal forces in
+view.
 
 \begin{table}[t]
 \centering\small
-\caption{Direction the carbon-minimizing configuration shifts relative to the cost optimum, by the two
-carbon-intensity-per-dollar comparisons. The density columns split at the facility comparison; under risk
-pooling the dividing line is the pooling-adjusted threshold of Proposition~\ref{prop:density}, which lies
-between the facility and holding comparisons, so the facility comparison is a reference, not the exact
-boundary.}
+\caption{Diagnostic map of carbon pressure relative to the cost optimum: rows give the availability
+margin, columns the proximity margin. The column split is exact in the no-pooling limit and is otherwise the
+pooling-adjusted threshold of Proposition~\ref{prop:density}.}
 \label{tab:regimes}
 \renewcommand{\arraystretch}{1.25}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.18\linewidth}
@@ -1270,34 +1168,25 @@ boundary.}
   & faster and more consolidated, pooling inventory upstream --- carbon-intensive inventory with a lower-emission or short last mile
   & \emph{faster and more dispersed} --- cold-chain, volatile, high-service goods on a diesel last mile \\
 \textbf{Lower replenishment speed}\newline {\small\itshape holding less carbon-intensive per dollar than inbound transport}
-  & slower and more consolidated --- the transport-lever case; ambient, stable, low-service dry goods
+  & slower and more consolidated --- the transport-side case; ambient, stable, low-service dry goods
   & slower long haul, denser network --- lower-emission, low-cost storage with carbon-intensive inbound and last mile \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{Diagnosis.} The two ratios, computed for a given product, locate it in one cell of
-Table~\ref{tab:regimes}, which indicates the carbon-minimizing direction of speed and density. A uniform
-policy of slowing replenishment and consolidating the network coincides with the carbon-minimizing
-configuration only for products in the lower-left cell.
+\paragraph{Using the diagnostic ratios.} A firm can use the ratios, estimated from its own rate data, as
+diagnostics for the joint design problem. The holding-to-inbound comparison indicates the carbon pressure on
+the availability margin (Proposition~\ref{prop:speed}). The last-mile-to-facility comparison, adjusted for
+pooling, indicates the carbon pressure on the proximity margin: pooling shifts the threshold from
+$\varphi/F$ toward the holding ratio $\eta/h$, raising the bar for dispersing when $\eta/h>\varphi/F$
+(Proposition~\ref{prop:density}). Because speed changes the inventory cost of density, and density changes
+the inventory value of speed, the two margins are evaluated together in the final configuration
+(Proposition~\ref{prop:complement}). Under a cap on realized carbon, the transport intensities are first
+scaled by the throughput-risk multiplier (Proposition~\ref{prop:chance}).
 
-\paragraph{A decision procedure.} The diagnosis suggests a concrete sequence for a firm holding a carbon target.
-\emph{(i)} From its own rate data, estimate each activity's carbon intensity per dollar --- for holding,
-inbound transport, last-mile delivery, and facilities. \emph{(ii)} For speed, compare holding with inbound
-transport: if holding is the more carbon-intensive per dollar, the carbon-minimizing direction is faster
-replenishment, and otherwise slower (Proposition~\ref{prop:speed}). \emph{(iii)} For density, compare
-last-mile delivery with the pooling-adjusted facility threshold of Proposition~\ref{prop:density} rather than
-with facilities alone --- pooling shifts the threshold from $\varphi/F$ toward the holding ratio $\eta/h$, so
-stronger pooling raises the bar for dispersing when $\eta/h>\varphi/F$. \emph{(iv)} These comparisons give the carbon-minimizing \emph{direction} on each axis,
-not a single-lever implementation rule: because the levers are complements, set the two together rather than
-in sequence, since the chosen speed raises or lowers the value of dispersing, and conversely. \emph{(v)} If the
-cap is on realized rather than expected carbon, inflate the transport intensities by the throughput risk
-margin (Proposition~\ref{prop:chance}) before applying steps (ii)--(iii).
-
-\paragraph{Replenishment speed.} For refrigerated, volatile, or high-service products --- those for which
-inventory is the emissions-intensive component --- a tighter carbon target is met by shipping \emph{faster},
-because the safety stock that a slower mode would require carries more carbon than the faster transport adds.
-This case corresponds to the top row of Table~\ref{tab:regimes}.
+\paragraph{Replenishment speed.} For refrigerated, volatile, or high-service products, a tighter carbon
+target can be met through faster shipping: the safety stock a slower mode would require carries more carbon
+than the faster transport adds (the top row of Table~\ref{tab:regimes}).
 
 \paragraph{Consolidation and the last mile.} Consolidation lowers carbon here
 through inventory pooling and reduced facility energy while lengthening the last mile. A firm whose last
@@ -1305,20 +1194,18 @@ mile is carbon-intensive --- diesel vans, long rural routes --- can lower total 
 nearer to demand, even though that raises total inventory; the transport channel of consolidation works
 against it. This last channel is strong when vehicle fill improves with consolidation, and the
 load-factor sensitivity of Section~\ref{sec:analysis} separates its two effects: a fill multiplier common to
-cost and carbon consolidates both optima together, while a multiplier that falls more heavily on carbon can
+cost and carbon consolidates both optima together, while a multiplier that falls more heavily on carbon --- a
+stress case, since per-vehicle-mile cost is typically at least as fill-sensitive as fuel --- can
 shift the density comparison toward consolidation --- in the carbon-only computation, the bulky archetype's
 carbon-minimizing network falls from $22.8$ to $5.8$ DCs (Section~\ref{sec:numerical}). A firm should
 therefore weigh its last mile's fill economics --- and whether fill degrades its emissions faster than its
 cost --- before dispersing.
 
-\paragraph{Joint adjustment of the two levers.} Because the levers are complements, a program that adjusts
-only one --- a slow-steaming mandate or a network-consolidation initiative --- attains part of the available
-abatement, and for some products shifts a lever away from its carbon-minimizing direction. The cost of working
-one lever at a time is quantifiable: for the e-grocery archetype (Section~\ref{sec:numerical},
-Table~\ref{tab:joint}), adjusting speed alone abates at most $0.5\%$ and density alone $8.4\%$, while adjusting
-both reaches $9.6\%$, and a target of $7.6\%$ that costs $1.8\%$ on the density lever alone costs only $1.3\%$
-when both are adjusted. Joint redesign can thus expand the abatement reach and, in this illustration, it lowers the cost
-of meeting the target relative to single-lever adjustment, which supports evaluating the two levers together.
+\paragraph{Joint adjustment of the two margins.} Because the margins are complements, a program that
+acts on only one margin --- a slow-steaming mandate or a consolidation initiative --- attains part of the available
+abatement, and for some products presses a margin against its carbon-minimizing direction: for the e-grocery
+archetype, speed alone abates at most $0.5\%$ and density alone $8.4\%$, while the joint design reaches
+$9.6\%$ and meets a common target at lower cost (Table~\ref{tab:joint}).
 
 \paragraph{Product segmentation, service, and volatility.} Because the carbon-minimizing configuration
 depends on the product, a single chain-wide policy serves a heterogeneous portfolio imperfectly. The
@@ -1328,106 +1215,73 @@ carbon-minimizing speed and strengthen the pull toward consolidation through the
 last-mile comparison prevails in the density decision. A $99\%$ cycle-service target is thus a carbon-design
 parameter, not only an inventory-cost one. Higher demand correlation across markets weakens the pooling
 benefit that favors consolidation and can make dispersion more attractive, so forecasting and
-demand-smoothing are carbon levers in their own right.
+demand-smoothing bear on carbon in their own right.
 
-\paragraph{Carbon accounting and confidence.} Whether the cap is placed on expected or on realized carbon is
-itself a design parameter. A cap on realized carbon held with high confidence places a risk margin on
-transport emissions (Proposition~\ref{prop:chance}); by Corollary~\ref{cor:chance} this tightens the speed
-threshold --- making faster replenishment harder to justify on carbon grounds --- and relaxes the dispersion
-threshold, so a firm facing a high-confidence cap should reassess its configuration against the adjusted
-thresholds. For the baseline product, raising the confidence level lowers the
-carbon-minimizing speed at every level and, beyond a threshold confidence, shifts the network from
-consolidation to dispersion relative to the cost optimum (Section~\ref{sec:numerical},
-Table~\ref{tab:chance}); whether that shift occurs depends on whether the risk-weighted last-mile term
-overcomes the facility and pooling forces.
+\paragraph{Carbon accounting and confidence.} Whether the cap binds expected or realized carbon is itself
+a design parameter: a high-confidence cap places a risk margin on transport emissions, tightening the speed
+threshold and relaxing the dispersion threshold (Corollary~\ref{cor:chance}), and for the baseline product
+it shifts the network from consolidation to dispersion beyond a threshold confidence
+(Table~\ref{tab:chance}).
 
-\paragraph{Implication for policy.} The two-component structure carries a caution for regulation. A rule that
-prices or caps only transport leaves the holding component untouched and can induce substitution into inventory
-and facilities to comply, raising emissions the rule does not measure. Instruments scoped to transport alone
+\paragraph{Implication for policy.} Our results also suggest a caution for regulation. A rule that
+prices or caps only transport leaves the facility-and-holding component untouched and can induce substitution into inventory
+and facilities, potentially raising emissions the rule does not measure. Formally, a transport-only instrument
+prices $C_{\mathrm T}(n,v)=\varepsilon(v)\,N\mu D+\varepsilon_L\,N\mu\,d(n)$; minimizing $K+\tau C_{\mathrm T}$
+blends the carbon price into the transport rates alone, so the induced response can raise the unpriced holding
+and facility carbon. In the baseline calibration a transport-only price lowers transport carbon while raising total carbon.
+Instruments scoped to transport alone
 --- a freight fuel levy, a mode-shift mandate, or a vehicle-emissions standard --- are exposed to this
-leakage, whereas an instrument that prices a firm's total logistics carbon (for example, a scope-inclusive
-carbon charge or a cap covering both warehousing and transport emissions) avoids it and lets the firm choose
-the speed-and-density mix that minimizes carbon across transport and inventory together.
-
-% =====================================================================
+substitution. An instrument that prices a firm's total logistics carbon (for example, a scope-inclusive
+carbon charge or a cap covering both warehousing and transport emissions) prices the transport, facility, and
+inventory components and lets the firm choose the speed-and-density mix that minimizes carbon across them.
 \section{Discussion and Conclusion}\label{sec:discussion}
 
-A distribution network provides two services --- availability and proximity --- each of which can be supplied
-through more than one operational substitute, and carbon-aware design turns on which substitute a carbon price
-makes cheaper in emissions terms rather than on a single transport-centered response. The appropriate configuration
-therefore depends on how a carbon price changes the relative cost of providing those two services. When inventory is the emissions-intensive
-way to provide availability, carbon favors buying it with replenishment speed rather than with safety stock;
-when the last mile is the emissions-intensive way to provide proximity, carbon favors buying it with
-facilities rather than with distance. The contribution of the paper is to make these substitutions explicit
-and to give the thresholds at which the carbon-minimizing substitute differs from the cost-minimizing one.
+We have studied a distribution network that provides two services, availability and proximity, each of
+which the firm can provide through more than one operational activity: safety stock or replenishment speed
+for availability, facilities or last-mile distance for proximity. The carbon-minimizing configuration
+depends on which activity provides each service at lower carbon intensity per dollar. The contribution of
+the paper is to make these two substitutions explicit and to give the thresholds at which the
+carbon-minimizing configuration departs from the cost-minimizing one.
 
-\paragraph{Theoretical contribution.} The model embeds an endogenous replenishment speed in a
-location--inventory network. Speed sets the lead time, the lead time sets the safety stock, and the safety
-stock carries carbon, so a faster network is more carbon-intensive in transport but less inventory-intensive. This
-coupling produces the speed threshold $\eta/h>\varepsilon'(v_{\mathrm K})/t'(v_{\mathrm K})$
-(Proposition~\ref{prop:speed}): when holding is more carbon-intensive per dollar than inbound transport at the
-margin, the carbon-minimizing chain replenishes faster than the cost-minimizing one. The density decision adds
-the proximity substitution, with a \emph{pooling-adjusted} threshold (Proposition~\ref{prop:density}) in which
-last-mile intensity is compared not to the facility ratio $\varphi/F$ but to a weighted average of $\varphi/F$
-and the holding ratio $\eta/h$, so risk pooling enters the boundary explicitly. The two levers are complements
-(Proposition~\ref{prop:complement}): faster replenishment lowers the inventory penalty of dispersion, so the
-optimal degree of centralization is itself contingent on speed. The chance-constrained extension
-(Proposition~\ref{prop:chance}) preserves this structure: a cap on realized rather than expected carbon scales
-the transport component by $m=q_{1-\beta_c}/(N\mu)$, leaving the four-component form and the comparative statics intact
-while shifting both thresholds.
+\paragraph{Limitations.} The thresholds apply to an average, symmetric distribution environment, so their use
+in a heterogeneous network is diagnostic rather than mechanical. Heterogeneous markets or discrete facility
+sites replace $d(n)=\delta n^{-1/2}$ with the realized last-mile profile; this can move the density threshold,
+but it leaves the underlying comparison between facility carbon per dollar and last-mile carbon per dollar
+unchanged. The representative inbound distance isolates the proximity effect of adding DCs. If density also
+changes inbound routing, shipment consolidation, or facility scale economies, those mechanisms add
+centralizing forces and can move a near-boundary case toward consolidation. The base model keeps last-mile
+rates fill-independent; the load-factor sensitivity of Section~\ref{sec:analysis} shows how this assumption
+matters: common fill penalties consolidate both optima, while fill penalties that fall more heavily on carbon
+can reverse the density comparison. Service enters as a cycle-service requirement; if service or fill rate is chosen
+endogenously, safety stock becomes an additional design margin and the speed threshold should be evaluated at
+the chosen service level. Finally, the calibration is regime-representative rather than firm-estimated, so the
+numerical values illustrate the order of magnitude of the threshold movements under documented rate ranges.
+The thresholds are therefore diagnostics to be evaluated with product- and network-specific rate data.
 
-\paragraph{Managerial and policy implications.} For practice, the diagnostic is to measure carbon intensity
-per dollar by activity and to locate each product in the resulting regime (Section~\ref{sec:managerial});
-because the carbon-minimizing configuration depends on the product, a single chain-wide policy serves a
-heterogeneous portfolio imperfectly. For policy, the two-component structure cautions that regulation aimed
-only at transport can induce substitution into inventory and facility emissions that the rule does not
-measure; total logistics carbon is the appropriate accounting boundary.
+\paragraph{Future research.} The most direct extensions are those that can move the threshold boundaries.
+Multi-product and multi-echelon settings would show how a shared network accommodates products in different
+regimes and where safety stock should be held. Explicit load-factor, shipment-consolidation, and routing
+models would quantify the centralizing force represented here by the load sensitivity. Heterogeneous geography
+and discrete sites would replace the continuous density curve with network-specific last-mile profiles.
+Empirical calibration with firm-level logistics-emissions data would estimate where real products fall
+relative to the speed and density boundaries, and endogenous service choice would make the cycle-service target
+a design decision rather than an input.
 
-\paragraph{Limitations.} The model is deliberately parsimonious. Markets are symmetric and treated through a
-continuous-approximation geometry; the setting is single-product; inbound distance is represented by a single
-representative mean; our model carries no explicit vehicle load-factor decision; service is modeled
-through a cycle service level rather than a fill rate; the expected-value cap is the baseline against which the
-chance-constrained cap is compared; and the calibration is regime-representative rather than an empirical
-estimation. Each abstraction trades realism for the closed-form structure that makes the substitutions
-analytically tractable. Our model takes the last-mile rates as fill-independent; the load-factor sensitivity of
-Section~\ref{sec:analysis} indicates that a fill multiplier common to cost and carbon consolidates both
-optima together, while a multiplier falling more heavily on carbon can shift the density comparison toward
-consolidation. The dispersion conclusions are thus conditional on the fill multiplier not falling
-differentially on carbon,
-and on the omission of inbound consolidation and facility scale economies, which shift the boundary toward
-consolidation.
+The model identifies which operational activity supplies availability and which supplies proximity at
+lower carbon intensity per dollar, and shows how the two substitutions interact in the joint distribution
+design: the speed threshold prices the availability margin, the pooling-adjusted density threshold prices
+the proximity margin, and complementarity links the two in the final configuration.
 
-\paragraph{Future research.} Several extensions follow naturally: multi-product portfolio design, in which a
-shared network serves products with different carbon-intensity profiles; explicit load-factor and
-shipment-consolidation emissions, which would add shipment size as a third lever; heterogeneous geography and
-discrete facility locations in place of the continuous approximation; empirical calibration using firm-level
-logistics-emissions data; endogenous service-level choice, which Proposition~\ref{prop:service} treats as a
-fixed carbon parameter but which a fuller model would set jointly with speed and density, internalizing the
-carbon cost of a service requirement; and multi-echelon safety-stock placement, which would couple the density and speed decisions
-across more than one stocking tier.
+\section*{Statements and Declarations}
 
-Carbon-minimizing distribution design requires identifying the lower-emission
-operational substitute for availability and for proximity. In some regimes that substitute is slower
-replenishment and consolidation; in others it is faster replenishment, greater dispersion, or both. The model
-provides a diagnostic structure --- two carbon-intensity-per-dollar comparisons, coupled through the
-complementarity of speed and density --- for making that distinction.
+\noindent\textbf{Funding.} No funding was received for this work.
 
-\section*{Declaration of competing interest}
-The author declares that he has no known competing financial interests or personal relationships that could
-have appeared to influence the work reported in this paper.
+\smallskip
+\noindent\textbf{Competing interests.} The author has no competing interests to declare.
 
-\section*{Funding}
-This research did not receive any specific grant from funding agencies in the public, commercial, or
-not-for-profit sectors.
-
-\section*{Data availability}
-No original data were collected. The numerical illustrations use parameter values reported in the manuscript
-and publicly available benchmark sources. The code generating all numerical illustrations is available from
-the author on request.
-
-\section*{CRediT authorship contribution statement}
-\textbf{Ram Ganeshan:} Conceptualization, Methodology, Formal analysis, Software, Writing -- original draft,
-Writing -- review \& editing.
+\smallskip
+\noindent\textbf{Data availability.} The data and code supporting the numerical illustrations are available
+from the author on reasonable request.
 
 \bibliographystyle{apalike}
 \bibliography{references}

@@ -96,7 +96,7 @@ def carbon_C(n, v, p):
     return fixed + holding + inbound + lastm
 
 def buckets(n, v, p):
-    """Return (transport_kg, holding_kg) carbon split of eq.(C)."""
+    """Return (transport_kg, facility_and_holding_kg) carbon split of eq.(C)."""
     transport = (p.eps0 * v**2) * p.N * p.mu * p.D + p.epsL * p.N * p.mu * d_last(n, p)
     holding   = p.phi * n + p.eta * SS(n, v, p)
     return transport, holding
@@ -180,7 +180,7 @@ def expA_baseline(p):
     tA, hA = buckets(nC, vC, p)
     print("-" * 74)
     print(f"  cost-min   : n*={nC:5.2f}  v*={vC:5.2f}   K=${KC:,.0f}   C={CC:,.0f} kg")
-    print(f"               carbon split: transport={tA:,.0f} kg  holding={hA:,.0f} kg")
+    print(f"               carbon split: transport={tA:,.0f} kg  facility+holding={hA:,.0f} kg")
     print(f"  carbon-min : n*={nE:5.2f}  v*={vE:5.2f}   K=${KE:,.0f}   C={CE:,.0f} kg")
     dirn_v = "FASTER" if vE > vC + 1e-3 else ("slower" if vE < vC - 1e-3 else "same")
     dirn_n = "DISPERSE" if nE > nC + 1e-2 else ("consolidate" if nE < nC - 1e-2 else "same")
@@ -249,12 +249,12 @@ def build_archetypes(p):
 
 def expC_value_joint(p, name):
     print("\n" + "=" * 74)
-    print("C. VALUE OF JOINT REDESIGN  (single-lever reach vs. joint, then common target)")
+    print("C. VALUE OF JOINT REDESIGN  (one-decision reach vs. joint, then common target)")
     print("=" * 74)
     p = build_archetypes(p)[name]
     print(f"  product: {name}")
     print(f"  R_speed={p.R_speed:.2f}, R_density={p.R_density:.2f} "
-          f"(carbon-min wants faster + disperse -> levers reinforce)")
+          f"(carbon-min wants faster + disperse -> decisions reinforce)")
     nC, vC, KC, CC = minimize_obj(p, 0.0)
     print(f"  cost-min: n={nC:.2f}, v={vC:.2f}, K=${KC:,.0f}, C={CC:,.0f} kg")
     # maximum carbon reduction each policy can reach
@@ -271,9 +271,9 @@ def expC_value_joint(p, name):
     best_single = max(floors["speed only (n fixed)"][1],
                       floors["density only (v fixed)"][1])
     joint_cut = floors["joint (n,v)"][1]
-    # moderate target: 90% of the best single-lever reach (singles can still reach it)
-    # deep target: 95% of the joint reach (beyond either single lever)
-    for tag, target_cut in [("moderate (90% of best single lever)", 0.90 * best_single),
+    # moderate target: 90% of the best one-decision reach (singles can still reach it)
+    # deep target: 95% of the joint reach (beyond either single adjustment)
+    for tag, target_cut in [("moderate (90% of best single decision)", 0.90 * best_single),
                             ("deep (95% of joint reach)",          0.95 * joint_cut)]:
         B = (1 - target_cut) * CC
         print(f"\n  Target {tag}: cut {100*target_cut:.2f}%  (B = {B:,.0f} kg). "
@@ -281,13 +281,13 @@ def expC_value_joint(p, name):
         for label, kw in policies:
             out = minimize_cost_with_cap(p, B, **kw)
             if out is None:
-                print(f"    {label:24s}: INFEASIBLE (lever cannot reach this cut)")
+                print(f"    {label:24s}: INFEASIBLE (this adjustment cannot reach the cut)")
                 continue
             n, v, K, C = out
             print(f"    {label:24s}: n={n:5.2f} v={v:5.2f}  "
                   f"K=${K:,.0f}  (+{100*(K/KC-1):.2f}%)")
-    print("\n  Reading: each single lever has a bounded reach; the deep target lies")
-    print("  beyond both single levers and is met only by adjusting speed and density")
+    print("\n  Reading: each single decision has a bounded reach; the deep target lies")
+    print("  beyond both and is met only by adjusting speed and density")
     print("  together -- the complementarity result.")
 
 
@@ -338,6 +338,32 @@ def expE_archetypes(p):
 
 # --------------------------------------------------------------------------
 
+def expF_boundary_horizon(p):
+    """F: transport-only priced carbon (accounting-boundary check) and cap horizon."""
+    print()
+    print("=" * 74)
+    print("F. ACCOUNTING-BOUNDARY CHECK AND CAP HORIZON")
+    print("=" * 74)
+    ng = np.linspace(1, p.N, 1961); vg = np.linspace(p.vmin, p.vmax, 1201)
+    NN, VV = np.meshgrid(ng, vg, indexing="ij")
+    CTg = (p.eps0 * VV**2) * p.N * p.mu * p.D + p.epsL * p.N * p.mu * d_last(NN, p)
+    nK, vK, KK, CK = minimize_obj(p, 0.0)
+    CTK = (p.eps0 * vK**2) * p.N * p.mu * p.D + p.epsL * p.N * p.mu * d_last(nK, p)
+    tau = 5.0
+    J = cost_K(NN, VV, p) + tau * CTg
+    i, j = np.unravel_index(np.argmin(J), J.shape)
+    nT, vT = ng[i], vg[j]
+    Ct = (p.eps0 * vT**2) * p.N * p.mu * p.D + p.epsL * p.N * p.mu * d_last(nT, p)
+    Ctot = carbon_C(nT, vT, p)
+    print(f"  tau={tau:.0f}: transport-only opt (n={nT:.2f},v={vT:.2f}): "
+          f"transport {100*(Ct/CTK-1):+.1f}%, holding+facility {100*((Ctot-Ct)/(CK-CTK)-1):+.1f}%, "
+          f"TOTAL {100*(Ctot/CK-1):+.1f}%")
+    CVQ = (p.sigma / p.mu) * np.sqrt((1 + (p.N - 1) * p.rho) / p.N)
+    z95 = NormalDist().inv_cdf(0.95)
+    print(f"  cap horizon: m@95 weekly={1+z95*CVQ:.3f}; "
+          f"annual cap, T=52 independent weeks: m@95={1+z95*CVQ/np.sqrt(52):.3f}")
+
+
 if __name__ == "__main__":
     p = Params()
     expA_baseline(p)
@@ -345,3 +371,4 @@ if __name__ == "__main__":
     expC_value_joint(p, "E-grocery perishables (refrig., van LM)")
     expD_price_path(p)
     expE_archetypes(p)
+    expF_boundary_horizon(p)

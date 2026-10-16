@@ -33,3 +33,7 @@ managerial_implications.md
 !fig_frontier.pdf
 !fig_regimes.pdf
 calibration_scan_raw.json
+
+# --- Local scratch and prior-venue correspondence (not part of the repository) ---
+tmp/
+*.docx

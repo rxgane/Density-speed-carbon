@@ -4,7 +4,7 @@ Replication materials for the analytical paper *"Cost, Carbon, and the Speed of
 Replenishment in Distribution Network Design"* (Ram Ganeshan, Raymond A. Mason
 School of Business, William & Mary).
 
-A parsimonious continuous-approximation location–inventory model in which a firm chooses **network density**
+A continuous-approximation location–inventory model in which a firm chooses **network density**
 (the number of distribution centers, `n`) and **replenishment speed** (`v`) to
 minimize cost subject to a carbon cap and a service requirement. Carbon splits
 into a transport component and a holding component; pricing carbon selects which
