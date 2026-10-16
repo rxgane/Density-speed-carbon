@@ -1,58 +1,47 @@
 # Cost, Carbon, and the Speed of Replenishment in Distribution Network Design
 
-Replication materials for the analytical paper *"Cost, Carbon, and the Speed of
-Replenishment in Distribution Network Design"* (Ram Ganeshan, Raymond A. Mason
-School of Business, William & Mary).
+Paper source and computations for *"Cost, Carbon, and the Speed of Replenishment in Distribution
+Network Design"* (Ram Ganeshan, Raymond A. Mason School of Business, William & Mary), version 2,
+prepared for *Transportation Research Part E*.
 
 A continuous-approximation location–inventory model in which a firm chooses **network density**
-(the number of distribution centers, `n`) and **replenishment speed** (`v`) to
-minimize cost subject to a carbon cap and a service requirement. Carbon splits
-into a transport component and a holding component; pricing carbon selects which
-operational substitute — stock vs. speed for availability, facilities vs.
-last-mile for proximity — is lower-emission. Key results: a closed-form speed
-threshold, a pooling-adjusted density threshold, their complementarity, and a
-chance-constrained (high-confidence) carbon cap.
+(the number of distribution centers, `n`) and **replenishment speed** (`v`) to minimize cost under a
+carbon price or cap and a service requirement. Carbon arises from facilities, holding inventory,
+line-haul freight, and last-mile delivery. The joint design has a single best solution at every carbon
+price, and the carbon-minimizing direction of both decisions follows from four carbon-intensity-per-dollar
+ratios and the share of a distribution center's marginal cost that is lost pooling. A calibration to
+public US data shows how the direction depends on how speed is bought and how the last mile is driven.
 
 ## Repository contents
 
 | File | Description |
 |------|-------------|
-| `model.tex`, `references.bib` | The paper source and bibliography |
-| `model.pdf` | Compiled paper |
-| `numerics.py` | Core model: cost/carbon functions and optimizers |
-| `computational_experiments.py` | Calibration, archetypes, value-of-joint-redesign, robustness |
-| `chance_experiment.py` | Chance-constrained carbon-cap illustrations |
-| `figures.py`, `gen_chance_fig.py`, `gen_regimes_fig.py` | Figure generation |
-| `fig_regimes.pdf`, `fig_frontier.pdf`, `fig_chance.pdf` | Generated figures |
-| `verify_*.wl`, `check_*.{wl,py}` | Symbolic/numeric checks (Mathematica + Python) |
-| `results.txt` | Saved numerical output |
+| `network_design_v2.tex`, `references.bib` | Manuscript source (anonymized for review) and bibliography |
+| `network_design_v2.pdf` | Compiled manuscript |
+| `title_page.tex`, `cover_letter.tex`, `highlights.tex` | Title page with declarations, cover letter, highlights |
+| `revision/calibration_v2.py` | Carbon intensity per dollar of each activity from public sources; product classification; carbon share of priced cost |
+| `revision/application_v2.py` | Calibrated national network in physical units (designs, carbon-price path, integer rounding) |
+| `revision/v2_checks.py` | Checks of the analytical results against brute-force optimization |
+| `revision/*_output.txt` | Saved output of the three scripts above |
+| `revision/v2_analysis.md` | Statements and proofs of the version 2 results |
+| `numerics.py` | Model functions (cost, carbon, safety stock) used by the scripts above |
+| `computational_experiments.py`, `chance_experiment.py`, figure scripts | Version 1 illustrations, kept for reference |
 
-## Reproducing
+## Reproducing the numbers in the paper
 
-Numerics require **NumPy** (`pip install numpy`); everything else is standard
-library (`statistics.NormalDist`, no SciPy). With Python 3:
-
-```bash
-python3 numerics.py
-python3 computational_experiments.py
-python3 chance_experiment.py
-```
-
-Figures:
+Python 3 with NumPy and SciPy:
 
 ```bash
-python3 gen_regimes_fig.py
-python3 gen_chance_fig.py
-python3 figures.py
+python3 revision/calibration_v2.py
+python3 revision/application_v2.py
+python3 revision/v2_checks.py
 ```
 
-Paper:
+## Building the paper
 
 ```bash
-pdflatex model && bibtex model && pdflatex model && pdflatex model
+pdflatex network_design_v2 && bibtex network_design_v2 && pdflatex network_design_v2 && pdflatex network_design_v2
 ```
 
-Symbolic checks use `wolframscript` (Mathematica), e.g. `wolframscript -file verify_hessian.wl`.
-
-> Note: copyrighted third-party journal PDFs used as references during the
-> project are intentionally excluded from this repository.
+> Note: copyrighted third-party journal PDFs used as references during the project are excluded from
+> this repository.

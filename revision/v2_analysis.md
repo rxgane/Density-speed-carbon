@@ -2,7 +2,7 @@
 
 Target: Transportation Research Part E. Branch `v2-tre`; v1 (OR Spectrum state) is tag `v1-orspectrum-ready`.
 
-Notation as in `model.tex`: $SS(n,v)=k\sqrt{\Psi(n)}\,v^{-1/2}$ with $k=z\sigma\sqrt{ND}$,
+Notation as in `network_design_v2.tex`: $SS(n,v)=k\sqrt{\Psi(n)}\,v^{-1/2}$ with $k=z\sigma\sqrt{ND}$,
 $\Psi(n)=N\rho+n(1-\rho)$, $d(n)=\delta n^{-1/2}$, blended rates $F_\tau,H_\tau,T_\tau(v),\ell_\tau$,
 $G(n,v)=\partial_n SS=k(1-\rho)\,v^{-1/2}/(2\sqrt{\Psi(n)})$. Intensity ratios
 $r_h=\eta/h$, $r_t=\varepsilon_0/t_1$, $r_L=\varepsilon_L/t_L$, $r_F=\varphi/F$;
