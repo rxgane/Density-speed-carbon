@@ -48,12 +48,12 @@ def lane(kind):
         v1, v2 = 250.0, 500.0
         c1, c2 = 0.8*TLc, TLc
         k1, k2 = 0.4*TLk, TLk
-        vb = (200.0, 550.0)
+        vb = (250.0, 500.0)                          # speed between the two real options
     else:                                            # solo (500) <-> team (1,000 mi/day), same tractor
         v1, v2 = 500.0, 1000.0
         c1, c2 = TLc, TLc + 0.35/26
         k1, k2 = TLk, TLk + 0.03*0.35/26             # r_t = 0.03: negligible extra fuel
-        vb = (450.0, 1100.0)
+        vb = (500.0, 1000.0)                         # speed between the two real options
     t1 = (c2-c1)/(v2**2-v1**2); t0 = c1 - t1*v1**2
     e1 = (k2-k1)/(v2**2-v1**2); e0 = k1 - e1*v1**2
     return dict(t0=t0, t1=t1, e0=e0, eps0=e1, vmin=vb[0], vmax=vb[1])
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     say("\nTABLE: cost- and carbon-minimizing designs (energy-only holding ratio 0.077 throughout)")
     say(f"  {'holding $/pal-yr':>16} {'speed bought with':<18}{'store delivery':<15}{'DCs: cost -> carbon':>21}"
         f"{'mi/day: cost -> carbon':>24}{'carbon at min':>15}{'cost at min':>13}{'carbon at $100/t':>18}")
-    for hy in (390, 3000):
+    for hy in (390, 6000):
         for lk, lbl in (("fuel", "fuel (IM/truck)"), ("labor", "labor (team)")):
             for rL, lm in ((0.50, "diesel"), (0.16, "electric")):
                 p = dict(base, rL=rL, h=hy/YEAR, eta=0.077*hy/YEAR, **lane(lk))
