@@ -1124,91 +1124,111 @@ the cost and the carbon of last-mile delivery per unit and pulls both optima tow
 
 \section{Managerial Implications}\label{sec:managerial}
 
-Table~\ref{tab:regimes} translates the two marginal comparisons into a product-level diagnostic map. The
-rows describe the availability margin (holding against inbound transport); the columns describe the
-proximity margin (last-mile delivery against facilities). Each cell indicates the direction of carbon
-pressure relative to the cost optimum; slowing and consolidating correspond to the lower-left cell. The
-final configuration follows from the joint speed--density design problem with these marginal forces in
-view.
+The results give a firm a diagnostic it can compute from its own rate data, and they indicate which of its
+distribution decisions a carbon price or cap will move, in which direction, and by how much. Each implication
+below rests on a result of Section~\ref{sec:analysis}; the calibrated values of Section~\ref{sec:numerical}
+illustrate it.
+
+\paragraph{A diagnostic in two questions.} A firm needs four ratios and one cost share. The ratios are the
+carbon per dollar of holding stock, of the speed it can buy on its line-haul lanes, of last-mile delivery, and of
+operating a distribution center. Each is close to the activity's energy share of cost times the carbon of a
+dollar of its energy (Section~\ref{sec:calib}), so it can be estimated from fuel and electricity spend. The cost
+share is the pooling weight $\omega$, the share of a distribution center's marginal cost that is lost pooling,
+which the firm can read from its cost-minimizing network through \eqref{eq:poolweight}.
+Proposition~\ref{prop:classify} then answers two questions: whether replenishment should be faster or slower,
+and whether the network should have more or fewer distribution centers. Table~\ref{tab:regimes} sets out the four
+answers.
 
 \begin{table}[t]
 \centering\small
-\caption{Diagnostic map of carbon pressure relative to the cost optimum: rows give the availability
-margin, columns the proximity margin. The column split is exact in the no-pooling limit and is otherwise the
-pooling-adjusted threshold of Proposition~\ref{prop:density}.}
+\caption{Carbon-minimizing direction of the two decisions (Proposition~\ref{prop:classify}), with the calibrated
+cases of Section~\ref{sec:numerical} that fall in each cell.}
 \label{tab:regimes}
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.18\linewidth}
-                   >{\raggedright\arraybackslash}p{0.36\linewidth}
-                   >{\raggedright\arraybackslash}p{0.36\linewidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.27\linewidth}
+                   >{\raggedright\arraybackslash}p{0.32\linewidth}
+                   >{\raggedright\arraybackslash}p{0.32\linewidth}@{}}
 \toprule
- & \textbf{Lower network density}\newline {\small\itshape last mile less carbon-intensive per dollar than facilities} & \textbf{Higher network density}\newline {\small\itshape last mile more carbon-intensive per dollar than facilities} \\
+ & \textbf{More distribution centers}\newline {\small\itshape last mile more carbon-intensive per dollar than facilities and lost pooling}
+ & \textbf{Fewer distribution centers}\newline {\small\itshape last mile less carbon-intensive per dollar than facilities and lost pooling} \\
 \midrule
-\textbf{Higher replenishment speed}\newline {\small\itshape holding more carbon-intensive per dollar than inbound transport}
-  & faster and more consolidated --- speed bought with labor, electric last-mile delivery
-  & \emph{faster and more dispersed} --- speed bought with labor, heavy diesel last-mile delivery \\
-\textbf{Lower replenishment speed}\newline {\small\itshape holding less carbon-intensive per dollar than inbound transport}
-  & slower and more consolidated --- speed bought with fuel, electric last-mile delivery
-  & slower and more dispersed --- speed bought with fuel, heavy diesel last-mile delivery \\
+\textbf{Faster replenishment}\newline {\small\itshape holding more carbon-intensive per dollar than the speed it buys}
+  & speed bought with labor; heavy diesel delivery
+  & speed bought with labor; electric vans \\
+\textbf{Slower replenishment}\newline {\small\itshape holding less carbon-intensive per dollar than the speed it buys}
+  & speed bought with fuel; heavy diesel delivery
+  & speed bought with fuel; electric vans \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{Using the diagnostic ratios.} A firm can use the ratios, estimated from its own rate data, as
-diagnostics for the joint design problem. The holding-to-inbound comparison indicates the carbon pressure on
-the availability margin (Proposition~\ref{prop:speed}). The last-mile-to-facility comparison, adjusted for
-pooling, indicates the carbon pressure on the proximity margin: pooling shifts the threshold from
-$\varphi/F$ toward the holding ratio $\eta/h$, raising the bar for dispersing when $\eta/h>\varphi/F$
-(Proposition~\ref{prop:density}). Because speed changes the inventory cost of density, and density changes
-the inventory value of speed, the two margins are evaluated together in the final configuration
-(Proposition~\ref{prop:complement}). Under a cap on realized carbon, the transport intensities are first
-scaled by the throughput-risk multiplier (Proposition~\ref{prop:chance}).
+\paragraph{Slow the speed that is bought with fuel.} A faster vessel, truck instead of intermodal rail, and air
+instead of truck add cost that is mostly fuel, so their carbon per dollar is many times that of holding stock.
+Proposition~\ref{prop:speed} then calls for slower replenishment, and in our calibration it does so for every
+product, perishables and pharmaceuticals included (Table~\ref{tab:classify}). The shifts of pharmaceutical
+freight from air to ocean and of truckload lanes to intermodal rail are consistent with this direction
+\citep{pharmcommerce2023astrazeneca, freightwaves2026intermodal}. Where the cost-minimizing chain already ships at
+the slowest option, as it does for ambient goods in Section~\ref{sec:network}, a carbon price leaves speed there.
 
-\paragraph{Replenishment speed.} When speed is bought with labor rather than fuel, a tighter carbon target can
-be met through faster shipping: the safety stock a slower schedule would require carries more carbon than the
-faster transport adds (the top row of Table~\ref{tab:regimes}).
+\paragraph{Buy speed with labor where speed pays.} Speed bought with labor, such as a team of drivers on the same
+tractor, adds wages rather than fuel, so its carbon per dollar is close to zero and a carbon price favors it
+(Proposition~\ref{prop:speed}). It matters where holding is costly enough for speed to pay at all: in
+Section~\ref{sec:network}, carbon moves the labor lane toward team operation for high-value goods and leaves
+ambient goods with a solo driver. Demand volatility and the service target raise the cost-minimizing and the
+carbon-minimizing speeds together, so they change how fast the chain runs but not the direction in which carbon
+moves it.
 
-\paragraph{Consolidation and the last mile.} Consolidation lowers carbon here
-through inventory pooling and reduced facility energy while lengthening the last mile. A firm whose last
-mile is carbon-intensive --- diesel vans, long rural routes --- can lower total carbon by holding more stock
-nearer to demand, even though that raises total inventory; the transport channel of consolidation works
-against it. This last channel is strong when vehicle fill improves with consolidation, and the
-load-factor sensitivity of Section~\ref{sec:analysis} separates its two effects: a fill multiplier common to
-cost and carbon consolidates both optima together, while a multiplier that falls more heavily on carbon --- a
-stress case, since per-vehicle-mile cost is typically at least as fill-sensitive as fuel --- can
-shift the density comparison toward consolidation. A firm should
-therefore weigh its last mile's fill economics --- and whether fill degrades its emissions faster than its
-cost --- before dispersing.
+\paragraph{Let the last-mile vehicle set the number of distribution centers.} The density decision compares the
+carbon per dollar of last-mile delivery with that of a distribution center's facility and lost pooling
+(Proposition~\ref{prop:classify}). Heavy diesel delivery is carbon-intensive enough to call for more
+distribution centers closer to demand, about three times as many at the carbon minimum of
+Section~\ref{sec:network}; electric vans call for fewer; diesel vans and electric trucks lie close to the
+threshold, where facility energy and the pooling weight decide. A firm that electrifies its last mile should
+therefore revisit how many distribution centers it operates, and one that adds centers to shorten delivery
+should weigh the vehicle fill it gives up, since emptier vehicles raise both the cost and the carbon of each
+delivered unit (Section~\ref{sec:analysis}).
 
-\paragraph{Joint adjustment of the two margins.} Because the margins are complements, a program that
-acts on only one margin --- a slow-steaming mandate or a consolidation initiative --- attains part of the available
-abatement, and for some products presses a margin against its carbon-minimizing direction.
+\paragraph{Plan line haul and network together.} Because faster replenishment recovers part of the pooling that
+dispersion gives up, the carbon intensity of line-haul freight enters the density condition
+(Proposition~\ref{prop:classify}): a lower-emission line haul lowers the threshold for adding distribution
+centers. The effect works through the pooling weight, so it is small for networks whose fixed costs are large
+relative to their safety stock, as in Section~\ref{sec:network}, and larger for volatile products and high service
+targets, for which lost pooling is a larger share of a center's marginal cost (Proposition~\ref{prop:service}). More
+generally, the two decisions are complements (Proposition~\ref{prop:complement}), so a program that acts on one
+alone, such as a slow-steaming mandate or a consolidation drive, evaluates it at a level of the other decision
+that the joint design would change.
 
-\paragraph{Product segmentation, service, and volatility.} Because the carbon-minimizing configuration
-depends on the product, a single chain-wide policy serves a heterogeneous portfolio imperfectly. The
-service-level target and demand variability also bear on carbon: a higher service-level target and a more
-volatile demand both enlarge safety stock and so, by Proposition~\ref{prop:service}, raise the
-carbon-minimizing speed and strengthen the pull toward consolidation through the value of pooling, unless the
-last-mile comparison prevails in the density decision. A $99\%$ cycle-service target is thus a carbon-design
-parameter, not only an inventory-cost one. Higher demand correlation across markets weakens the pooling
-benefit that favors consolidation and can make dispersion more attractive, so forecasting and
-demand-smoothing bear on carbon in their own right.
+\paragraph{Expect modest moves at current carbon prices.} Proposition~\ref{prop:path} ties the response to a
+carbon price to the share of carbon in each activity's priced cost. At $\$100$ per tonne, carbon is about $1\%$
+of the priced cost of holding and of facilities, $5\%$ of diesel truck delivery, $15\%$ of speed bought with
+truck instead of rail, and $35\%$ of speed bought with vessel speed; it reaches half of the priced cost of diesel
+truck delivery only at about $\$2{,}000$ per tonne. A carbon price in the range now in use therefore moves the
+design little, by less than one percent of network carbon for ambient goods in Section~\ref{sec:network}, and it
+moves fuel-bought speed first, which is consistent with the attention slow steaming has received as a carbon
+response in shipping \citep{psaraftis2013speed}. Larger redesigns follow from caps that bind: at the carbon
+minimum the network of Section~\ref{sec:network} has about three times as many distribution centers. Without
+pooling, the carbon that a cost-minimizing design leaves unabated grows, to second order, with the square of the
+logarithm of each ratio (Corollary~\ref{cor:nopool}), so redesign pays most for products whose ratios lie far
+from one.
 
-\paragraph{Carbon accounting and confidence.} Whether the cap binds expected or realized carbon is itself
-a design parameter: a high-confidence cap places a risk margin on transport emissions, tightening the speed
-threshold and relaxing the dispersion threshold (Corollary~\ref{cor:chance}).
+\paragraph{Account for realized carbon over short horizons.} A cap on realized rather than expected carbon places
+a risk margin on transport emissions (Proposition~\ref{prop:chance}). For a weekly cap held with $95\%$
+confidence, the margin raises the transport carbon rates by $37\%$ in our calibration, which reinforces
+slower fuel-bought speed and, with diesel delivery, more distribution centers (Corollary~\ref{cor:chance}); for an
+annual cap the margin is about $5\%$ and changes little.
 
-\paragraph{Implication for policy.} Our results also suggest a caution for regulation. A rule that
-prices or caps only transport leaves the facility-and-holding component untouched and can induce substitution into inventory
-and facilities, potentially raising emissions the rule does not measure. Formally, a transport-only instrument
-prices $C_{\mathrm T}(n,v)=\varepsilon(v)\,N\mu D+\varepsilon_L\,N\mu\,d(n)$; minimizing $K+\tau C_{\mathrm T}$
-blends the carbon price into the transport rates alone, so the induced response can raise the unpriced holding
-and facility carbon.
-Instruments scoped to transport alone
---- a freight fuel levy, a mode-shift mandate, or a vehicle-emissions standard --- are exposed to this
-substitution. An instrument that prices a firm's total logistics carbon (for example, a scope-inclusive
-carbon charge or a cap covering both warehousing and transport emissions) prices the transport, facility, and
-inventory components and lets the firm choose the speed-and-density mix that minimizes carbon across them.
+\paragraph{Implications for policy.} An instrument that prices or caps transport alone, such as a freight fuel
+levy or a vehicle emissions standard, blends the carbon price into the transport rates and leaves holding and
+facility carbon unpriced. At a given density it therefore slows replenishment, and at a given speed it adds
+distribution centers, whatever the product. By the marginal comparisons of Propositions~\ref{prop:speed}
+and~\ref{prop:density}, these moves lower total carbon when they agree with the carbon-minimizing direction and,
+for small prices, raise it when they do not: a transport-only price raises total carbon at the cost optimum when
+holding is more carbon-intensive per dollar than the speed it would buy, or when the last mile is less
+carbon-intensive per dollar than facilities and lost pooling. In our calibration the first case arises when speed
+bought with labor is in use and the second with electric last-mile vans. An instrument that prices total
+logistics carbon, including warehousing, lets the firm choose the speed and density that minimize carbon across
+all four activities.
+
 \section{Discussion and Conclusion}\label{sec:discussion}
 
 We have studied a distribution network that provides two services, availability and proximity, each of
