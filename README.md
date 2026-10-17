@@ -20,11 +20,14 @@ public US data traces how a carbon price moves a reference network that finances
 | `network_design_v2.tex`, `references.bib` | Manuscript source (anonymized for review) and bibliography |
 | `network_design_v2.pdf` | Compiled manuscript |
 | `title_page.tex`, `cover_letter.tex`, `highlights.tex` | Title page with declarations, cover letter, highlights |
-| `revision/application_v21.py` | Benchmark carbon intensities per dollar (Table 3), allocation shares, carbon shares of priced cost |
+| `revision/application_v21.py` | Benchmark carbon intensities per dollar (Table 2), with warehouse carbon at the EPA input–output rate; carbon shares of priced cost |
 | `revision/application_v22.py` | Reference network that finances stock in transit: inputs, response to a carbon price, rounding |
-| `revision/targets_v22.py`, `revision/fig_target.py` | Least-cost design for each required cut in emissions, three action sets (`fig_target.pdf`) |
-| `revision/targets_v22.py`, `revision/fig_inbound.py` | Inbound-transport link to the number of distribution centers (`fig_inbound.pdf`) |
-| `revision/robust_v22.py` | Robustness of the least-cost design for a 30% cut |
+| `revision/targets_v22.py` | Least-cost design for each required cut in emissions, three action sets; carbon-price path |
+| `revision/levers_data.py`, `revision/fig_levers.py` | Cost and carbon as each decision moves on its own (Figure 2, `fig_levers.pdf`) |
+| `revision/fig_target.py` | Least-cost design for each required cut (Figure 3, `fig_target.pdf`) |
+| `revision/inbound_data.py`, `revision/inbound_fine.py`, `revision/fig_inbound.py` | Carbon intensity of faster inbound service and the number of distribution centers (Figure 4, `fig_inbound.pdf`) |
+| `revision/robust_v22.py` | Robustness of the least-cost design for a 30% cut (Table 4) |
+| `revision/sensitivity_v24.py` | Sensitivity of that design to the carbon inputs and the storage environment (Table 5) |
 | `revision/calibration_v2.py` | Carbon intensity per dollar of each activity from public sources; product classification; carbon share of priced cost |
 | `revision/application_v2.py` | Calibrated national network in physical units (designs, carbon-price path, integer rounding) |
 | `revision/v2_checks.py` | Checks of the analytical results against brute-force optimization |
@@ -41,8 +44,11 @@ Python 3 with NumPy and SciPy:
 cd revision
 python3 application_v21.py
 python3 application_v22.py
-python3 targets_v22.py && python3 fig_target.py && python3 fig_inbound.py
+python3 calibration_v2.py
+python3 targets_v22.py && python3 levers_data.py && python3 fig_levers.py && python3 fig_target.py
+python3 inbound_data.py && python3 inbound_fine.py && python3 fig_inbound.py
 python3 robust_v22.py
+python3 sensitivity_v24.py > sensitivity_v24_output.txt
 ```
 
 ## Building the paper

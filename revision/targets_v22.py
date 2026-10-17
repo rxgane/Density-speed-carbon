@@ -1,7 +1,8 @@
 """
-Reference network that finances its stock in transit (application_v22.reference): carbon-target exercise for
-three action sets, and the inbound-transport link to network density. Writes targets_v22.json, inbound_v22.json
-and targets_v22_output.txt.
+Reference network that finances its stock in transit (application_v22.reference), solved as the model specifies:
+the number of distribution centers n and the speed v are both continuous. Carbon-target exercise for three
+action sets, and the inbound-transport link to network density. Writes targets_v22.json, inbound_v22.json and
+targets_v22_output.txt.
 """
 import os, json
 import numpy as np
@@ -13,108 +14,129 @@ here = os.path.dirname(os.path.abspath(__file__))
 Y = 365.0
 out = []
 def say(s=""): print(s); out.append(s)
+KC = B.KC
 
-def KC(n, v, p): return B.KC(n, v, p)
+def interval(f, cap, lo, hi):
+    """feasible interval {x in [lo,hi]: f(x) <= cap} of a quasiconvex f, or None"""
+    xm = minimize_scalar(f, bounds=(lo, hi), method="bounded", options={"xatol": 1e-9}).x
+    if f(xm) > cap: return None
+    g = lambda x: f(x) - cap
+    a = lo if g(lo) <= 0 else brentq(g, lo, xm); b = hi if g(hi) <= 0 else brentq(g, xm, hi)
+    return a, b
 
 def best_v(n, p, cap=None):
-    """least-cost speed at density n with carbon at most cap (cost and carbon are convex in v)"""
     lo, hi = p["vmin"], p["vmax"]
     vk = minimize_scalar(lambda v: KC(n, v, p)[0], bounds=(lo, hi), method="bounded", options={"xatol": 1e-7}).x
     if cap is None or KC(n, vk, p)[1] <= cap: return vk
-    vc = minimize_scalar(lambda v: KC(n, v, p)[1], bounds=(lo, hi), method="bounded", options={"xatol": 1e-7}).x
-    if KC(n, vc, p)[1] > cap: return None
-    g = lambda v: KC(n, v, p)[1] - cap
-    a = lo if g(lo) <= 0 else brentq(g, lo, vc); b = hi if g(hi) <= 0 else brentq(g, vc, hi)
-    return min(max(vk, a), b)
+    iv = interval(lambda v: KC(n, v, p)[1], cap, lo, hi)
+    return None if iv is None else min(max(vk, iv[0]), iv[1])
 
-def solve(p, cap=None, mode="both", nfix=None, vfix=None, integer=True):
+def best_n(v, p, cap=None):
+    lo, hi = 1.0, float(p["N"])
+    nk = minimize_scalar(lambda n: KC(n, v, p)[0], bounds=(lo, hi), method="bounded", options={"xatol": 1e-7}).x
+    if cap is None or KC(nk, v, p)[1] <= cap: return nk
+    iv = interval(lambda n: KC(n, v, p)[1], cap, lo, hi)
+    return None if iv is None else min(max(nk, iv[0]), iv[1])
+
+def solve(p, cap=None, mode="both", nfix=None, vfix=None):
+    """least-cost (n, v) with carbon at most cap; n and v continuous"""
     if mode == "replen":
         v = best_v(nfix, p, cap); return None if v is None else (nfix, v)
-    if integer:
-        best = None
-        for n in range(1, p["N"]+1):
-            if mode == "network":
-                v = vfix
-                if cap is not None and KC(n, v, p)[1] > cap: continue
-            else:
-                v = best_v(n, p, cap)
-                if v is None: continue
-            k = KC(n, v, p)[0]
-            if best is None or k < best[0]: best = (k, n, v)
-        return None if best is None else best[1:]
+    if mode == "network":
+        n = best_n(vfix, p, cap); return None if n is None else (n, vfix)
     def red(n):
-        v = best_v(n, p, cap)
-        return 1e18 if v is None else KC(n, v, p)[0]
+        v = best_v(n, p, cap); return 1e18 if v is None else KC(n, v, p)[0]
     grid = np.exp(np.linspace(0, np.log(p["N"]), 400)); vals = [red(n) for n in grid]; i = int(np.argmin(vals))
     if vals[i] >= 1e18: return None
-    n = minimize_scalar(red, bounds=(grid[max(i-1, 0)], grid[min(i+1, 399)]), method="bounded", options={"xatol": 1e-6}).x
+    n = minimize_scalar(red, bounds=(grid[max(i-1, 0)], grid[min(i+1, 399)]), method="bounded", options={"xatol": 1e-7}).x
+    if red(n) > vals[i]: n = grid[i]          # refinement left the feasible set (thin feasible interval): keep the grid point
     return n, best_v(n, p, cap)
 
+def cmin(q):
+    """carbon-minimizing (n, v), continuous"""
+    def red(n):
+        return minimize_scalar(lambda v: KC(n, v, q)[1], bounds=(q["vmin"], q["vmax"]), method="bounded", options={"xatol": 1e-7}).fun
+    grid = np.exp(np.linspace(0, np.log(q["N"]), 300)); vals = [red(n) for n in grid]; i = int(np.argmin(vals))
+    return minimize_scalar(red, bounds=(grid[max(i-1, 0)], grid[min(i+1, 299)]), method="bounded", options={"xatol": 1e-7}).x
+
 def set_rt(p, rt):
-    e_min = p["e0"] + p["eps0"]*p["vmin"]**2; p["eps0"] = rt*p["t1"]; p["e0"] = e_min - p["eps0"]*p["vmin"]**2
+    va = p["modes"][0]; e_min = p["e0"] + p["eps0"]*va**2; p["eps0"] = rt*p["t1"]; p["e0"] = e_min - p["eps0"]*va**2   # carbon of intermodal held fixed
 
 if __name__ == "__main__":
     p = B.reference()
     n0, v0 = solve(p); K0, C0 = KC(n0, v0, p)
-    say(f"REFERENCE (financed): {n0} DCs, {1000/v0:.2f} days, cost ${K0*Y/1e6:.1f}M, carbon {C0*Y/1e3:,.0f} t")
-    xs = np.round(np.arange(0, 0.5001, 0.0025), 4); rows = []
+    say(f"REFERENCE (financed, continuous n): {n0:.2f} DCs, {1000/v0:.2f} days, cost ${K0*Y/1e6:.1f}M, carbon {C0*Y/1e3:,.0f} t")
+    xs = np.round(np.arange(0, 0.6001, 0.0025), 4); rows = []
     for x in xs:
         cap = (1-x)*C0 if x > 0 else None; r = {"x": float(x)}
         for mode in ("replen", "network", "both"):
             sres = solve(p, cap, mode, nfix=n0, vfix=v0)
-            r[mode] = None if sres is None else dict(n=int(sres[0]), days=1000/sres[1], K=KC(*sres, p)[0]*Y, C=KC(*sres, p)[1]*Y)
-        sres = solve(p, cap, "both", integer=False)
-        r["both_cont"] = None if sres is None else dict(n=float(sres[0]), days=1000/sres[1], K=KC(*sres, p)[0]*Y)
+            if sres is None: r[mode] = None; continue
+            K, C = KC(*sres, p)
+            parts_K = None
+            r[mode] = dict(n=float(sres[0]), days=1000/sres[1], K=K*Y, C=C*Y)
         rows.append(r)
     json.dump({"ref": dict(n=n0, days=1000/v0, K=K0*Y, C=C0*Y), "rows": rows}, open(os.path.join(here, "targets_v22.json"), "w"))
     for mode in ("replen", "network", "both"):
         last = max(r["x"] for r in rows if r[mode]); say(f"  largest attainable cut, {mode}: {100*last:.2f}% (grid)")
-    first = next(r["x"] for r in rows if r["both"] and r["both"]["n"] > n0)
-    say(f"  both decisions first add a DC at a cut of {100*first:.2f}% (grid)")
-    for x in (0.10, 0.20, 0.25, 0.30, 0.35, 0.40):
+    for x in (0.05, 0.10, 0.20, 0.25, 0.30, 0.35, 0.40):
         r = next(q for q in rows if abs(q["x"]-x) < 1e-9); line = []
         for mode in ("replen", "network", "both"):
             q = r[mode]
-            line.append(f"{mode}: n.a." if q is None else f"{mode}: {q['n']} DCs {q['days']:.2f} d cost +{100*(q['K']/(K0*Y)-1):.1f}% avg ${(q['K']-K0*Y)/(C0*Y-q['C'])*1e3:,.0f}/t")
+            line.append(f"{mode}: n.a." if q is None else f"{mode}: {q['n']:.2f} DCs {q['days']:.2f} d cost +{100*(q['K']/(K0*Y)-1):.2f}% avg ${(q['K']-K0*Y)/(C0*Y-q['C'])*1e3:,.0f}/t")
         say(f"  cut {100*x:.0f}%: " + " | ".join(line))
+    # share of the cut delivered by inbound freight and safety stock (speed) vs facilities and last mile (density), both decisions
+    say("  sources of the cut, both decisions (change in t/yr: facilities, holding, inbound, last mile):")
+    for x in (0.10, 0.20, 0.30):
+        r = next(q for q in rows if abs(q["x"]-x) < 1e-9)["both"]; v = 1000/r["days"]; n = r["n"]
+        S0, S1 = A.SS(n0, v0, p), A.SS(n, 1000/r["days"]*1, p)
+        def comp(n_, v_):
+            S = A.SS(n_, v_, p); t = p["N"]*p["mu"]
+            return [p["phi"]*n_, p["eta"]*S, (p["e0"]+p["eps0"]*v_**2)*t*p["D"], p["rL"]*p["tL"]*t*A.d(n_, p)]
+        d = [(b-a)*Y/1000 for a, b in zip(comp(n0, v0), comp(n, 1000/r["days"]))]
+        say(f"    cut {100*x:.0f}%: " + ", ".join(f"{k} {v:+.0f}" for k, v in zip(("facilities", "holding", "inbound", "last mile"), d)))
+    say("  price path (continuous):")
+    for P in (50, 100, 200, 300, 500, 1000):
+        tau = P/1000.0
+        def red(n):
+            return minimize_scalar(lambda v: KC(n, v, p)[0]+tau*KC(n, v, p)[1], bounds=(p["vmin"], p["vmax"]), method="bounded").fun
+        n = minimize_scalar(red, bounds=(1, p["N"]), method="bounded", options={"xatol": 1e-7}).x
+        v = minimize_scalar(lambda v: KC(n, v, p)[0]+tau*KC(n, v, p)[1], bounds=(p["vmin"], p["vmax"]), method="bounded").x
+        K, C = KC(n, v, p)
+        say(f"    ${P}/t: {n:.2f} DCs {1000/v:.2f} d cut {100*(1-C/C0):.1f}% cost +{100*(K/K0-1):.2f}% avg ${(K-K0)/(C0-C)*1000:,.0f}/t")
 
-    say("\nINBOUND-TRANSPORT LINK (financed), carbon intensity of faster service varied with its cost schedule fixed")
-    XS = np.round(np.arange(0.10, 2.0001, 0.05), 3)           # kg CO2e per loaded vehicle-mile, 20 pallets a load
-    def cmin(q):
-        best = None
-        for n in range(1, q["N"]+1):
-            v = minimize_scalar(lambda v: KC(n, v, q)[1], bounds=(q["vmin"], q["vmax"]), method="bounded", options={"xatol": 1e-6}).x
-            c = KC(n, v, q)[1]
-            if best is None or c < best[0]: best = (c, n, v)
-        return best[1]
+    say("\nINBOUND-TRANSPORT LINK (financed, continuous n), carbon intensity of faster service varied with its cost schedule fixed")
+    XS = np.round(np.arange(0.10, 2.0001, 0.05), 3)
     res = {"x": XS.tolist(), "top": {}, "bottom": {}}
     TOP = {"lower": dict(F_year=6.0e6, over={}), "higher": dict(F_year=1.0e6, over=dict(sigma=150/np.sqrt(7), rho=0.1, z=2.326))}
     for env, e in TOP.items():
         base = B.reference(storage="refrigerated", value=1250.0, spoil_week=0.005, embodied=0.803, lane_kind="labor", F_year=e["F_year"])
         base.update(e["over"]); nb = solve(base)[0]
-        res["top"][env] = {"omega": A.omega(base), "nK": int(nb), "curves": {}}
+        res["top"][env] = {"omega": A.omega(base), "nK": float(nb), "curves": {}}
         for rt in (0.03, 0.45, 1.78):
             ys = []
             for xv in XS:
                 q = B.reference(storage="refrigerated", value=1250.0, spoil_week=0.005, embodied=0.803, lane_kind="labor",
                                 F_year=e["F_year"], rL=xv/20/0.1375)
-                q.update(e["over"]); set_rt(q, rt); ys.append(int(cmin(q)))
+                q.update(e["over"]); set_rt(q, rt); ys.append(float(cmin(q)))
             res["top"][env]["curves"][str(rt)] = ys
-        say(f"  perishables, {env} pooling (omega {A.omega(base):.3f}, cost-min {nb} DCs): carbon-min DCs at diesel truck "
-            + ", ".join(f"r_t={rt}: {res['top'][env]['curves'][str(rt)][list(XS).index(1.35)]}" for rt in (0.03, 0.45, 1.78)))
+        k = list(XS).index(1.35)
+        say(f"  perishables, {env} pooling (omega {A.omega(base):.3f}, cost-min {nb:.2f} DCs): carbon-min DCs at diesel truck "
+            + ", ".join(f"r_t={rt}: {res['top'][env]['curves'][str(rt)][k]:.1f}" for rt in (0.03, 0.45, 1.78)))
     CUT = 0.25
     BOT = {"lower": dict(sigma=50/np.sqrt(7), rho=0.6), "higher": dict(sigma=150/np.sqrt(7), rho=0.1, z=2.326)}
     for env, over in BOT.items():
         base = B.reference(); base.update(over); nb = solve(base)[0]
-        res["bottom"][env] = {"omega": A.omega(base), "nK": int(nb), "curves": {}, "cut": CUT}
+        res["bottom"][env] = {"omega": A.omega(base), "nK": float(nb), "curves": {}, "cut": CUT}
         for rt in (0.03, 0.45, 1.78):
             ys = []
             for xv in XS:
                 q = B.reference(rL=xv/20/0.1375); q.update(over); set_rt(q, rt)
                 nq, vq = solve(q); Cq = KC(nq, vq, q)[1]; sres = solve(q, cap=(1-CUT)*Cq)
-                ys.append(None if sres is None else int(sres[0]))
+                ys.append(None if sres is None else float(sres[0]))
             res["bottom"][env]["curves"][str(rt)] = ys
-        say(f"  reference, {env} pooling (omega {A.omega(base):.3f}, cost-min {nb} DCs), {100*CUT:.0f}% cut, DCs at diesel truck "
-            + ", ".join(f"r_t={rt}: {res['bottom'][env]['curves'][str(rt)][list(XS).index(1.35)]}" for rt in (0.03, 0.45, 1.78)))
+        k = list(XS).index(1.35)
+        say(f"  reference, {env} pooling (omega {A.omega(base):.3f}, cost-min {nb:.2f} DCs), {100*CUT:.0f}% cut, DCs at diesel truck "
+            + ", ".join(f"r_t={rt}: " + ("n.a." if res['bottom'][env]['curves'][str(rt)][k] is None else f"{res['bottom'][env]['curves'][str(rt)][k]:.1f}") for rt in (0.03, 0.45, 1.78)))
     json.dump(res, open(os.path.join(here, "inbound_v22.json"), "w"))
     with open(os.path.join(here, "targets_v22_output.txt"), "w") as fh: fh.write("\n".join(out) + "\n")

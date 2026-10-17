@@ -33,36 +33,40 @@ def solve(p, cap=None, vset=None, integer=True, **o):
     grid = np.exp(np.linspace(0, np.log(p["N"]), 400)); vals = [red(n) for n in grid]; i = int(np.argmin(vals))
     if vals[i] >= 1e18: return None
     n = minimize_scalar(red, bounds=(grid[max(i-1, 0)], grid[min(i+1, 399)]), method="bounded", options={"xatol": 1e-6}).x
+    if red(n) > vals[i]: n = grid[i]          # refinement left the feasible set: keep the grid point
     return n, best_v(n, p, cap, vset, o)
-def maxcut(p, base_C, vset=None, **o):
+def maxcut(p, base_C, vset=None, integer=False, **o):
     lo, hi = 0.0, 0.99
     for _ in range(40):
         mid = 0.5*(lo+hi)
-        if solve(p, (1-mid)*base_C, vset, **o) is None: hi = mid
+        if solve(p, (1-mid)*base_C, vset, integer, **o) is None: hi = mid
         else: lo = mid
     return lo
-def row(label, p, vset=None, integer=True, base_o=None, cap_o=None, budget=None):
+def row(label, p, vset=None, integer=False, base_o=None, cap_o=None, budget=None):
     base_o = base_o or {}; cap_o = cap_o or {}
     nb, vb = solve(p, None, vset, integer, **base_o); Kb, Cb = B.KC(nb, vb, p, **base_o)
     cap = (1-X)*Cb if budget is None else budget
     sres = solve(p, cap, vset, integer, **{**base_o, **cap_o})
     if sres is None:
-        mc = maxcut(p, Cb, vset, **{**base_o, **cap_o}) if budget is None else None
+        mc = maxcut(p, Cb, vset, integer, **{**base_o, **cap_o}) if budget is None else None
         say(f"  {label:<44} cost min {nb:.1f} DCs {1000/vb:.2f} d | not attainable" + (f" (largest cut {100*mc:.1f}%)" if mc is not None else ""))
         return
     n, v = sres; K, C = B.KC(n, v, p, **base_o)
     say(f"  {label:<44} cost min {nb:.1f} DCs {1000/vb:.2f} d | {n:.1f} DCs {1000/v:.2f} d, cut {100*(1-C/Cb):.1f}%, cost +{100*(K/Kb-1):.1f}%")
 if __name__ == "__main__":
-    p = B.reference(); n0, v0 = solve(p); C0 = B.KC(n0, v0, p)[1]
-    say(f"ROBUSTNESS: least-cost design for a {100*X:.0f}% cut from each row's own cost minimum (realized caps: same expected budget as the reference)")
+    p = B.reference(); n0, v0 = solve(p, integer=False); C0 = B.KC(n0, v0, p)[1]
+    say(f"ROBUSTNESS (continuous number of centers unless stated): least-cost design for a {100*X:.0f}% cut from each row's own cost minimum (realized caps: same expected budget as the reference)")
     row("Reference", p)
-    row("Rail or truckload only", p, vset=(250.0, 500.0))
-    row("Continuous number of centers", p, integer=False)
-    row("Building energy share beta=0.25", B.reference(beta=0.25))
-    row("Building energy share beta=0.75", B.reference(beta=0.75))
+    row("Rail, intermodal, or truckload only", p, vset=(1000.0/6, 250.0, 500.0))
+    row("Whole number of centers", p, integer=True)
+    row("Warehouse carbon from site energy", B.reference(wh="site"))
     row("No financing of stock in transit", B.reference(financed=False))
-    row("Annual cap on realized carbon, 95%", p, cap_o=dict(m=1.05), budget=(1-X)*C0)
-    row("Weekly cap on realized carbon, 95%", p, cap_o=dict(m=1.37), budget=(1-X)*C0)
+    from statistics import NormalDist
+    CVQ = (p["sigma"]*np.sqrt(7)/(p["mu"]*7))*np.sqrt((1+(p["N"]-1)*p["rho"])/p["N"]); z95 = NormalDist().inv_cdf(0.95)
+    m_week, m_year = 1 + z95*CVQ, 1 + z95*CVQ/np.sqrt(52)
+    say(f"  multipliers from primitives: CV_Q={CVQ:.5f}, weekly m={m_week:.5f}, annual m={m_year:.5f}")
+    row("Annual cap on realized carbon, 95%", p, cap_o=dict(m=m_year), budget=(1-X)*C0)
+    row("Weekly cap on realized carbon, 95%", p, cap_o=dict(m=m_week), budget=(1-X)*C0)
     for lam in (0.1, 0.25, 0.5):
-        row(f"Load-sensitive delivery, lambda={lam}", p, base_o=dict(lam=lam, nref=float(n0)))
+        row(f"Load-sensitive delivery, lambda={lam}", p, base_o=dict(lam=lam, nref=4.0))
     with open(os.path.join(here, "robust_v22_output.txt"), "w") as fh: fh.write("\n".join(out) + "\n")

@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     say("\nLINE-HAUL LINK: carbon-minimizing DC count as the carbon intensity of faster service varies (cost schedule fixed)")
     def set_rt(q, rt):
-        e_min = q["e0"] + q["eps0"]*q["vmin"]**2; q["eps0"] = rt*q["t1"]; q["e0"] = e_min - q["eps0"]*q["vmin"]**2
+        va = q["modes"][0]; e_min = q["e0"] + q["eps0"]*va**2; q["eps0"] = rt*q["t1"]; q["e0"] = e_min - q["eps0"]*va**2   # carbon of intermodal held fixed
     def cmin(q):
         best = None
         for n in range(1, q["N"]+1):
@@ -139,10 +139,9 @@ if __name__ == "__main__":
             n, v = s; K, C = KC(n, v, q, **base_o)
         say(f"  {label:<46} cost min {nb:.1f} DCs {1000/vb:.2f} d | {n:.1f} DCs {1000/v:.2f} d, cut {100*(1-C/Cb):.1f}%, cost +{100*(K/Kb-1):.1f}%")
     row("Reference", p)
-    row("Implementation: rail or truckload only", p, vset=(250.0, 500.0))
+    row("Implementation: rail, intermodal, or truckload only", p, vset=(1000.0/6, 250.0, 500.0))
     row("Implementation: continuous number of DCs", p, integer=False)
-    for beta in (0.25, 0.75):
-        row(f"Allocation: building energy share beta={beta}", reference(beta=beta))
+    row("Accounting: warehouse carbon from site energy", reference(wh="site"))
     nP, vP = design(p, tau); CP = KC(nP, vP, p)[1]
     for m, lab in ((1.05, "Accounting: annual cap on realized carbon, 95%"), (1.37, "Accounting: weekly cap on realized carbon, 95%")):
         row(lab, p, o=dict(m=m), budget=CP)

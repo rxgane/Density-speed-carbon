@@ -42,3 +42,7 @@ tmp/
 *.docx
 !fig_target.pdf
 !fig_inbound.pdf
+!fig_levers.pdf
+
+# --- Figure previews (PNG) written next to the scripts ---
+revision/*.png
