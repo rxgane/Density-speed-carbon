@@ -7,10 +7,11 @@ prepared for *Transportation Research Part E*.
 A continuous-approximation location–inventory model in which a firm chooses **network density**
 (the number of distribution centers, `n`) and **replenishment speed** (`v`) to minimize cost under a
 carbon price or cap and a service requirement. Carbon arises from facilities, holding inventory,
-line-haul freight, and last-mile delivery. The joint design has a single best solution at every carbon
-price, and the carbon-minimizing direction of both decisions follows from four carbon-intensity-per-dollar
-ratios and the share of a distribution center's marginal cost that is lost pooling. A calibration to
-public US data shows how the direction depends on how speed is bought and how the last mile is driven.
+line-haul freight, and last-mile delivery; cost also includes the financing of stock in transit. The joint
+design has a unique optimum at every carbon price, and the carbon-minimizing direction of both decisions
+follows from four carbon-intensity-per-dollar ratios, the share of a distribution center's marginal cost that
+is lost pooling, and the share of the inventory saving from speed that is safety stock. A calibration to
+public US data traces how a carbon price moves a reference network that finances its stock in transit.
 
 ## Repository contents
 
@@ -19,6 +20,9 @@ public US data shows how the direction depends on how speed is bought and how th
 | `network_design_v2.tex`, `references.bib` | Manuscript source (anonymized for review) and bibliography |
 | `network_design_v2.pdf` | Compiled manuscript |
 | `title_page.tex`, `cover_letter.tex`, `highlights.tex` | Title page with declarations, cover letter, highlights |
+| `revision/application_v21.py` | Benchmark carbon intensities per dollar (Table 3), allocation shares, carbon shares of priced cost |
+| `revision/application_v22.py` | Reference network that finances stock in transit: response to a carbon price, line-haul link, robustness, rounding |
+| `revision/fig_price.py` | Figure of the reference network's response to a carbon price (`fig_price.pdf`) |
 | `revision/calibration_v2.py` | Carbon intensity per dollar of each activity from public sources; product classification; carbon share of priced cost |
 | `revision/application_v2.py` | Calibrated national network in physical units (designs, carbon-price path, integer rounding) |
 | `revision/v2_checks.py` | Checks of the analytical results against brute-force optimization |
@@ -32,9 +36,10 @@ public US data shows how the direction depends on how speed is bought and how th
 Python 3 with NumPy and SciPy:
 
 ```bash
-python3 revision/calibration_v2.py
-python3 revision/application_v2.py
-python3 revision/v2_checks.py
+cd revision
+python3 application_v21.py
+python3 application_v22.py
+python3 fig_price.py
 ```
 
 ## Building the paper
