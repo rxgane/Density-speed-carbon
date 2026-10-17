@@ -1,0 +1,12 @@
+ROBUSTNESS: least-cost design for a 30% cut from each row's own cost minimum (realized caps: same expected budget as the reference)
+  Reference                                    cost min 4.0 DCs 2.15 d | 5.0 DCs 3.15 d, cut 30.0%, cost +4.3%
+  Rail or truckload only                       cost min 4.0 DCs 2.00 d | 4.0 DCs 4.00 d, cut 40.2%, cost +9.1%
+  Continuous number of centers                 cost min 3.9 DCs 2.15 d | 5.0 DCs 3.13 d, cut 30.0%, cost +4.2%
+  Building energy share beta=0.25              cost min 4.0 DCs 2.15 d | 5.0 DCs 3.18 d, cut 30.0%, cost +4.5%
+  Building energy share beta=0.75              cost min 4.0 DCs 2.15 d | 5.0 DCs 3.12 d, cut 30.0%, cost +4.1%
+  No financing of stock in transit             cost min 4.0 DCs 3.62 d | not attainable (largest cut 22.8%)
+  Annual cap on realized carbon, 95%           cost min 4.0 DCs 2.15 d | 5.0 DCs 3.39 d, cut 33.2%, cost +5.8%
+  Weekly cap on realized carbon, 95%           cost min 4.0 DCs 2.15 d | 14.0 DCs 4.00 d, cut 47.4%, cost +29.3%
+  Load-sensitive delivery, lambda=0.1          cost min 3.0 DCs 2.15 d | 4.0 DCs 3.20 d, cut 30.0%, cost +4.2%
+  Load-sensitive delivery, lambda=0.25         cost min 2.0 DCs 2.16 d | 3.0 DCs 3.27 d, cut 30.0%, cost +4.8%
+  Load-sensitive delivery, lambda=0.5          cost min 1.0 DCs 2.16 d | 1.0 DCs 3.40 d, cut 30.0%, cost +5.5%

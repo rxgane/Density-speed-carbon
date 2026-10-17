@@ -16,7 +16,8 @@ CARBON PRICE RESPONSE (integer DCs): emissions cut and cost increase vs the cost
   $ 1000/t  replen: n=4 3.06d cut 25.5% cost +3.17% | network: n=5 2.15d cut 3.2% cost +0.57% | both: n=5 3.06d cut 28.6% cost +3.75%
   $ 2000/t  replen: n=4 3.63d cut 32.6% cost +6.70% | network: n=6 2.15d cut 5.4% cost +1.79% | both: n=6 3.62d cut 37.9% cost +8.54%
   $ 5000/t  replen: n=4 4.00d cut 35.7% cost +9.22% | network: n=8 2.15d cut 8.3% cost +5.28% | both: n=8 4.00d cut 44.0% cost +14.85%
-  lowest grid price at which the both-decision design adds a DC: $568/t
+  price at which the both-decision design adds a fifth DC: about $552/t
+  average cost per tonne avoided at $100/t: $48
 
 LINE-HAUL LINK: carbon-minimizing DC count as the carbon intensity of faster service varies (cost schedule fixed)
   reference, r_t=0.03: carbon-minimizing DCs 19, line haul 4.00 days

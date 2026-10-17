@@ -21,8 +21,10 @@ public US data traces how a carbon price moves a reference network that finances
 | `network_design_v2.pdf` | Compiled manuscript |
 | `title_page.tex`, `cover_letter.tex`, `highlights.tex` | Title page with declarations, cover letter, highlights |
 | `revision/application_v21.py` | Benchmark carbon intensities per dollar (Table 3), allocation shares, carbon shares of priced cost |
-| `revision/application_v22.py` | Reference network that finances stock in transit: response to a carbon price, line-haul link, robustness, rounding |
-| `revision/fig_price.py` | Figure of the reference network's response to a carbon price (`fig_price.pdf`) |
+| `revision/application_v22.py` | Reference network that finances stock in transit: inputs, response to a carbon price, rounding |
+| `revision/targets_v22.py`, `revision/fig_target.py` | Least-cost design for each required cut in emissions, three action sets (`fig_target.pdf`) |
+| `revision/targets_v22.py`, `revision/fig_inbound.py` | Inbound-transport link to the number of distribution centers (`fig_inbound.pdf`) |
+| `revision/robust_v22.py` | Robustness of the least-cost design for a 30% cut |
 | `revision/calibration_v2.py` | Carbon intensity per dollar of each activity from public sources; product classification; carbon share of priced cost |
 | `revision/application_v2.py` | Calibrated national network in physical units (designs, carbon-price path, integer rounding) |
 | `revision/v2_checks.py` | Checks of the analytical results against brute-force optimization |
@@ -39,7 +41,8 @@ Python 3 with NumPy and SciPy:
 cd revision
 python3 application_v21.py
 python3 application_v22.py
-python3 fig_price.py
+python3 targets_v22.py && python3 fig_target.py && python3 fig_inbound.py
+python3 robust_v22.py
 ```
 
 ## Building the paper

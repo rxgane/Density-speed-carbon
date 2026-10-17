@@ -97,9 +97,14 @@ if __name__ == "__main__":
             n, v = design(p, tau, mode, nfix=n0, vfix=v0); K, C = KC(n, v, p)
             line.append(f"{mode}: n={n} {1000/v:.2f}d cut {100*(1-C/C0):.1f}% cost +{100*(K/K0-1):.2f}%")
         say(f"  ${P:>5}/t  " + " | ".join(line))
-    first5 = next(r["price"] for r in rows if r["both"]["n"] > n0)
-    say(f"  lowest grid price at which the both-decision design adds a DC: ${first5:,.0f}/t")
-    json.dump(rows, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "application_v22_price.json"), "w"))
+    lo, hi = 0.0, next(r["price"] for r in rows if r["both"]["n"] > n0)
+    for _ in range(40):
+        mid = 0.5*(lo+hi)
+        if design(p, mid/1000.0)[0] > n0: hi = mid
+        else: lo = mid
+    say(f"  price at which the both-decision design adds a fifth DC: about ${hi:,.0f}/t")
+    nP, vP = design(p, 0.1); KP, CP = KC(nP, vP, p)
+    say(f"  average cost per tonne avoided at $100/t: ${(KP-K0)/(C0-CP)*1000:,.0f}")
 
     say("\nLINE-HAUL LINK: carbon-minimizing DC count as the carbon intensity of faster service varies (cost schedule fixed)")
     def set_rt(q, rt):

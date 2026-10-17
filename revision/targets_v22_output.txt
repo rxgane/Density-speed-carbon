@@ -1,0 +1,17 @@
+REFERENCE (financed): 4 DCs, 2.15 days, cost $107.5M, carbon 37,206 t
+  largest attainable cut, replen: 35.50% (grid)
+  largest attainable cut, network: 12.25% (grid)
+  largest attainable cut, both: 47.75% (grid)
+  both decisions first add a DC at a cut of 20.50% (grid)
+  cut 10%: replen: 4 DCs 2.40 d cost +0.3% avg $96/t | network: 11 DCs 2.15 d cost +11.9% avg $3,245/t | both: 4 DCs 2.40 d cost +0.3% avg $96/t
+  cut 20%: replen: 4 DCs 2.77 d cost +1.7% avg $241/t | network: n.a. | both: 4 DCs 2.77 d cost +1.7% avg $241/t
+  cut 25%: replen: 4 DCs 3.03 d cost +3.0% avg $346/t | network: n.a. | both: 5 DCs 2.86 d cost +2.7% avg $312/t
+  cut 30%: replen: 4 DCs 3.39 d cost +5.1% avg $491/t | network: n.a. | both: 5 DCs 3.15 d cost +4.3% avg $413/t
+  cut 35%: replen: 4 DCs 3.91 d cost +8.6% avg $707/t | network: n.a. | both: 6 DCs 3.35 d cost +6.8% avg $562/t
+  cut 40%: replen: n.a. | network: n.a. | both: 6 DCs 3.86 d cost +10.2% avg $735/t
+
+INBOUND-TRANSPORT LINK (financed), carbon intensity of faster service varied with its cost schedule fixed
+  perishables, lower pooling (omega 0.006, cost-min 3 DCs): carbon-min DCs at diesel truck r_t=0.03: 8, r_t=0.45: 8, r_t=1.78: 8
+  perishables, higher pooling (omega 0.099, cost-min 8 DCs): carbon-min DCs at diesel truck r_t=0.03: 22, r_t=0.45: 21, r_t=1.78: 21
+  reference, lower pooling (omega 0.019, cost-min 4 DCs), 25% cut, DCs at diesel truck r_t=0.03: None, r_t=0.45: 10, r_t=1.78: 5
+  reference, higher pooling (omega 0.257, cost-min 3 DCs), 25% cut, DCs at diesel truck r_t=0.03: None, r_t=0.45: 7, r_t=1.78: 4
