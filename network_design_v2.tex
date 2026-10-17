@@ -440,6 +440,8 @@ all other quantities are exogenous parameters or derived.}
 \multicolumn{2}{@{}l}{\textbf{Geography, cost, carbon (exogenous)}}\\
 \;\;$A,\ D,\ \delta$ & region area; inbound distance; last-mile distance constant\\
 \;\;$F,\ \varphi$ & fixed cost, carbon per DC per period\\
+\;\;$c(q),\ \psi(q)$ & throughput-dependent cost, carbon per DC at planned throughput $q=N\mu/n$\\
+\;\;$\bar F,\ \bar\varphi$ & marginal facility cost, carbon of an additional DC\\
 \;\;$h,\ \eta$ & holding cost, carbon per unit per period\\
 \;\;$h_p$ & financing cost of stock in transit per unit per period\\
 \;\;$t(v),\ \varepsilon(v)$ & inbound transport cost, carbon per unit-mile (convex in $v$)\\
@@ -470,23 +472,34 @@ itself is conserved at $N\mu$ regardless of the configuration: the firm moves th
 markets through the network, whatever density $n$ and speed $v$ it chooses. With per-period throughput
 $N\mu$,
 \begin{align}
-  K(n,v) &= \underbrace{F\,n}_{\text{fixed}} + \underbrace{h\,\sstock(n,v)}_{\text{holding}} + \underbrace{h_p\,P(v)}_{\text{in transit}}
+  K(n,v) &= \underbrace{K_F(n)}_{\text{facilities}} + \underbrace{h\,\sstock(n,v)}_{\text{holding}} + \underbrace{h_p\,P(v)}_{\text{in transit}}
             + \underbrace{t(v)\,N\mu D}_{\text{inbound}} + \underbrace{t_L\,N\mu\,d(n)}_{\text{last-mile}},
             \label{eq:K}\\[2pt]
-  C(n,v) &= \underbrace{\varphi\,n}_{\text{fixed}} + \underbrace{\eta\,\sstock(n,v)}_{\text{holding}}
+  C(n,v) &= \underbrace{C_F(n)}_{\text{facilities}} + \underbrace{\eta\,\sstock(n,v)}_{\text{holding}}
             + \underbrace{\varepsilon(v)\,N\mu D}_{\text{inbound}} + \underbrace{\varepsilon_L\,N\mu\,d(n)}_{\text{last-mile}},
             \label{eq:C}
 \end{align}
-where $F,\varphi$ are fixed cost/carbon per DC, $h,\eta$ are holding cost/carbon per unit per period,
+where $K_F,C_F$ are the facility cost and carbon of the network, defined below, $h,\eta$ are holding cost/carbon per unit per period,
 $h_p$ is the financing cost of a unit in transit per period, $P(v)=N\mu D/v$ is the stock in transit, and
 $t_L,\varepsilon_L$ are last-mile cost/carbon rates \citep{shen2003joint, hua2011managing,
 benjaafar2013carbon}. Each term multiplies a rate by the activity it prices; apart from the financing of stock in transit, which
 carries no carbon, the two functions differ only in whether the rate is measured in dollars or kilograms.
 
-\paragraph{Facilities.} The facility terms $F n$ and $\varphi n$ are the periodic cost and carbon of operating
-the open DCs. They rise linearly in $n$ and do not depend on $v$. Facility carbon $\varphi$ is distinct from
-holding carbon $\eta$: $\varphi$ captures baseline building energy and embodied carbon, whereas $\eta$ prices
-the incremental carbon of storing a unit (for example refrigeration or handling).
+\paragraph{Facilities.} The facility terms are the periodic cost and carbon of operating the open DCs. Each
+center is sized to handle its planned throughput $q=N\mu/n$. Its cost is a fixed charge $F$, incurred per site,
+plus a throughput-dependent charge $c(q)=c_0(q/q_0)^{\zeta_c}$ for the labor, equipment, and space that scale
+with the volume it handles, where $q_0$ is a reference throughput; its carbon is likewise $\varphi$ plus
+$\psi(q)=\psi_0(q/q_0)^{\zeta_\psi}$. Summed over the network,
+\begin{equation}\label{eq:facility}
+  K_F(n)=F\,n+n\,c(N\mu/n),\qquad C_F(n)=\varphi\,n+n\,\psi(N\mu/n).
+\end{equation}
+Exponents $\zeta_c,\zeta_\psi\in[0,1]$ represent economies of scale in operating a center, which hold up to an
+efficient center size. With an exponent of one the charge is proportional to volume, so its network total does not
+depend on $n$; with an exponent of zero it is a further fixed charge per site. Because each center is sized to its
+planned throughput, its facility cost and carbon are deterministic, and they do not depend on $v$. The linear
+model, $K_F=Fn$ and $C_F=\varphi n$, is the benchmark for the closed forms of Section~\ref{sec:analysis}.
+Facility carbon is distinct from holding carbon $\eta$: $\varphi$ and $\psi$ capture building energy and embodied
+carbon, whereas $\eta$ prices the incremental carbon of storing a unit (for example refrigeration or handling).
 
 \paragraph{Holding.} The holding terms $h\sstock(n,v)$ and $\eta\sstock(n,v)$ value the system-wide safety
 stock of \eqref{eq:ss}. They rise in $n$ through the loss of pooling in $\Psi(n)$ and fall in $v$ through the
@@ -518,7 +531,7 @@ continuous-approximation rate, so the last-mile term is decreasing and convex in
 under constant per-mile last-mile rates.
 
 \paragraph{Decomposition and scope.} The carbon function splits into a transport component
-$\varepsilon(v)N\mu D+\varepsilon_LN\mu d(n)$ and a facility-and-holding component $\varphi n+\eta\sstock(n,v)$;
+$\varepsilon(v)N\mu D+\varepsilon_LN\mu d(n)$ and a facility-and-holding component $C_F(n)+\eta\sstock(n,v)$;
 the cost function has the analogous partition, with the financing term $h_pP(v)$ in addition. Slowing replenishment reduces inbound transport carbon but
 raises safety stock, while dispersion reduces last-mile distance but raises facility count and pooling loss.
 We hold the replenishment quantity of the network fixed, so that each center's order falls as centers are added
@@ -547,13 +560,13 @@ cap above the carbon minimum is met by a finite carbon price, and the capped pro
 price share the same unique optimum. The carbon minimum itself is the limit as the price grows without bound. Jumps arise only from the
 integer number of distribution centers. Define the blended rates
 \[
-  F_\tau=F+\tau\varphi,\qquad H_\tau=h+\tau\eta,\qquad
+  H_\tau=h+\tau\eta,\qquad
   T_\tau(v)=t(v)+\tau\varepsilon(v),\qquad
   \ell_\tau=t_L+\tau\varepsilon_L .
 \]
 Then
 \begin{equation}\label{eq:J}
-  J(n,v;\tau) \;=\; F_\tau n + H_\tau\,\sstock(n,v) + h_p\,P(v)
+  J(n,v;\tau) \;=\; K_F(n)+\tau C_F(n) + H_\tau\,\sstock(n,v) + h_p\,P(v)
      + T_\tau(v)N\mu D + \ell_\tau N\mu d(n).
 \end{equation}
 The financing cost of stock in transit carries no carbon and is not blended. Setting $\tau=0$ recovers cost;
@@ -563,7 +576,14 @@ the limit $\tau\to\infty$ recovers carbon up to scale.
 We now characterize how a carbon price changes the two decisions. The answers depend on four
 carbon intensities per dollar, which we use throughout: holding, $r_h=\eta/h$; inbound transport at the margin,
 $\varepsilon'/t'$ of \eqref{eq:rtfuel}, which equals $r_t=\varepsilon_0/t_1$ under the quadratic instantiation;
-last-mile delivery, $r_L=\varepsilon_L/t_L$; and facilities, $r_F=\varphi/F$. Each measures the carbon that a
+last-mile delivery, $r_L=\varepsilon_L/t_L$; and facilities, $r_F=\bar\varphi/\bar F$, the carbon per dollar of an
+additional center. Here
+\[
+  \bar F=K_F'(n)=F+(1-\zeta_c)\,c(q),\qquad \bar\varphi=C_F'(n)=\varphi+(1-\zeta_\psi)\,\psi(q)
+\]
+are the marginal facility cost and carbon at the density in question: an additional center costs its fixed charge
+plus the economies of scale it forgoes, the share $1-\zeta_c$ of a center's throughput-dependent cost. For exponents
+between zero and one they fall as the network grows, and in the linear benchmark they are the constant charges $F$ and $\varphi$. Each ratio measures the carbon that a
 dollar spent on the activity emits, so the direction in which carbon moves a decision depends on each activity's
 carbon \emph{relative to its cost}. We take up, in turn, the questions a firm asks of its network: whether its
 design responds to a carbon price in a predictable way (Section~\ref{sec:unique}), when replenishment should be
@@ -574,10 +594,11 @@ what changes under a cap on realized carbon (Section~\ref{sec:chance}). Proofs a
 With $G(n,v)=\partial\sstock(n,v)/\partial n$ denoting the marginal safety stock of an additional DC,
 differentiation gives the stationarity conditions
 \begin{align}
-  F_\tau + H_\tau G(n,v) &= \frac{\ell_\tau N\mu\delta}{2}\,n^{-3/2}, \label{eq:focn}\\[2pt]
+  \bar F_\tau(n) + H_\tau G(n,v) &= \frac{\ell_\tau N\mu\delta}{2}\,n^{-3/2}, \label{eq:focn}\\[2pt]
   N\mu D\,T_\tau'(v) &= \frac{H_\tau\,\sstock(n,v)}{2v}+\frac{h_p\,P(v)}{v}, \label{eq:focv}
 \end{align}
-the first balancing the marginal facility and lost-pooling costs against the marginal last-mile saving, and
+with $\bar F_\tau=\bar F+\tau\bar\varphi$ the priced marginal facility cost, the first balancing the marginal
+facility and lost-pooling costs against the marginal last-mile saving, and
 the second balancing the marginal transport cost of speed against the marginal holding and financing saving it
 obtains. The speed condition \eqref{eq:focv} governs the \emph{availability margin}: safety stock and
 replenishment speed are alternative ways to provide service. The density condition \eqref{eq:focn} governs the
@@ -594,7 +615,8 @@ either phase possibly empty, so that it has a single minimizer.
 
 \begin{lemma}[A unique optimum]\label{prop:unique}
 Let $t$ and $\varepsilon$ be increasing, differentiable, and convex, let all cost and carbon rates be
-positive, let $h_p\ge0$, and let $v_{\min}>0$. For every carbon price $\tau\ge0$, and for the carbon objective $C$:
+positive, let the facility functions be those of \eqref{eq:facility} with $\zeta_c,\zeta_\psi\in[0,1]$, let
+$h_p\ge0$, and let $v_{\min}>0$. For every carbon price $\tau\ge0$, and for the carbon objective $C$:
 \textup{(i)} the objective is strictly convex in $(\ln n,\ln v)$ on the feasible region;
 \textup{(ii)} the problem has a unique minimizer, and under a carbon price the minimizer
 $\big(n^*(\tau),v^*(\tau)\big)$ is continuous in $\tau$;
@@ -679,14 +701,16 @@ $J_n(1,v)<0<J_n(N,v)$, and otherwise lies at a boundary, $n^*\in\{1,N\}$. For an
 $n_K(v)$, the carbon-minimizing density exceeds it, $n_C(v)>n_K(v)$, if and only if last-mile transport is more
 carbon-intensive per dollar than the \emph{pooling-adjusted facility threshold},
 \begin{equation}\label{eq:densthreshpool}
-  \frac{\varepsilon_L}{t_L} \;>\; \frac{\varphi+\eta\,G\big(n_K(v),v\big)}{F+h\,G\big(n_K(v),v\big)} .
+  \frac{\varepsilon_L}{t_L} \;>\; \frac{\bar\varphi+\eta\,G\big(n_K(v),v\big)}{\bar F+h\,G\big(n_K(v),v\big)} ,
 \end{equation}
-The right-hand side is a weighted average of $r_F$ and $r_h$, with weight on $r_h$ rising in the pooling penalty
-$G$. In the no-pooling limit ($\rho\to1$, so $G\to0$) the optimum is closed form when interior,
-$n^*=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$, and \eqref{eq:densthreshpool} reduces to
+with $\bar F$ and $\bar\varphi$ evaluated at $n_K(v)$. The right-hand side is a weighted average of $r_F$ and $r_h$,
+with weight on $r_h$ rising in the pooling penalty $G$. In the no-pooling limit ($\rho\to1$, so $G\to0$),
+\eqref{eq:densthreshpool} reduces to
 \begin{equation}\label{eq:densitythreshold}
-  \frac{\varepsilon_L}{t_L} \;>\; \frac{\varphi}{F}.
+  \frac{\varepsilon_L}{t_L} \;>\; \frac{\bar\varphi}{\bar F},
 \end{equation}
+and for a linear facility cost the optimum is closed form when interior, $n^*=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$,
+with $F_\tau=F+\tau\varphi$.
 
 \smallskip\noindent\textup{(ii)} Under the quadratic instantiation, and with speed chosen optimally for each
 network, a higher $z$ or $\sigma$ raises the inventory penalty of a denser network and lowers the optimal density
@@ -715,11 +739,12 @@ $\hat v_C$ the carbon-minimizing speed at the cost-minimizing density $n_K$, and
 safety-stock share at the cost minimum. Two quantities of the cost-minimizing network enter. The first is the
 \emph{pooling weight}
 \begin{equation}\label{eq:poolweight}
-  \omega=\frac{h\,G(n_K,v_K)}{F+h\,G(n_K,v_K)}=1-\Big(\frac{n_K}{n_K^0}\Big)^{3/2},
-  \qquad n_K^0=\Big(\frac{t_LN\mu\delta}{2F}\Big)^{2/3},
+  \omega=\frac{h\,G(n_K,v_K)}{\bar F+h\,G(n_K,v_K)},
 \end{equation}
-the share of the marginal cost of a distribution center that is lost pooling. Since $n_K^0$ is the density the
-firm would choose if pooling were absent, $\omega$ measures how far pooling holds the network below that size.
+the share of the marginal cost of a distribution center that is lost pooling, with $\bar F$, and $r_F$ below,
+evaluated at $n_K$. For a linear facility cost, $\omega=1-(n_K/n_K^0)^{3/2}$ with
+$n_K^0=(t_LN\mu\delta/2F)^{2/3}$; since $n_K^0$ is the density the firm would choose if pooling were absent,
+$\omega$ measures how far pooling holds the network below that size.
 The second, for interior $n_K$, is the pair of \emph{speed bands}
 \begin{equation}\label{eq:speedbands}
   \underline R=\sqrt{\Psi(n_K)/N}\;<\;1\;<\;\overline R=\sqrt{\Psi(n_K)/\Psi(1)},
@@ -752,8 +777,9 @@ the density, it is faster if $a_KR_{\mathrm{speed}}>\overline R$ and slower if
 $a_KR_{\mathrm{speed}}<\underline R$; only between the bands, with the two conditions pointing in opposite
 directions, does the size of the density change decide.
 
-\smallskip\noindent\textup{(iii)} \emph{Magnitudes without pooling.} Under the quadratic instantiation, in the
-no-pooling limit ($\rho\to1$), $\omega=0$, the two decisions separate, and for interior optima
+\smallskip\noindent\textup{(iii)} \emph{Magnitudes without pooling.} Under the quadratic instantiation and a
+linear facility cost, in the no-pooling limit ($\rho\to1$), $\omega=0$, the two decisions separate, and for interior
+optima
 \[
   \frac{n_C}{n_K}=R_{\mathrm{density}}^{2/3},\qquad \frac{v_C}{v_K}=\big(a_KR_{\mathrm{speed}}\big)^{2/5}.
 \]
@@ -762,7 +788,10 @@ no-pooling limit ($\rho\to1$), $\omega=0$, the two decisions separate, and for i
 \noindent For a given product, Proposition~\ref{prop:classify} tells the firm whether to replenish faster or
 slower and whether to operate more or fewer distribution centers. The
 density condition \eqref{eq:jointdensgen} is Proposition~\ref{prop:density} with one change. Adding a distribution
-center incurs a facility charge and lost pooling, in the proportions $1-\omega$ and $\omega$ of its marginal cost.
+center incurs its marginal facility cost and lost pooling, in the proportions $1-\omega$ and $\omega$ of its marginal
+cost. Because $r_F$ is measured at the margin, network redesign depends on the carbon per dollar of an additional
+center --- its fixed charge plus the economies of scale it forgoes. With economies of scale, this ratio may differ
+from the average carbon per dollar of operating a center.
 The carbon-minimizing firm replenishes its centers at its own speed $\hat v_C$, and safety stock falls with the
 square root of speed, so per dollar of lost pooling its carbon is $r_h\sqrt{v_K/\hat v_C}$. The carbon-minimizing
 network is more dispersed when a dollar of last-mile delivery emits more than this blend of facility and
@@ -809,10 +838,13 @@ $\mathrm d\ln v^*/\mathrm d\ln\tau=(a_\tau s_h-s_t)/(3-a_\tau/2)$, where
 $a_\tau=H_\tau\sstock/(H_\tau\sstock+2h_pP)$ at the optimum; its sign is that of $a(n,v^*)\,r_h-r_t$, so the
 speed moves monotonically in $\tau$, and without financing the elasticity is $\tfrac25(s_h-s_t)$;
 \textup{(ii)} in the no-pooling limit and for an interior density,
-$\mathrm d\ln n^*/\mathrm d\ln\tau=\tfrac23\,(s_L-s_F)$;
-\textup{(iii)} without financing, with pooling and interior speeds, if $r_L$ exceeds each of $r_F$, $r_h$, and
-$r_t$, the optimal density $n^*(\tau)$ is nondecreasing along the whole price path, and if $r_L$ falls short of
-each, it is nonincreasing.
+$\mathrm d\ln n^*/\mathrm d\ln\tau=(s_L-\bar s_F)/(3/2-\epsilon_F)$, where $\bar s_F=\tau\bar\varphi/\bar F_\tau$ is the
+carbon share of the priced marginal facility cost and $\epsilon_F=-\mathrm d\ln\bar F_\tau/\mathrm d\ln n\in[0,1)$
+its rate of decline in the density, both at $n^*$; for a linear facility cost the elasticity is $\tfrac23\,(s_L-s_F)$;
+\textup{(iii)} without financing, with pooling and interior speeds, if $r_L$ exceeds each of $\varphi/F$, $r_h$,
+$r_t$, and, at every density, the carbon per dollar of the economies of scale an additional center forgoes,
+$(1-\zeta_\psi)\psi(q)/[(1-\zeta_c)c(q)]$, the optimal density $n^*(\tau)$ is nondecreasing along the whole price path,
+and if $r_L$ falls short of each, it is nonincreasing.
 \end{proposition}
 
 \noindent The carbon share of a blended rate measures how much of that activity's cost, carbon charge included,
@@ -820,7 +852,9 @@ is carbon. By part (i), for a given network, a rising carbon price speeds replen
 saving from speed is more carbon-intensive per dollar than inbound freight, and the speed moves in one direction
 along the whole path. The response is gradual: at a low price both shares are near zero and speed barely moves,
 while at a high price both approach one and speed settles at its carbon-minimizing level. The speed moves most where the carbon shares of holding and inbound freight differ most, as when the speed the
-firm buys is fuel-intensive and its held stock carries little carbon. Part (iii) gives a simple condition for density.
+firm buys is fuel-intensive and its held stock carries little carbon. By part (ii), in the no-pooling limit, economies of scale make a center's marginal facility cost fall as the network grows, so the density
+responds more strongly to a given difference in carbon shares, provided the optimum remains interior. Part (iii)
+gives a simple condition for density.
 Without financing, when the last mile is the most carbon-intensive of the four activities per dollar and speeds
 are interior, no increase in the carbon price calls for consolidation; when the last mile is the least
 carbon-intensive, no increase calls for dispersion.
@@ -828,12 +862,12 @@ carbon-intensive, no increase calls for dispersion.
 \subsection{What changes under a cap on realized carbon?}\label{sec:chance}
 
 A firm held to a carbon budget for each accounting period must meet it with the carbon it actually emits, which
-fluctuates with demand about $C(n,v)$: the facility charge
+fluctuates with demand about $C(n,v)$: the facility cost and carbon, sized to planned throughput,
 and the base-stock safety-stock target are planned and treated as deterministic, but inbound and last-mile freight
 scale with realized throughput $Q=\sum_i X_i$, the sum of the realized market demands, which has mean $N\mu$ and
 variance $\sigma_Q^2=\sigma^2 N\,[\,1+(N-1)\rho\,]$. Realized carbon is then
 \begin{equation}\label{eq:Ctilde}
-  \tilde C(n,v) \;=\; \varphi n + \eta\,\sstock(n,v) + \big[\varepsilon(v)D+\varepsilon_L d(n)\big]\,Q,
+  \tilde C(n,v) \;=\; C_F(n) + \eta\,\sstock(n,v) + \big[\varepsilon(v)D+\varepsilon_L d(n)\big]\,Q,
 \end{equation}
 and a firm that requires realized carbon to stay within $B$ with confidence $1-\beta_c$ imposes the chance
 constraint $\Pr\{\tilde C(n,v)\le B\}\ge 1-\beta_c$, the carbon-side counterpart of the cycle service level
@@ -842,7 +876,7 @@ $\alpha$ on the inventory side.
 \begin{corollary}[Caps on realized carbon]\label{prop:chance}
 \textup{(i)} The chance constraint is equivalent to
 \begin{equation}\label{eq:chancecap}
-  \varphi n + \eta\,\sstock(n,v) + m\big[\varepsilon(v)N\mu D+\varepsilon_L N\mu\, d(n)\big]\;\le\;B,
+  C_F(n) + \eta\,\sstock(n,v) + m\big[\varepsilon(v)N\mu D+\varepsilon_L N\mu\, d(n)\big]\;\le\;B,
 \end{equation}
 the carbon function \eqref{eq:C} with the transport component scaled by $m=q_{1-\beta_c}/(N\mu)$, where
 $q_{1-\beta_c}$ is the lower $(1-\beta_c)$ quantile of realized throughput. Under the normal approximation,
@@ -852,7 +886,7 @@ variation $\sigma/\mu$, the correlation $\rho$, and the confidence $1-\beta_c$.
 
 \smallskip\noindent\textup{(ii)} The speed threshold \eqref{eq:speedthreshold} becomes
 $a(n,v_{\mathrm K})\,\eta/h>m\,\varepsilon'(v_{\mathrm K})/t'(v_{\mathrm K})$, the density threshold
-\eqref{eq:densthreshpool} becomes $m\,\varepsilon_L/t_L>(\varphi+\eta G)/(F+hG)$, and in the joint design the
+\eqref{eq:densthreshpool} becomes $m\,\varepsilon_L/t_L>(\bar\varphi+\eta G)/(\bar F+hG)$, and in the joint design the
 speed ratio becomes $a_KR_{\mathrm{speed}}/m$ and \eqref{eq:jointdens} becomes
 $m\,r_L>(1-\omega)\,r_F+\omega\,m^{1/5}r_h^{4/5}r_t^{1/5}a_K^{-1/5}$. Under the quadratic instantiation, the
 carbon-minimizing speed is nonincreasing in $m$, and strictly decreasing where $n_C$ and $v_C$ are interior.
@@ -860,7 +894,8 @@ carbon-minimizing speed is nonincreasing in $m$, and strictly decreasing where $
 
 \noindent A cap on realized carbon therefore leaves the structure intact. It places a risk margin on transport
 emissions, just as safety stock places one on demand, and so reinforces slower replenishment and, where the last
-mile is carbon-intensive, more distribution centers; the expected-value cap is the limiting case $m=1$. The
+mile is carbon-intensive, more distribution centers; the expected-value cap is the limiting case $m=1$. If part
+of a center's energy, such as that of handling equipment, varied with realized volume, the deterministic equivalent would scale that part by $m^{\zeta_\psi}$ as well. The
 deterministic equivalent is distribution-free in the throughput quantile, and a firm with strongly skewed demand
 can replace the normal approximation by the empirical quantile. The cap applies over the same accounting period
 as the flow model --- here a week. For a cap on cumulative carbon over $T$ periods with demands independent
@@ -876,7 +911,8 @@ Section~\ref{sec:calib} constructs benchmark carbon intensities per dollar from 
 assumptions, Section~\ref{sec:network} traces how a reference network meets a carbon
 target, and Section~\ref{sec:robust} examines whether that design survives changes in the assumptions. The
 directions follow from the propositions once the ratios are known, subject to the bounds on speed; the
-magnitudes describe the network we calibrate.
+magnitudes describe the network we calibrate. We calibrate the linear facility model of Section~\ref{sec:model}, in which each center's cost and
+carbon are fixed charges per site, so that $\bar F=F$, $\bar\varphi=\varphi$, and $r_F=\varphi/F$.
 
 \subsection{Benchmark carbon intensities}\label{sec:calib}
 
@@ -1360,17 +1396,19 @@ request.
 We give the argument for $J$; for $C$ replace each blended rate by its carbon rate and set $h_p=0$. Let $x=\ln n$ and $y=\ln v$,
 which range over a box, and let $k=z\sigma\sqrt{ND}$. Then
 \[
-  J=F_\tau e^{x}+H_\tau k\,e^{g(x,y)}+h_pN\mu D\,e^{-y}+T_\tau(e^{y})\,N\mu D+\ell_\tau N\mu\delta\,e^{-x/2},
+  J=\Phi_\tau(x)+H_\tau k\,e^{g(x,y)}+h_pN\mu D\,e^{-y}+T_\tau(e^{y})\,N\mu D+\ell_\tau N\mu\delta\,e^{-x/2},
 \]
-with $g(x,y)=\tfrac12\ln\big(N\rho+(1-\rho)e^{x}\big)-\tfrac12y$.
+with $g(x,y)=\tfrac12\ln\big(N\rho+(1-\rho)e^{x}\big)-\tfrac12y$ and $\Phi_\tau(x)=K_F(e^x)+\tau C_F(e^x)$. Since
+$n\,c(N\mu/n)=c_0(N\mu/q_0)^{\zeta_c}n^{1-\zeta_c}$ and likewise for $\psi$, $\Phi_\tau$ is a sum of nonnegative
+multiples of $e^{x}$, $e^{(1-\zeta_c)x}$, and $e^{(1-\zeta_\psi)x}$, so $\Phi_\tau''(x)\ge(F+\tau\varphi)e^{x}>0$.
 (i) The facility and last-mile terms are strictly convex in $x$. The function $g$ is convex, because
 $\ln(c_1+c_2e^{x})$ is convex for $c_1\ge0$ and $c_2>0$, so the holding term is log-convex and therefore convex. The
 transport term is convex in $y$, because $T_\tau$ is convex and nondecreasing and $e^{y}$ is convex. For strict
 convexity, let $S=H_\tau k\,e^{g}$; its Hessian is $S\big(\nabla^2g+\nabla g\,\nabla g^{\mathsf T}\big)$, with
 $\nabla g=(g_x,-\tfrac12)$ and $\nabla^2g=\mathrm{diag}(g_{xx},0)$, $g_{xx}\ge0$. The Hessian of the facility,
 holding, and last-mile terms therefore has $(x,x)$ entry
-$F_\tau e^{x}+\tfrac14\ell_\tau N\mu\delta e^{-x/2}+S(g_{xx}+g_x^2)>0$, $(y,y)$ entry $S/4$, and off-diagonal
-entry $-Sg_x/2$, so its determinant is $\big(F_\tau e^{x}+\tfrac14\ell_\tau N\mu\delta e^{-x/2}\big)S/4+S^2g_{xx}/4>0$.
+$\Phi_\tau''(x)+\tfrac14\ell_\tau N\mu\delta e^{-x/2}+S(g_{xx}+g_x^2)>0$, $(y,y)$ entry $S/4$, and off-diagonal
+entry $-Sg_x/2$, so its determinant is $\big(\Phi_\tau''(x)+\tfrac14\ell_\tau N\mu\delta e^{-x/2}\big)S/4+S^2g_{xx}/4>0$.
 These terms are strictly convex, and adding the convex transport and financing terms preserves strict
 convexity; the financing term $h_pN\mu D\,e^{-y}$ is convex in $y$ and does not depend on $x$.
 (ii) A strictly convex continuous function has a unique minimizer on a compact convex set. Since $J$ is continuous
@@ -1422,19 +1460,21 @@ can change only toward faster replenishment, and without financing it does not c
 \begin{proof}[Proof of Proposition~\ref{prop:density}]
 (i) By Lemma~\ref{prop:unique}(iii), $J(\cdot,v)$ and $C(\cdot,v)$ are strictly quasiconvex on $[1,N]$, which
 gives uniqueness and the interior/boundary characterization. For the threshold, take $\tau=0$ for cost and
-$\tau\to\infty$ for carbon. The cost density satisfies $\partial_n K=F+h\,G(n_K,v)-
-t_L N\mu\delta/(2n_K^{3/2})=0$, so the last-mile marginal $t_L N\mu\delta/(2n_K^{3/2})=F+h\,G(n_K,v)$.
+$\tau\to\infty$ for carbon. The cost density satisfies $\partial_n K=\bar F+h\,G(n_K,v)-
+t_L N\mu\delta/(2n_K^{3/2})=0$, so the last-mile marginal $t_L N\mu\delta/(2n_K^{3/2})=\bar F+h\,G(n_K,v)$, with
+$\bar F$ and $\bar\varphi$ evaluated at $n_K$.
 Evaluating the carbon derivative there,
 \[
   \partial_n C\big|_{n_K}
-  =\varphi+\eta\,G(n_K,v)-\frac{\varepsilon_L N\mu\delta}{2n_K^{3/2}}
-  =\varphi+\eta\,G(n_K,v)-\frac{\varepsilon_L}{t_L}\,\big[F+h\,G(n_K,v)\big],
+  =\bar\varphi+\eta\,G(n_K,v)-\frac{\varepsilon_L N\mu\delta}{2n_K^{3/2}}
+  =\bar\varphi+\eta\,G(n_K,v)-\frac{\varepsilon_L}{t_L}\,\big[\bar F+h\,G(n_K,v)\big],
 \]
 which is negative --- so $n_C>n_K$ by strict quasiconvexity of $C(\cdot,v)$ --- if and only if
-\eqref{eq:densthreshpool}. With $R(G)=(\varphi+\eta G)/(F+hG)$, we have $R(0)=\varphi/F$, $R(G)\to\eta/h$ as $G\to\infty$, and
-$R'(G)=(\eta F-h\varphi)/(F+hG)^2$, so $R$ is monotone with $\operatorname{sign}R'=\operatorname{sign}
-(\eta/h-\varphi/F)$ and lies between $\varphi/F$ and $\eta/h$. In the no-pooling limit $\rho\to1$, $G\to0$ and $\Psi\to N$, so
-\eqref{eq:focn} gives $n^*=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$ and \eqref{eq:densthreshpool} becomes \eqref{eq:densitythreshold}.
+\eqref{eq:densthreshpool}. With $R(G)=(\bar\varphi+\eta G)/(\bar F+hG)$, we have $R(0)=\bar\varphi/\bar F$, $R(G)\to\eta/h$ as $G\to\infty$, and
+$R'(G)=(\eta\bar F-h\bar\varphi)/(\bar F+hG)^2$, so $R$ is monotone with $\operatorname{sign}R'=\operatorname{sign}
+(\eta/h-\bar\varphi/\bar F)$ and lies between $\bar\varphi/\bar F$ and $\eta/h$. In the no-pooling limit $\rho\to1$, $G\to0$ and $\Psi\to N$, so
+\eqref{eq:densthreshpool} becomes \eqref{eq:densitythreshold}, and for a linear facility cost \eqref{eq:focn} gives
+$n^*=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$.
 (ii) Along the speed response of Proposition~\ref{prop:speed}(ii), $J^{\mathrm r}_n(n;s)=J_n\big(n,v^*(n;s);s\big)$
 because $J_v=0$. The holding marginal term in \eqref{eq:focn} is proportional to
 $s(v^*)^{-1/2}(1-\rho)/\sqrt{\Psi(n)}$, whose elasticity in $s$ is $1-a_\tau/(6-a_\tau)\ge\tfrac45$, so it rises in
@@ -1448,16 +1488,17 @@ strictly decreasing where it is interior.
 (i) By Lemma~\ref{prop:unique} applied to the carbon objective, $n_C>n_K$ if and only if the reduced
 carbon objective slopes downward at $n_K$, $C^{\mathrm r}_n(n_K)<0$, and $n_C=n_K$ if it is zero. By the
 envelope theorem (Danskin's theorem, since $\hat v_C$ is unique whether or not it is at a bound),
-$C^{\mathrm r}_n(n_K)=\varphi+\eta\,G(n_K,\hat v_C)-\tfrac12\varepsilon_LN\mu\delta\,n_K^{-3/2}$. The financing
+$C^{\mathrm r}_n(n_K)=\bar\varphi+\eta\,G(n_K,\hat v_C)-\tfrac12\varepsilon_LN\mu\delta\,n_K^{-3/2}$, with $\bar F$
+and $\bar\varphi$ evaluated at $n_K$. The financing
 term does not depend on $n$, so the cost condition \eqref{eq:focn} at $\tau=0$, which holds because $n_K$ is
-interior, gives $\tfrac12t_LN\mu\delta\,n_K^{-3/2}=F+hG(n_K,v_K)$, and the last term equals
-$r_L\big[F+hG(n_K,v_K)\big]$. Since $G\propto v^{-1/2}$, $\eta\,G(n_K,\hat v_C)=h\,G(n_K,v_K)\,r_h\sqrt{v_K/\hat v_C}$.
-Dividing $C^{\mathrm r}_n(n_K)$ by $F+hG(n_K,v_K)>0$ and substituting $\varphi=F\,r_F$ gives \eqref{eq:jointdensgen}.
+interior, gives $\tfrac12t_LN\mu\delta\,n_K^{-3/2}=\bar F+hG(n_K,v_K)$, and the last term equals
+$r_L\big[\bar F+hG(n_K,v_K)\big]$. Since $G\propto v^{-1/2}$, $\eta\,G(n_K,\hat v_C)=h\,G(n_K,v_K)\,r_h\sqrt{v_K/\hat v_C}$.
+Dividing $C^{\mathrm r}_n(n_K)$ by $\bar F+hG(n_K,v_K)>0$ and substituting $\bar\varphi=\bar F\,r_F$ gives \eqref{eq:jointdensgen}.
 Under the quadratic instantiation with $v_K$ and $\hat v_C$ interior, the carbon condition \eqref{eq:focv} at
 $n_K$ gives $\eta\sstock(n_K,\hat v_C)=4\varepsilon_0N\mu D\,\hat v_C^2$, and the cost condition gives
 $h\sstock(n_K,v_K)=4a_Kt_1N\mu D\,v_K^2$; with $\sstock\propto v^{-1/2}$ these imply
 $(\hat v_C/v_K)^{5/2}=a_KR_{\mathrm{speed}}$, so $r_h\sqrt{v_K/\hat v_C}=r_h^{4/5}r_t^{1/5}a_K^{-1/5}$, which is
-\eqref{eq:jointdens}. The second expression for $\omega$ in \eqref{eq:poolweight} follows from
+\eqref{eq:jointdens}. For a linear facility cost, the second expression for $\omega$ follows from
 $F+hG(n_K,v_K)=\tfrac12t_LN\mu\delta\,n_K^{-3/2}$ and $F=\tfrac12t_LN\mu\delta\,(n_K^0)^{-3/2}$.
 (ii) The carbon objective has no financing term, so by \eqref{eq:focv} its speed response satisfies
 $v_C(n)^{5/2}\propto\sqrt{\Psi(n)}$, and $\ln[v_C/\hat v_C]=\tfrac15\ln[\Psi(n_C)/\Psi(n_K)]$. Adding
@@ -1466,7 +1507,7 @@ $\ln[\hat v_C/v_K]=\tfrac25\ln(a_KR_{\mathrm{speed}})$ from part (i) gives \eqre
 \eqref{eq:speeddecomp} the first term
 is nonnegative and the second positive; the reversed case is symmetric. Since $\Psi$ is increasing with
 $\Psi(1)\le\Psi(n_C)\le\Psi(N)=N$, the threshold $\sqrt{\Psi(n_K)/\Psi(n_C)}$ lies in $[\underline R,\overline R]$.
-(iii) With $\rho=1$, $\Psi\equiv N$ and $G\equiv0$, so \eqref{eq:focn} involves only $F_\tau$ and $\ell_\tau$ and
+(iii) With $\rho=1$, $\Psi\equiv N$ and $G\equiv0$, so for a linear facility cost \eqref{eq:focn} involves only $F_\tau$ and $\ell_\tau$ and
 gives $n^*(\tau)=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$; the ratio of its carbon and cost values is
 $(r_L/r_F)^{2/3}$, and the financing term does not depend on $n$. The speed response no longer depends on $n$, and
 by the argument of part (i) the ratio of its carbon and cost values is $(a_KR_{\mathrm{speed}})^{2/5}$. For
@@ -1491,29 +1532,39 @@ Substituting the definitions, $a_\tau s_h-s_t=\tau\,(h\sstock+2h_pP)\,t_1\,[a(n,
 [(H_\tau\sstock+2h_pP)\,b_\tau]$, which has the sign of $a(n,v^*)r_h-r_t$. Because $a(n,v)$ rises with $v$, a
 positive sign raises $v^*$ and keeps the sign positive, and a negative sign lowers $v^*$ and keeps it negative, so
 the sign does not change along the path and $v^*$ is monotone in $\tau$. With $h_p=0$, $a_\tau=1$ and the
-elasticity is $\tfrac25(s_h-s_t)$. (ii) The same computation
-applies to $n^*=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$. (iii) With $h_p=0$, by \eqref{eq:vstar}, along the speed response
-$H_\tau G\big(n,v^*(n)\big)=c\,(1-\rho)\,H_\tau^{4/5}b_\tau^{1/5}\Psi(n)^{-3/5}$, with $b_\tau=t_1+\tau\varepsilon_0$
-and $c>0$ depending on neither $n$ nor $\tau$. By the envelope theorem, $J^{\mathrm r}_n=F_\tau+H_\tau G\big(n,v^*(n)\big)-\tfrac12\ell_\tau N\mu\delta n^{-3/2}$;
+elasticity is $\tfrac25(s_h-s_t)$. (ii) Without pooling, \eqref{eq:focn} is
+$\bar F_\tau(n)=\tfrac12\ell_\tau N\mu\delta\,n^{-3/2}$. Since $\partial\ln\bar F_\tau/\partial\ln\tau=\bar s_F$,
+$\partial\ln\ell_\tau/\partial\ln\tau=s_L$, and
+$\epsilon_F=-\mathrm d\ln\bar F_\tau/\mathrm d\ln n=[\zeta_c(1-\zeta_c)c(q)+\tau\zeta_\psi(1-\zeta_\psi)\psi(q)]/\bar F_\tau$,
+differentiating the logarithm of this condition at the optimum gives
+$\bar s_F-\epsilon_F\,\mathrm d\ln n^*/\mathrm d\ln\tau=s_L-\tfrac32\,\mathrm d\ln n^*/\mathrm d\ln\tau$. Because
+$\zeta_c,\zeta_\psi\le1$, $0\le\epsilon_F\le(\bar F_\tau-F-\tau\varphi)/\bar F_\tau<1<\tfrac32$, which gives the elasticity; for a linear facility cost
+$\epsilon_F=0$ and $\bar s_F=s_F$. (iii) With $h_p=0$, by \eqref{eq:vstar}, along the speed response
+$H_\tau G\big(n,v^*(n)\big)=c_G\,(1-\rho)\,H_\tau^{4/5}b_\tau^{1/5}\Psi(n)^{-3/5}$, with $b_\tau=t_1+\tau\varepsilon_0$
+and $c_G>0$ depending on neither $n$ nor $\tau$. By the envelope theorem, $J^{\mathrm r}_n=\bar F_\tau(n)+H_\tau G\big(n,v^*(n)\big)-\tfrac12\ell_\tau N\mu\delta n^{-3/2}$,
+with $\bar F_\tau(n)=F+\tau\varphi+(1-\zeta_c)c(q)+\tau(1-\zeta_\psi)\psi(q)$;
 multiplying by $n^{3/2}/\ell_\tau>0$ preserves its sign,
 \[
-  \frac{n^{3/2}J^{\mathrm r}_n}{\ell_\tau}=\frac{F_\tau}{\ell_\tau}\,n^{3/2}
-  +c\,(1-\rho)\,\frac{H_\tau^{4/5}b_\tau^{1/5}}{\ell_\tau}\,\frac{n^{3/2}}{\Psi(n)^{3/5}}-\tfrac12N\mu\delta .
+  \frac{n^{3/2}J^{\mathrm r}_n}{\ell_\tau}=\frac{F+\tau\varphi}{\ell_\tau}\,n^{3/2}
+  +\frac{(1-\zeta_c)c(q)+\tau(1-\zeta_\psi)\psi(q)}{\ell_\tau}\,n^{3/2}
+  +c_G\,(1-\rho)\,\frac{H_\tau^{4/5}b_\tau^{1/5}}{\ell_\tau}\,\frac{n^{3/2}}{\Psi(n)^{3/5}}-\tfrac12N\mu\delta .
 \]
-This expression changes sign at most once, from negative to positive (Lemma~\ref{prop:unique}(iii)). If
-both coefficients are nonincreasing in $\tau$, the expression is pointwise nonincreasing in $\tau$, so its sign
-change moves weakly to higher $n$ and $n^*(\tau)$ is nondecreasing. The logarithmic derivatives of
-the coefficients are $1/(r_F^{-1}+\tau)-1/(r_L^{-1}+\tau)$ and
-$\tfrac45/(r_h^{-1}+\tau)+\tfrac15/(r_t^{-1}+\tau)-1/(r_L^{-1}+\tau)$. Since $1/(r^{-1}+\tau)$ is increasing in
-$r$, both are nonpositive at every $\tau$ when $r_L$ exceeds $r_F$, $r_h$, and $r_t$, and nonnegative when it
-falls short of each.
+Each of the first three terms rises in $n$, the second because $n^{3/2}c(q)$ and $n^{3/2}\psi(q)$ are proportional to
+$n^{3/2-\zeta_c}$ and $n^{3/2-\zeta_\psi}$, so the expression changes sign at most once, from negative to positive
+(Lemma~\ref{prop:unique}(iii)). If each term is nonincreasing in $\tau$ at every $n$, the expression is pointwise
+nonincreasing in $\tau$, so its sign change moves weakly to higher $n$ and $n^*(\tau)$ is nondecreasing. The
+logarithmic derivatives of the first and third coefficients are $1/((\varphi/F)^{-1}+\tau)-1/(r_L^{-1}+\tau)$ and
+$\tfrac45/(r_h^{-1}+\tau)+\tfrac15/(r_t^{-1}+\tau)-1/(r_L^{-1}+\tau)$, and the derivative of the second in $\tau$
+has the sign of $(1-\zeta_\psi)\psi(q)/[(1-\zeta_c)c(q)]-r_L$. Since $1/(r^{-1}+\tau)$ is increasing in $r$, all three
+are nonpositive at every $\tau$ when $r_L$ exceeds $\varphi/F$, $r_h$, $r_t$, and the carbon per dollar of the
+forgone economies of scale, and nonnegative when it falls short of each.
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{prop:chance}]
 (i) In \eqref{eq:Ctilde} the throughput coefficient $\gamma(n,v)=\varepsilon(v)D+\varepsilon_L d(n)>0$, so
-$\{\tilde C\le B\}=\{Q\le(B-\varphi n-\eta\sstock)/\gamma\}$, and $\Pr\{\tilde C\le B\}\ge 1-\beta_c$ holds iff
-$(B-\varphi n-\eta\sstock)/\gamma\ge q_{1-\beta_c}$, with $q_{1-\beta_c}=\inf\{q:\Pr(Q\le q)\ge1-\beta_c\}$, i.e.\
-$\varphi n+\eta\sstock+\gamma\,q_{1-\beta_c}\le B$. Because
+$\{\tilde C\le B\}=\{Q\le(B-C_F(n)-\eta\sstock)/\gamma\}$, and $\Pr\{\tilde C\le B\}\ge 1-\beta_c$ holds iff
+$(B-C_F(n)-\eta\sstock)/\gamma\ge q_{1-\beta_c}$, with $q_{1-\beta_c}=\inf\{q:\Pr(Q\le q)\ge1-\beta_c\}$, i.e.\
+$C_F(n)+\eta\sstock+\gamma\,q_{1-\beta_c}\le B$. Because
 $\gamma\,q_{1-\beta_c}=(q_{1-\beta_c}/N\mu)\,[\varepsilon(v)N\mu D+\varepsilon_L N\mu d(n)]$, this condition is
 \eqref{eq:chancecap}. Under normality $q_{1-\beta_c}=N\mu+z_{\beta_c}\sigma_Q$, so $m=1+z_{\beta_c}\,\mathrm{CV}_Q$.
 From $\sigma_Q^2=\sigma^2N[1+(N-1)\rho]$, $\mathrm{CV}_Q=(\sigma/\mu)\sqrt{[1+(N-1)\rho]/N}$ is increasing in
@@ -1525,10 +1576,10 @@ and $m\varepsilon_L$ for $\varepsilon_0$ and $\varepsilon_L$ in \eqref{eq:speedt
 Proposition~\ref{prop:classify}, with $n_K$, $\omega$, and $a_K$ unchanged because the cost rates are unchanged,
 gives the joint conditions. For the joint speed, divide the carbon density condition by $m$: its facility and
 lost-pooling terms then scale as $m^{-1}$ and $m^{-4/5}$ and, multiplied by $n^{3/2}$, rise in $n$ with
-elasticities $\tfrac32$ and at least $\tfrac9{10}$, so that, at an interior $n_C$,
-$\mathrm d\ln n_C/\mathrm d\ln m\le\tfrac89$. Since $\Psi$ has elasticity at most one in $n$,
+elasticities $\tfrac32-\epsilon_\varphi>\tfrac12$, with $\epsilon_\varphi=-\mathrm d\ln\bar\varphi/\mathrm d\ln n<1$ as in the proof of
+Proposition~\ref{prop:path}(ii), and at least $\tfrac9{10}$, so that, at an interior $n_C$, $\mathrm d\ln n_C/\mathrm d\ln m<2$. Since $\Psi$ has elasticity at most one in $n$,
 \eqref{eq:speeddecomp} with $a_KR_{\mathrm{speed}}/m$ in place of $a_KR_{\mathrm{speed}}$ gives
-$\mathrm d\ln v_C/\mathrm d\ln m\le-\tfrac25+\tfrac15\cdot\tfrac89<0$.
+$\mathrm d\ln v_C/\mathrm d\ln m<-\tfrac25+\tfrac15\cdot2=0$.
 \end{proof}
 
 \end{document}
