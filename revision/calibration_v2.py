@@ -36,8 +36,13 @@ Sources (all opened):
               https://portfoliomanager.energystar.gov/pdf/reference/US%20National%20Median%20Table.pdf
   [CW]        Cushman & Wakefield Q2 2025: industrial asking rent 10.12 $/ft2/yr
               https://www.cushmanwakefield.com/en/united-states/news/2025/07/q2-2025-us-industrial-market-report
-  [LIN]       Lineage 2023: 1.07 Mt CO2e over 3.86 B$ warehousing revenue (0.28 kg/$); about 109 kg CO2e
-              and 393 $ revenue per pallet position per year
+  [LIN]       Lineage 2024 Scope 1 + market-based Scope 2: 1.068 Mt CO2e (2024 Sustainability Report,
+              published 2025, pp. 15, 39). Dividing by the March 2024 capacity of 9.8M pallet positions
+              (prospectus) gives about 109 kg CO2e per pallet position-year. This company-wide proxy
+              includes mobile combustion and refrigerants. Ambient 30 kg is 109*(22.7/84.1), rounded.
+              The 0.28 kg/$ cross-check divides this total by about $3.86B in 2023 warehousing revenue;
+              its periods and operating boundaries differ, so it is only an approximate comparison.
+              https://www.onelineage.com/sites/default/files/2025-06/Lineage-2024-Sustainability-Report_6_25_25.pdf
               https://www.sec.gov/Archives/edgar/data/1868159/000119312524185331/d577649d424b4.htm
   [PAL]       Ambient pallet storage about 20 $/pallet-month (range 12-25); refrigerated 1.5-3x ambient
               https://olimpwarehousing.com/pallet-storage-cost-per-month-usa/
