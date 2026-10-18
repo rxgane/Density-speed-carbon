@@ -131,8 +131,8 @@ The paper is structured as follows. In Section~\ref{sec:related}, we position th
 location--inventory, carbon-network-design, and inventory--transport--emissions literatures. In
 Section~\ref{sec:model}, we develop the model, and in Section~\ref{sec:analysis} we answer the questions a
 firm asks of its network.
-Section~\ref{sec:numerical} applies them to calibrated US data, Section~\ref{sec:managerial} draws out the
-managerial implications, and Section~\ref{sec:discussion} concludes.
+Section~\ref{sec:numerical} applies them to US data, Section~\ref{sec:managerial} draws out managerial
+implications, and Section~\ref{sec:discussion} concludes.
 
 \section{Related Literature}\label{sec:related}
 
@@ -241,7 +241,7 @@ guaranteed-service framework, and \citet{wang2025inventory} incorporate cap-and-
 placement. Probabilistic carbon limits have been modeled through chance constraints in lot sizing
 \citep{koca2021stochastic} and in supply-chain network design \citep{shaw2016low}, typically inside large
 mixed-integer programs; our deterministic equivalent scales the transport component of carbon by a single factor. \citet{sebatjane2025sustainable} survey these models. The service-placement models price carbon against service and
-safety stock; we bring network density and replenishment speed into the same comparison. 
+safety stock; we add network density and replenishment speed. 
 \section{The Model}\label{sec:model}
 
 \subsection{Operational environment}
@@ -590,8 +590,8 @@ globally. The reduced objective is flat near its minimum, so treating the number
 continuous costs little: in the calibrated network of Section~\ref{sec:numerical}, rounding it to the best integer raises the
 objective by at most $0.14\%$ at prices up to $\$2{,}000$ per metric ton and for the carbon objective, in line with the accuracy reported for continuous-approximation designs
 \citep{ouyang2006discretization, ansari2018advancements}. By part (iii), the two decisions are complements: faster replenishment shrinks safety stock and lowers the
-inventory penalty of dispersion, and a denser network raises the inventory at stake and the value of speed. A
-firm should therefore evaluate speed investments and network density together.
+inventory penalty of dispersion, and a denser network raises the inventory at stake and the value of speed. A firm should evaluate speed and
+density together.
 
 \subsection{When should replenishment be faster?}\label{sec:speed}
 
@@ -675,7 +675,7 @@ consolidation.
 carbon-minimizing network is more dispersed when a dollar of last-mile delivery emits more than the facility
 threshold, which pooling shifts from $r_F$ toward $r_h$. Pooling therefore enters as a weight on the holding
 ratio: when holding is more carbon-intensive per dollar than facilities, stronger pooling raises the threshold for
-dispersion, and otherwise it lowers it.  Endogenous service choice is an extension (Section~\ref{sec:discussion}).
+dispersion, and otherwise it lowers it.  
 
 \subsection{What happens when both decisions adjust?}\label{sec:joint}
 
@@ -812,10 +812,8 @@ carbon-minimizing network is more dispersed than the cost-minimizing one.
 \subsection{What changes under a cap on realized carbon?}\label{sec:chance}
 
 A firm held to a carbon budget for each accounting period must meet it with the carbon it actually emits, which
-fluctuates with demand about $C(n,v)$: the facility charge
-and the base-stock safety-stock target are planned and treated as deterministic, but inbound and last-mile freight
-scale with realized throughput $Q=\sum_i X_i$, the sum of the realized market demands, which has mean $N\mu$ and
-variance $\sigma_Q^2=\sigma^2 N\,[\,1+(N-1)\rho\,]$. Realized carbon is then
+fluctuates with demand: facility and safety-stock carbon are planned, but freight carbon scales with realized
+throughput $Q=\sum_i X_i$, which has mean $N\mu$ and variance $\sigma_Q^2=\sigma^2 N\,[\,1+(N-1)\rho\,]$. Realized carbon is then
 \begin{equation}\label{eq:Ctilde}
   \tilde C(n,v) \;=\; \varphi n + \eta\,\sstock(n,v) + \big[\varepsilon(v)D+\varepsilon_L d(n)\big]\,Q,
 \end{equation}
@@ -834,22 +832,17 @@ $m=1+z_{\beta_c}\,\mathrm{CV}_Q$, with $z_{\beta_c}=\Phi^{-1}(1-\beta_c)$ and $\
 $m\ge1$ whenever $\beta_c\le\tfrac12$, and, for $\beta_c<\tfrac12$, $m$ rises with the demand coefficient of
 variation $\sigma/\mu$, the correlation $\rho$, and the confidence $1-\beta_c$.
 
-\smallskip\noindent\textup{(ii)} The speed threshold \eqref{eq:speedthreshold} becomes
-$a(n,v_{\mathrm K})\,\eta/h>m\,\varepsilon'(v_{\mathrm K})/t'(v_{\mathrm K})$, the density threshold
-\eqref{eq:densthreshpool} becomes $m\,\varepsilon_L/t_L>(\varphi+\eta G)/(F+hG)$, and in the joint design the
-speed ratio becomes $a_KR_{\mathrm{speed}}/m$ and \eqref{eq:jointdens} becomes
-$m\,r_L>(1-\omega)\,r_F+\omega\,m^{1/5}r_h^{4/5}r_t^{1/5}a_K^{-1/5}$. Under the quadratic instantiation, the
+\smallskip\noindent\textup{(ii)} The thresholds of Propositions~\ref{prop:speed}--\ref{prop:classify} hold with
+the inbound and last-mile carbon rates multiplied by $m$. Under the quadratic instantiation, the
 carbon-minimizing speed is nonincreasing in $m$, and strictly decreasing where $n_C$ and $v_C$ are interior.
 \end{corollary}
 
 \noindent A cap on realized carbon therefore leaves the structure intact. It places a risk margin on transport
 emissions, just as safety stock places one on demand, and so reinforces slower replenishment and, where the last
-mile is carbon-intensive, more distribution centers; the expected-value cap is the limiting case $m=1$. The cap applies over the same accounting period
-as the flow model --- here a week. For a cap on cumulative carbon over $T$ periods with demands independent
-across periods, throughput has coefficient of variation $\mathrm{CV}_Q/\sqrt{T}$, so the margin shrinks as the
-horizon lengthens: in the calibrated network of Section~\ref{sec:numerical}, the $95\%$ multiplier falls from
-$m=1.37$ for a weekly cap to $m=1.05$ for an annual cap ($T=52$). The margin therefore matters most for
-high-frequency operational carbon budgets and less for annual compliance accounting.
+mile is carbon-intensive, more distribution centers; the expected-value cap is the limiting case $m=1$. Over $T$ periods with independent demands, throughput has coefficient of variation
+$\mathrm{CV}_Q/\sqrt{T}$, so the margin shrinks with the horizon: in the calibrated network of
+Section~\ref{sec:numerical}, the $95\%$ multiplier falls from $m=1.37$ for a weekly cap to $m=1.05$ for an annual
+cap.
 
 \section{A Calibrated Application}\label{sec:numerical}
 
@@ -1183,8 +1176,8 @@ of the other decision that the joint design would change.
 
 \paragraph{Account for realized carbon over short horizons.} A cap on realized carbon places
 a risk margin on transport emissions (Corollary~\ref{prop:chance}). For a weekly cap held with $95\%$
-confidence, the margin raises the transport carbon rates by $37\%$ in our calibration and so reinforces slower
-replenishment where speed is bought with fuel and, with diesel delivery, more distribution centers. For an annual cap the margin is about $5\%$. In the
+confidence, the margin raises the transport carbon rates by $37\%$ in our calibration, and for an annual cap by
+about $5\%$. In the
 reference network, a weekly cap at the expected budget raises the cost of a $20\%$ cut from $1.5$ to $11.9\%$, and
 an annual cap to $2.3\%$ (Table~\ref{tab:robust}).
 
@@ -1196,8 +1189,8 @@ for small prices, when the inventory saving from speed is more carbon-intensive 
 buy, or when the last mile is less carbon-intensive per dollar than facilities and lost pooling; when both
 decisions adjust, the effect depends on their joint response. By the ratios of Table~\ref{tab:ratios}, the first
 condition holds for perishables that spoil served by team drivers and the second for electric vans in cold
-chains. An instrument that prices total logistics carbon lets the firm weigh the carbon of all
-four activities when it chooses speed and density.
+chains. An instrument that prices total logistics carbon lets the firm weigh all four activities when it
+chooses speed and density.
 
 \section{Discussion and Conclusion}\label{sec:discussion}
 
@@ -1205,13 +1198,8 @@ A firm that distributes through regional distribution centers provides availabil
 replenishment speed and proximity through facilities or last-mile travel, and a carbon price or cap can change
 which activity provides each. We have shown that the joint design has a unique optimum at every carbon price and that the carbon-minimizing
 direction of density, and of speed when the speed and density comparisons agree, follows from four
-carbon-intensity-per-dollar ratios and two shares of the cost-minimizing design, the pooling weight and the
-safety-stock share.   In public US data, the classification depends on the product, on how speed is bought, and on how the last
-mile is driven. At the central ratios, carbon favors slower speed bought with fuel for every product, and speed bought with
-labor is favored where held stock carries carbon, as for perishables that spoil; diesel delivery and electric trucks call for more
-distribution centers and electric vans for fewer in cold chains. In a reference network that finances its stock in transit,
-slower line haul delivers most of the cut in emissions, and the network grows mainly for deeper cuts or at
-high carbon prices. Several documented moves
+carbon-intensity-per-dollar ratios and two shares of the cost-minimizing design. In public US data, the classification depends on the product, on how
+speed is bought, and on how the last mile is driven. Several documented moves
 in practice are consistent with these directions; in the sources we examine, firms report them in terms of cost,
 delivery service, and transport miles. Our model adds the carbon of the inventory a slower chain holds, the
 financing of the goods it carries, and the link between speed and density.
@@ -1238,12 +1226,7 @@ where a shared network serves products in different regimes and safety stock can
 echelon. Separating stocking from delivery density,
 and modeling shipment consolidation and routing explicitly, would quantify these centralizing forces. As accounting under ISO 14083 makes firm-level logistics-emissions data available \citep{iso2023_14083}, empirical
 work can locate real products relative to the speed and density thresholds.
-Endogenous service choice and explicit mode mixes would make the service target and a lane's mode split design
-decisions.
-
-A firm that accounts for its distribution carbon must decide how fast to replenish and how many distribution
-centers to operate; each decision depends on which activity provides availability or proximity at the lower carbon
-intensity per dollar.
+Endogenous service choice and explicit mode mixes are natural extensions.
 
 \section*{Data availability}
 
