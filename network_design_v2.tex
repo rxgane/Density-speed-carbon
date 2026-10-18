@@ -42,8 +42,10 @@
 \maketitle
 
 \begin{abstract}
-\noindent In this paper, we examine how a carbon price or cap changes two decisions of a firm that distributes
-through regional distribution centers: how many centers to operate and how fast to replenish them. Each decision
+\noindent Firms that distribute through regional distribution centers need to reconsider how many centers to operate and
+how fast to replenish them as carbon is increasingly priced into these decisions, whether voluntarily by the firm
+or through regulation. In this paper, we examine which way, and how far, a carbon price or cap moves the two
+decisions. Each decision
 trades one source of emissions against another. Slower line haul burns less fuel but requires more safety stock
 and more stock in transit; more distribution centers shorten the last mile but add buildings and give up the
 pooling that keeps inventory low. We model the two decisions jointly and show that the design problem has a
@@ -850,9 +852,9 @@ magnitudes describe the network we calibrate.
 
 \subsection{Benchmark carbon intensities}\label{sec:calib}
 
-Each ratio is the carbon an activity emits per dollar it costs. We compute it from the bottom up, as the
-activity's energy use times the emission factor of that energy, divided by the activity's cost, and compare the
-result with the industry factors of the US environmentally extended input--output model \citep{epa2024useeio}.
+Each ratio is the carbon an activity emits per dollar it costs. We construct the ratios from energy use,
+emission factors, operating costs, and storage benchmarks, and compare them with the industry factors of the US
+environmentally extended input--output model \citep{epa2024useeio}.
 A dollar spent on energy carries about $2.8$~kg CO\textsubscript{2}e as diesel, $2.9$--$4.6$~kg as grid
 electricity, and $5.0$--$5.8$~kg as marine fuel, while the labor and capital that make up the rest of logistics
 cost carry little carbon of their own. An activity's carbon intensity per dollar therefore rises with the share of
@@ -872,13 +874,17 @@ midpoint of the middle fifth of dry-van fleets in the SmartWay program \citep{ep
 $3.114$~t CO\textsubscript{2} per metric ton \citep{eu2016mrv}. Prices: diesel $\$3.66$ per gallon (2025
 average) \citep{eia2026diesel}, electricity $8.1$--$12.8$ cents per kWh \citep{eia2025electricity}, and marine
 fuel at average prices of $\$535$ (2025) and $\$626$ (2024) per metric ton \citep{shipbunker2026}. Warehouses: site
-energy of $22.7$ (ambient) and $84.1$ (refrigerated) kBtu per square foot \citep{energystar2024medians}; about
-$30$ (ambient) and $109$ (refrigerated) kg CO\textsubscript{2}e per pallet position-year
-\citep{lineage2024prospectus}; industrial rent of $\$10.12$ per square foot \citep{cushman2025industrial}. Line
+energy of $22.7$ (ambient) and $84.1$ (refrigerated) kBtu per square foot \citep{energystar2024medians};
+industrial rent of $\$10.12$ per square foot \citep{cushman2025industrial}. Line
 haul: truckload at $\$2.26$ per mile, of which fuel is $\$0.48$ \citep{atri2025costs}. Last mile: the courier and
 local-trucking industry factors \citep{epa2024useeio} and electric-van energy use of $0.37$--$0.39$~kWh per mile
 \citep{mulholland2022vans}. Food: input--output intensities of processed beef, fluid milk, and poultry
-\citep{epa2024useeio}. Assumptions. Third-party storage at $\$240$ (ambient) and $\$480$ (refrigerated) per
+\citep{epa2024useeio}. Derived storage benchmarks. Refrigerated storage uses $109$~kg CO\textsubscript{2}e per
+pallet position-year: Lineage's $1.068$ million tonnes of 2024 Scope~1 and market-based Scope~2 emissions
+\citep{lineage2025sustainability}, divided by its $9.8$ million pallet positions in March 2024
+\citep{lineage2024prospectus}. This company-wide ratio, which includes mobile combustion and refrigerants, serves
+as an approximate storage proxy. The ambient benchmark, $30$~kg, scales $109$ by the energy-intensity ratio
+$22.7/84.1$ and rounds the result. Assumptions. Third-party storage at $\$240$ (ambient) and $\$480$ (refrigerated) per
 pallet-year; rent at about $40\%$ of a distribution center's operating cost, with cold-storage rent twice
 ambient, and a fixed charge of $60\%$ ($50$ to $70\%$) of that cost; capital at $10\%$ of pallet value ($15\%$ for
 high-value goods), for stock held and stock in transit; intermodal $10$--$30\%$ cheaper than truckload with about
@@ -1020,17 +1026,18 @@ by $5.8\%$ at a cost increase of $0.1\%$, and the average metric ton avoided cos
 We examine in Table~\ref{tab:robust} whether the least-cost design for a $20\%$ cut survives changes in the
 inputs. Each row reports the cost-minimizing design and the least-cost design for a $20\%$ cut from that row's own
 cost minimum; for the caps on realized carbon, the budget is that of the reference row, and demand is independent
-across weeks. In every attainable row the firm meets the cut by slowing the line haul and adding centers.
+across weeks. Every feasible case uses slower replenishment. The network expands under continuous service
+choices but contracts slightly when only the three discrete services are available.
 
 \begin{table}[t]
 \centering\small
-\caption{Least-cost design for a $20\%$ cut in emissions under alternative inputs. Days are line-haul transit
+\caption{Least-cost design for a cut of at least $20\%$ in emissions under alternative inputs. Days are line-haul transit
 times.}
 \label{tab:robust}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}lccccc@{}}
 \toprule
- & \multicolumn{2}{c}{Cost minimum} & \multicolumn{3}{c}{Least cost for a $20\%$ cut}\\
+ & \multicolumn{2}{c}{Cost minimum} & \multicolumn{3}{c}{Least cost for at least $20\%$ cut}\\
 \cmidrule(lr){2-3}\cmidrule(l){4-6}
  & Centers & Days & Centers & Days & Cost increase\\
 \midrule
@@ -1350,7 +1357,7 @@ gives $n^*(\tau)=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$; the ratio of its carbon 
 $(r_L/r_F)^{2/3}$. The speed response no longer depends on $n$, and
 by the argument of part (i) the ratio of its carbon and cost values is $(a_KR_{\mathrm{speed}})^{2/5}$. For
 \eqref{eq:excess}, carbon separates into a proximity component $C_{\mathrm{prox}}(n)=\varphi n+\varepsilon_LN\mu
-\delta n^{-1/2}$ an availability component $C_{\mathrm{avail}}(v)=\eta z\sigma N\sqrt{D/v}+\varepsilon_0N\mu
+\delta n^{-1/2}$, an availability component $C_{\mathrm{avail}}(v)=\eta z\sigma N\sqrt{D/v}+\varepsilon_0N\mu
 D\,v^2$, and the constant $\varepsilon_bN\mu D$, with $\theta=C_{\mathrm{prox}}(n_C)/C_{\min}$ and
 $\theta_a=C_{\mathrm{avail}}(v_C)/C_{\min}$. A function $c_1n+c_2n^{-1/2}$ attains its minimum
 $3c_1n^\circ$ at $n^\circ=(c_2/2c_1)^{2/3}$ and equals $c_1n^\circ(x+2x^{-1/2})$ at $n=xn^\circ$; with $n_K=xn_C$
@@ -1358,8 +1365,8 @@ and $x=R_{\mathrm{density}}^{-2/3}$, $C_{\mathrm{prox}}(n_K)/C_{\mathrm{prox}}(n
 $c_1v^{-1/2}+c_2v^2$ attains its minimum $\tfrac54c_1(v^\circ)^{-1/2}$ and equals
 $c_1(v^\circ)^{-1/2}(y^{-1/2}+y^2/4)$ at $v=yv^\circ$, so with $v_K=yv_C$ and
 $y=(a_KR_{\mathrm{speed}})^{-2/5}$, $C_{\mathrm{avail}}(v_K)/C_{\mathrm{avail}}(v_C)=(4y^{-1/2}+y^2)/5$. Weighting by
-$\theta$ and $\theta_a$ gives $C(n_K,v_K)/C_{\min}$ exactly, and expanding $x=e^{u_1}$ and $y=e^{u_2}$ to second
-order gives \eqref{eq:excess}.
+$\theta$ and $\theta_a$ and adding the constant share $1-\theta-\theta_a$ gives $C(n_K,v_K)/C_{\min}$ exactly.
+Expanding $x=e^{u_1}$ and $y=e^{u_2}$ to second order gives \eqref{eq:excess}.
 \end{proof}
 
 \begin{proof}[Proof of Proposition~\ref{prop:path}]
