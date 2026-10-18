@@ -52,10 +52,9 @@ inventory that speed saves emits more per dollar than the speed itself. Goods in
 but no carbon: for a given network, financing them raises the cost-minimizing speed without changing the
 carbon-minimizing speed. For a given speed, carbon pricing favors more
 distribution centers when a dollar of last-mile delivery emits more than a dollar of facilities and lost pooling.
-The
-response of each decision to a carbon price depends on the difference between the carbon shares of the costs it
-trades off. A firm can compute these quantities from its operating rates, demand characteristics, and
-cost-minimizing configuration.
+With both decisions adjustable, a small carbon price can favor consolidation even when the carbon-minimizing
+network is more dispersed. A firm can compute these comparisons from its operating rates, demand characteristics,
+and cost-minimizing configuration.
 \end{abstract}
 
 \vspace{1em}
@@ -282,7 +281,8 @@ Lead time is the only channel through which speed affects inventory: safety stoc
 time, and the goods in transit are proportional to it. Shortening the lead time is not free. We use $t(v)$ and
 $\varepsilon(v)$ to denote the cost and carbon of inbound freight per unit-mile at speed $v$, and we assume only
 that both increase with $v$ and are convex; for the closed-form results, we use the quadratic instantiation
-$\varepsilon(v)=\varepsilon_0 v^2$ and $t(v)=t_0+t_1 v^2$, the canonical form motivated by the cubic fuel-speed
+$\varepsilon(v)=\varepsilon_b+\varepsilon_0 v^2$ and $t(v)=t_0+t_1 v^2$, with intercepts $\varepsilon_b\ge0$ and
+$t_0$ that do not vary with speed, the canonical form motivated by the cubic fuel-speed
 law of slow steaming \citep{psaraftis2013speed, cariou2011slow}. On a given origin--destination lane, a
 faster mode such as truckload instead of intermodal rail, a faster vessel, or a team of two drivers who keep the
 truck moving all deliver a shorter lead time at a higher freight cost, and they differ in how much of that cost is
@@ -379,7 +379,7 @@ rate.
 \end{figure}
 
 \paragraph{Inventory and service.} Each DC operates a base-stock policy and must meet a cycle service level
-$\alpha$ --- the in-stock probability at the end of a period, the Type-1 (cycle) service measure. With normally distributed demand the safety factor is $z = \Phi^{-1}(\alpha)$, with $\alpha>\tfrac12$ so
+$\alpha$, the in-stock probability at the end of a period. With normally distributed demand the safety factor is $z = \Phi^{-1}(\alpha)$, with $\alpha>\tfrac12$ so
 that $z>0$, taken here as a service requirement (a parameter). Demand is independent across periods, and each DC reviews its
 inventory continuously, so safety stock protects against demand over the replenishment lead time; under periodic
 review the protection interval would also include the review period. A DC that pools $g = N/n$ markets faces aggregate per-period demand with
@@ -470,9 +470,9 @@ incurs a fixed charge $F$ per site and handles units at a cost of $c$ each. Beca
 handling adds $cN\mu$ whatever the density, so it raises the level of cost without affecting the design. The
 facility terms do not depend on $v$. Facility carbon $\varphi$ is distinct from holding carbon $\eta$: $\varphi$
 captures baseline building energy and embodied carbon, whereas $\eta$ prices the incremental carbon of storing a
-unit (for example refrigeration). In Appendix~\ref{app:scale}, we let the cost and carbon of operating a center
-show economies of scale in its throughput; the results of Section~\ref{sec:analysis} then hold with $F$ and
-$\varphi$ replaced by the cost and carbon of an additional center.
+unit (for example refrigeration). In Appendix~\ref{app:scale}, we extend the directional comparisons of
+Section~\ref{sec:analysis} to facility cost and carbon that depend on throughput, and identify the changes to the
+magnitude and price-path results.
 
 \paragraph{Holding.} The holding terms $h\sstock(n,v)$ and $\eta\sstock(n,v)$ value the system-wide safety
 stock of \eqref{eq:ss}. They rise in $n$ through the loss of pooling in $\Psi(n)$ and fall in $v$ through the
@@ -493,15 +493,10 @@ to denote the share of the inventory saving from speed that is safety stock; the
 safety stock falls with the square root of the lead time and stock in transit with the lead time itself. Without
 financing, $a=1$; with financing, the share rises with speed.
 
-\paragraph{Inbound transport.} The inbound terms multiply the representative freight task $N\mu D$ by the
-speed-dependent rates $t(v)$ and $\varepsilon(v)$. Since $D$ is treated as invariant to $n$, inbound transport
-does not vary with network density; it rises in $v$ through the increasing convex rates
-$t(v)$ and $\varepsilon(v)$, opposing the holding term that falls in $v$.
-
-\paragraph{Last-mile transport.} The last-mile terms multiply throughput $N\mu$ by the mean DC-to-market
-distance $d(n)=\delta n^{-1/2}$ and the rates $t_L,\varepsilon_L$. A denser network shortens this leg at the
-continuous-approximation rate, so the last-mile term is decreasing and convex in $n$ and independent of $v$
-under constant per-mile last-mile rates.
+\paragraph{Transport.} The inbound terms price the freight task $N\mu D$ at the rates $t(v)$ and
+$\varepsilon(v)$; they do not vary with density and rise in $v$, opposing the holding term. The last-mile terms
+price $N\mu\,d(n)$ at the rates $t_L$ and $\varepsilon_L$; they are decreasing and convex in $n$ and do not
+depend on $v$.
 
 \paragraph{Decomposition and scope.} The carbon function splits into a transport component
 $\varepsilon(v)N\mu D+\varepsilon_LN\mu d(n)$ and a facility-and-holding component $\varphi n+\eta\sstock(n,v)$;
@@ -535,7 +530,7 @@ integer number of distribution centers. Define the blended rates
 \]
 Then
 \begin{equation}\label{eq:J}
-  J(n,v;\tau) \;=\; F_\tau n + H_\tau\,\sstock(n,v) + h_p\,P(v)
+    J(n,v;\tau) \;=\; F_\tau n + cN\mu + H_\tau\,\sstock(n,v) + h_p\,P(v)
      + T_\tau(v)N\mu D + \ell_\tau N\mu d(n).
 \end{equation}
 The financing cost of stock in transit carries no carbon and is not blended. Setting $\tau=0$ recovers cost;
@@ -615,7 +610,7 @@ if and only if the inventory saving from speed is more carbon-intensive per doll
 \end{equation}
 evaluated at the cost-minimizing speed $v_{\mathrm K}$. On $[v_{\min},v_{\max}]$ the optima are the projections
 of the unconstrained speeds onto the interval, so the comparison holds weakly, and strictly when neither
-projection binds. With the quadratic instantiation $\varepsilon(v)=\varepsilon_0 v^2$, $t(v)=t_0+t_1 v^2$, the
+projection binds. With the quadratic instantiation, the
 right side of \eqref{eq:speedthreshold} is $r_t$; without financing ($h_p=0$), $a=1$, the threshold is
 $r_h>r_t$, and the unconstrained optimum is
 \begin{equation}\label{eq:vstar}
@@ -757,10 +752,11 @@ many distribution centers when minimizing carbon. As we show in the proof of par
 second order,
 \begin{equation}\label{eq:excess}
   \frac{C(n_K,v_K)}{C_{\min}}-1\;\approx\;\theta\,\frac{(\ln R_{\mathrm{density}})^2}{9}
-  +(1-\theta)\,\frac{2\big[\ln(a_KR_{\mathrm{speed}})\big]^2}{25},
+  +\theta_a\,\frac{2\big[\ln(a_KR_{\mathrm{speed}})\big]^2}{25},
 \end{equation}
-where $C_{\min}$ is the carbon minimum and $\theta$ is the share of proximity carbon, $\varphi n+\varepsilon_LN\mu
-d(n)$, in that minimum. The excess is small near parity and rises quickly away from it: the cost-minimizing network
+where $C_{\min}$ is the carbon minimum and $\theta$ and $\theta_a$ are the shares in that minimum of proximity
+carbon, $\varphi n+\varepsilon_LN\mu d(n)$, and of availability carbon, $\eta\sstock+\varepsilon_0v^2N\mu D$; the
+two shares fall short of one by the share of carbon that varies with neither decision. The excess is small near parity and rises quickly away from it: the cost-minimizing network
 emits about $5\%$ more proximity carbon than the minimum when $R_{\mathrm{density}}=2$ and about $19\%$ more when
 $R_{\mathrm{density}}=4$, against $5\%$ and $21\%$ from \eqref{eq:excess}. Carbon-aware redesign therefore matters most for products whose ratios lie far from
 one. With pooling the two decisions interact and these expressions are no longer exact;
@@ -798,7 +794,7 @@ carbon-intensive, no increase calls for dispersion.
 
 Proposition~\ref{prop:classify} compares the two ends of the price path, and the first response to a carbon price
 can differ. We show in Appendix~\ref{app:proofs} that, under the quadratic instantiation and with the
-cost-minimizing design interior, a small carbon price adds distribution centers if and only if
+cost-minimizing design interior, $\mathrm dn^*/\mathrm d\tau$ at $\tau=0$ is positive if and only if
 \begin{equation}\label{eq:lowprice}
   r_L\;>\;(1-\omega)\,r_F+\omega\Big[r_h-\frac{a_Kr_h-r_t}{6-a_K}\Big].
 \end{equation}
@@ -941,9 +937,12 @@ days, since a solo driver covers about $500$ miles a day \citep{fra2013truck}; i
 which three are from ramp to ramp and the rest local trucking at each end; and carload rail takes six days or more
 \citep{kwon1995trip}. We fit $t(v)$ and $\varepsilon(v)$ through intermodal and truckload and extend them to a
 six-day transit, at which the fitted carbon per pallet-mile is $29\%$ of truckload's, close to the fuel
-efficiency of carload moves relative to truck on competing corridors \citep{fra2009fuel}. The firm can therefore
-replenish at any speed between $167$ and $500$ miles a day; we interpret a transit of about two days as
-truckload, four as intermodal, and six as carload rail, and the speeds between them as the services in between. 
+efficiency of carload moves relative to truck on competing corridors \citep{fra2009fuel}. We treat the fitted
+curves as the lane's service frontier, so the firm can replenish at any speed between $167$ and $500$ miles a
+day; we interpret a transit of about two days as truckload, four as intermodal, and six as carload rail, and we
+examine in Section~\ref{sec:robust} a lane that offers only these three services. The fitted carbon rate has an
+intercept, $\varepsilon_b=0.012$~kg per pallet-mile, that accounts for $19\%$ of carbon at the cost minimum; it
+does not change the design at a given price, but it enters the percentage cuts. 
 
 \begin{table}[t]
 \centering\small
@@ -1037,6 +1036,7 @@ times.}
 \midrule
 Reference                                     & $5.4$ & $2.55$ & $6.2$  & $3.30$ & $1.5\%$\\
 Whole number of centers                       & $5$   & $2.56$ & $6$    & $3.26$ & $1.2\%$\\
+Truckload, intermodal, or carload only        & $5.5$ & $2.00$ & $5.4$  & $4.00$ & $2.4\%$\\
 \addlinespace
 \multicolumn{6}{@{}l}{\itshape Holding cost}\\
 Capital charge $10\%$                         & $5.5$ & $2.93$ & $6.5$  & $3.97$ & $1.7\%$\\
@@ -1065,7 +1065,9 @@ Weekly cap on realized carbon, $95\%$         & $5.4$ & $2.55$ & $9.2$  & $5.16$
 \end{table}
 
 With whole centers, the cost minimum has five centers and the design for the cut six, with a line haul of $3.26$
-days, at a cost increase of $1.2\%$. 
+days, at a cost increase of $1.2\%$. With only truckload, intermodal, and carload services, the least-cost design for the cut moves the whole flow
+from truckload to intermodal with $5.4$ centers, at $2.4\%$, and overshoots the target with a $43\%$ cut; the line
+haul still slows, but the network no longer grows. 
 
 Holding cost decides where the cost minimum lies on the speed range, and so how much slowing has to give; the
 cost-minimizing network itself changes little, between $5.1$ and $5.6$ centers. A higher capital charge or pallet
@@ -1181,8 +1183,8 @@ about $5\%$. In the
 reference network, a weekly cap at the expected budget raises the cost of a $20\%$ cut from $1.5$ to $11.9\%$, and
 an annual cap to $2.3\%$ (Table~\ref{tab:robust}).
 
-\paragraph{Implications for policy.} An instrument that prices or caps transport alone, such as a freight fuel
-levy or a vehicle emissions standard, blends the carbon price into the transport rates and leaves holding and
+\paragraph{Implications for policy.} An instrument that prices transport carbon alone, such as a freight fuel
+levy, blends the carbon price into the transport rates and leaves holding and
 facility carbon unpriced. At a given density it therefore slows replenishment, and at a given speed it adds distribution centers, whatever
 the product. By Propositions~\ref{prop:speed} and~\ref{prop:density}, these moves raise total carbon, at least
 for small prices, when the inventory saving from speed is more carbon-intensive per dollar than the speed it would
@@ -1241,7 +1243,7 @@ request.
 
 \begin{proof}[Proof of Lemma~\ref{prop:unique}]
 We give the argument for $J$; for $C$ replace each blended rate by its carbon rate and set $h_p=0$. Let $x=\ln n$ and $y=\ln v$,
-which range over a box, and let $k=z\sigma\sqrt{ND}$. Then
+which range over a box, and let $k=z\sigma\sqrt{ND}$. Then, up to the constant $cN\mu$,
 \[
   J=F_\tau e^{x}+H_\tau k\,e^{g(x,y)}+h_pN\mu D\,e^{-y}+T_\tau(e^{y})\,N\mu D+\ell_\tau N\mu\delta\,e^{-x/2},
 \]
@@ -1348,14 +1350,15 @@ gives $n^*(\tau)=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$; the ratio of its carbon 
 $(r_L/r_F)^{2/3}$. The speed response no longer depends on $n$, and
 by the argument of part (i) the ratio of its carbon and cost values is $(a_KR_{\mathrm{speed}})^{2/5}$. For
 \eqref{eq:excess}, carbon separates into a proximity component $C_{\mathrm{prox}}(n)=\varphi n+\varepsilon_LN\mu
-\delta n^{-1/2}$ and an availability component $C_{\mathrm{avail}}(v)=\eta z\sigma N\sqrt{D/v}+\varepsilon_0N\mu
-D\,v^2$, with $\theta=C_{\mathrm{prox}}(n_C)/C_{\min}$. A function $c_1n+c_2n^{-1/2}$ attains its minimum
+\delta n^{-1/2}$ an availability component $C_{\mathrm{avail}}(v)=\eta z\sigma N\sqrt{D/v}+\varepsilon_0N\mu
+D\,v^2$, and the constant $\varepsilon_bN\mu D$, with $\theta=C_{\mathrm{prox}}(n_C)/C_{\min}$ and
+$\theta_a=C_{\mathrm{avail}}(v_C)/C_{\min}$. A function $c_1n+c_2n^{-1/2}$ attains its minimum
 $3c_1n^\circ$ at $n^\circ=(c_2/2c_1)^{2/3}$ and equals $c_1n^\circ(x+2x^{-1/2})$ at $n=xn^\circ$; with $n_K=xn_C$
 and $x=R_{\mathrm{density}}^{-2/3}$, $C_{\mathrm{prox}}(n_K)/C_{\mathrm{prox}}(n_C)=(x+2x^{-1/2})/3$. Likewise
 $c_1v^{-1/2}+c_2v^2$ attains its minimum $\tfrac54c_1(v^\circ)^{-1/2}$ and equals
 $c_1(v^\circ)^{-1/2}(y^{-1/2}+y^2/4)$ at $v=yv^\circ$, so with $v_K=yv_C$ and
 $y=(a_KR_{\mathrm{speed}})^{-2/5}$, $C_{\mathrm{avail}}(v_K)/C_{\mathrm{avail}}(v_C)=(4y^{-1/2}+y^2)/5$. Weighting by
-$\theta$ and $1-\theta$ gives $C(n_K,v_K)/C_{\min}$ exactly, and expanding $x=e^{u_1}$ and $y=e^{u_2}$ to second
+$\theta$ and $\theta_a$ gives $C(n_K,v_K)/C_{\min}$ exactly, and expanding $x=e^{u_1}$ and $y=e^{u_2}$ to second
 order gives \eqref{eq:excess}.
 \end{proof}
 

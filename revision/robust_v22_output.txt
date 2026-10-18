@@ -1,6 +1,7 @@
 ROBUSTNESS (continuous number of centers unless stated): least-cost design for a 20% cut from each row's own cost minimum (realized caps: same expected budget as the reference)
   Reference                                    cost min 5.4 DCs 2.55 d | 6.2 DCs 3.30 d, cut 20.0%, cost +1.5%
   Whole number of centers                      cost min 5.0 DCs 2.56 d | 6.0 DCs 3.26 d, cut 20.0%, cost +1.2%
+  Truckload, intermodal, or carload only       cost min 5.5 DCs 2.00 d | 5.4 DCs 4.00 d, cut 43.2%, cost +2.4%
   No financing of stock in transit             cost min 5.4 DCs 4.36 d | 9.8 DCs 6.00 d, cut 20.0%, cost +4.8%
   multipliers from primitives: CV_Q=0.22539, weekly m=1.37073, annual m=1.05141
   Annual cap on realized carbon, 95%           cost min 5.4 DCs 2.55 d | 6.5 DCs 3.51 d, cut 23.8%, cost +2.3%

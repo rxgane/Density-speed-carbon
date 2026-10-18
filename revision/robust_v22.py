@@ -58,6 +58,7 @@ if __name__ == "__main__":
     say(f"ROBUSTNESS (continuous number of centers unless stated): least-cost design for a {100*X:.0f}% cut from each row's own cost minimum (realized caps: same expected budget as the reference)")
     row("Reference", p)
     row("Whole number of centers", p, integer=True)
+    row("Truckload, intermodal, or carload only", p, vset=(500.0, 250.0, 1000.0/6))
     row("No financing of stock in transit", B.reference(financed=False))
     from statistics import NormalDist
     CVQ = (p["sigma"]*np.sqrt(7)/(p["mu"]*7))*np.sqrt((1+(p["N"]-1)*p["rho"])/p["N"]); z95 = NormalDist().inv_cdf(0.95)
