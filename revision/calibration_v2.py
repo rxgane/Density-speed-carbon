@@ -64,7 +64,7 @@ say(f"  diesel {kg_per_diesel_usd:.2f}   grid electricity {kg_per_elec_usd[1]:.2
     f"   heavy fuel oil {3114/626:.1f}-{3114/535:.1f}")
 
 # ------------------------------------------------------------------ inbound speed levers: r_t = marginal kg / marginal $
-TL_KG_PER_MI = 0.48 / DIESEL_USD * DIESEL_KG_PER_GAL   # 1.34 kg/mile  [ATRI]
+TL_KG_PER_MI = 1.52   # kg/mile, EPA SmartWay 2023 truckload dry-van median (fuel cost basis gives 1.34)
 TL_USD_PER_MI = 2.26
 speed_levers = {
     # name: (low, central, high, how)
@@ -89,7 +89,6 @@ say("\nLAST MILE: r_L (kg/$)")
 for k, (lo, c, hi, how) in last_mile.items():
     say(f"  {k:<26} {c:5.3f}  (range {lo:.2f}-{hi:.2f})   {how}")
 
-EEIO_WH = 0.244   # kg CO2e per $ of warehousing, USEEIO v1.3 NAICS 493110/493120 [EEIO]
 # ------------------------------------------------------------------ facilities: r_F
 kwh_per_ft2 = {"ambient": 22.7/3.412, "refrigerated": 84.1/3.412}   # [ESTAR], site energy, all-electric bound
 facility = {}
@@ -100,10 +99,10 @@ for k, kwh in kwh_per_ft2.items():
     full_fixed = kg_ft2 / (rent / 0.4)                              # rent assumed 40% of a DC's fixed operating cost
     # the model's F is the full fixed operating cost of a DC, so the central value uses full fixed cost;
     # the range runs from 70% of that value up to the rent-only ratio (capped at Lineage's 0.28)
-    facility[k] = (min(0.7 * full_fixed, EEIO_WH), EEIO_WH, 0.28)  # EPA input-output rate; range site energy to Lineage
-say("\nFACILITIES: r_F (kg/$)  [EPA input-output rate per dollar of warehousing; low end: ESTAR site energy x grid]")
+    facility[k] = (0.7 * full_fixed, full_fixed, min(rent_only, 0.28))
+say("\nFACILITIES: r_F (kg/$)  [ESTAR site energy x grid factor, over fixed cost]")
 for k, (lo, c, hi) in facility.items():
-    say(f"  {k:<26} {c:5.3f}  (range {lo:.3f}-{hi:.2f})   site-energy value {kwh_per_ft2[k]*GRID_KG_PER_KWH/(((10.12 if k == 'ambient' else 20.24))/0.4):.3f}; Lineage 0.28")
+    say(f"  {k:<26} {c:5.3f}  (range {lo:.2f}-{hi:.2f})   cross-check: EEIO warehousing 0.244, Lineage 0.28")
 
 # ------------------------------------------------------------------ holding: r_h per product (per pallet-year)
 CAP = (0.08, 0.10, 0.15)                       # capital charge on inventory value, per year [CARRY]
@@ -118,15 +117,13 @@ products = {
     "Fresh poultry":            ((2000, 3000, 4000), "refrigerated", 0.391),
     "Cold-chain pharmaceuticals": ((15000, 22050, 30000), "refrigerated", None),
 }
-EEIO_WH = 0.244   # kg CO2e per $ of warehousing [EEIO]
-STORE_INT = {k: (storage_kg[k][1]/storage_usd[k][1], EEIO_WH, 0.28) for k in storage_kg}   # kg per storage $: site, EPA, Lineage
 def r_h(value, stype, emb=None, s_week=0.0, which=1):
     """carbon per dollar of holding; s_week = fraction of stock value lost to spoilage per week held"""
-    E = STORE_INT[stype][which]*storage_usd[stype][which]; H = CAP[which]*value + storage_usd[stype][which]
+    E = storage_kg[stype][which]; H = CAP[which]*value + storage_usd[stype][which]
     spoil_usd = 52*s_week*value
     return (E + spoil_usd*(emb or 0.0)) / (H + spoil_usd)
 def r_h_range(value, stype, emb=None, s_week=0.0):
-    vals = [ (STORE_INT[stype][a]*storage_usd[stype][c] + 52*s_week*v*(emb or 0)) / (CAP[b]*v + storage_usd[stype][c] + 52*s_week*v)
+    vals = [ (storage_kg[stype][a] + 52*s_week*v*(emb or 0)) / (CAP[b]*v + storage_usd[stype][c] + 52*s_week*v)
              for a, b, c in itertools.product(range(3), range(3), range(3)) for v in value ]
     return min(vals), max(vals)
 
@@ -177,7 +174,7 @@ say("replenishment becomes carbon-minimizing whatever the network does (R_speed 
 say("Holding carbon then includes the embodied carbon of spoiled food [EEIO]; holding cost includes its value.")
 for pk in ("Refrigerated dairy", "Fresh beef", "Fresh poultry"):
     val, st, emb = products[pk]
-    V = val[1]; E = EEIO_WH*storage_usd[st][1]; H0 = CAP[1]*V + storage_usd[st][1]
+    V = val[1]; E = storage_kg[st][1]; H0 = CAP[1]*V + storage_usd[st][1]
     for lk in ("intermodal -> truckload", "truckload -> air", "ocean vessel speed"):
         k = speed_levers[lk][1]*RHIGH
         if emb <= k:

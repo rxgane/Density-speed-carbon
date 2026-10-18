@@ -1,42 +1,42 @@
 REFERENCE NETWORK (financed stock in transit)
   inputs: N=40, mu=250 pallets/week, CV=0.40, rho=0.3, z=1.645, D=1000 mi, delta=700 mi, v in [167,500] mi/day
-  t(v): $0.0663 -> $0.0869 per pallet-mile; eps(v): 0.0149 -> 0.0515 kg per pallet-mile
-  t_L=$0.1375/pallet-mile, r_L=0.5; F=$3.0M/yr, phi=732 t/yr; h=$5,120/pallet-yr, eta=29 kg/pallet-yr, h_p=$5,000/pallet-yr
-  ratios: r_h=0.0057 r_t=1.777 r_L=0.500 r_F=0.2440
-  cost minimum: n=4, line haul 2.15 days, safety stock 2,216 pallets, in transit 3,065 pallets, a_K=0.270, omega=0.082, cost $107.5M/yr, carbon 39,573 t/yr
+  t(v): $0.0663 -> $0.0869 per pallet-mile; eps(v): 0.0169 -> 0.0585 kg per pallet-mile
+  t_L=$0.1375/pallet-mile, r_L=0.5; F=$1.8M/yr, phi=148 t/yr; h=$3,120/pallet-yr, eta=15 kg/pallet-yr, h_p=$3,000/pallet-yr
+  ratios: r_h=0.0048 r_t=2.018 r_L=0.500 r_F=0.0823
+  cost minimum: n=5, line haul 2.56 days, safety stock 2,474 pallets, in transit 3,650 pallets, a_K=0.261, omega=0.087, cost $97.3M/yr, carbon 33,038 t/yr
 
 CARBON PRICE RESPONSE (integer DCs): emissions cut and cost increase vs the cost minimum
-  $   25/t  replen: n=4 2.18d cut 1.4% cost +0.01% | network: n=4 2.15d cut 0.0% cost +0.00% | both: n=4 2.18d cut 1.4% cost +0.01%
-  $   50/t  replen: n=4 2.21d cut 2.7% cost +0.02% | network: n=4 2.15d cut 0.0% cost +0.00% | both: n=4 2.21d cut 2.7% cost +0.02%
-  $  100/t  replen: n=4 2.27d cut 5.1% cost +0.09% | network: n=4 2.15d cut 0.0% cost +0.00% | both: n=4 2.27d cut 5.1% cost +0.09%
-  $  200/t  replen: n=4 2.39d cut 9.0% cost +0.30% | network: n=4 2.15d cut 0.0% cost +0.00% | both: n=4 2.39d cut 9.0% cost +0.30%
-  $  300/t  replen: n=4 2.49d cut 12.1% cost +0.59% | network: n=4 2.15d cut 0.0% cost +0.00% | both: n=4 2.49d cut 12.1% cost +0.59%
-  $  500/t  replen: n=4 2.68d cut 16.8% cost +1.27% | network: n=4 2.15d cut 0.0% cost +0.00% | both: n=4 2.68d cut 16.8% cost +1.27%
-  $  700/t  replen: n=4 2.84d cut 20.3% cost +2.02% | network: n=4 2.15d cut 0.0% cost +0.00% | both: n=4 2.84d cut 20.3% cost +2.02%
-  $ 1000/t  replen: n=4 3.06d cut 23.9% cost +3.16% | network: n=4 2.15d cut 0.0% cost +0.00% | both: n=4 3.06d cut 23.9% cost +3.16%
-  $ 2000/t  replen: n=4 3.63d cut 30.6% cost +6.69% | network: n=5 2.15d cut 1.5% cost +0.57% | both: n=5 3.62d cut 32.1% cost +7.29%
-  $ 5000/t  replen: n=4 4.74d cut 37.4% cost +14.61% | network: n=5 2.15d cut 1.5% cost +0.57% | both: n=5 4.73d cut 38.9% cost +15.24%
-  price at which the both-decision design adds a fifth DC: about $1,137/t
-  average cost per tonne avoided at $100/t: $48
+  $   25/t  replen: n=5 2.60d cut 1.5% cost +0.01% | network: n=6 2.56d cut 2.5% cost +0.02% | both: n=6 2.59d cut 3.9% cost +0.02%
+  $   50/t  replen: n=5 2.64d cut 2.9% cost +0.02% | network: n=6 2.56d cut 2.5% cost +0.02% | both: n=6 2.64d cut 5.3% cost +0.04%
+  $  100/t  replen: n=5 2.72d cut 5.4% cost +0.09% | network: n=6 2.56d cut 2.5% cost +0.02% | both: n=6 2.72d cut 7.8% cost +0.10%
+  $  200/t  replen: n=5 2.87d cut 9.5% cost +0.29% | network: n=6 2.56d cut 2.5% cost +0.02% | both: n=6 2.87d cut 11.9% cost +0.31%
+  $  300/t  replen: n=5 3.01d cut 12.7% cost +0.56% | network: n=6 2.56d cut 2.5% cost +0.02% | both: n=6 3.01d cut 15.1% cost +0.58%
+  $  500/t  replen: n=5 3.26d cut 17.4% cost +1.19% | network: n=6 2.56d cut 2.5% cost +0.02% | both: n=6 3.25d cut 19.8% cost +1.21%
+  $  700/t  replen: n=5 3.47d cut 20.7% cost +1.85% | network: n=6 2.56d cut 2.5% cost +0.02% | both: n=6 3.46d cut 23.1% cost +1.88%
+  $ 1000/t  replen: n=5 3.75d cut 24.2% cost +2.86% | network: n=7 2.56d cut 4.4% cost +0.48% | both: n=7 3.74d cut 28.4% cost +3.36%
+  $ 2000/t  replen: n=5 4.47d cut 30.4% cost +5.88% | network: n=8 2.56d cut 5.8% cost +1.24% | both: n=8 4.45d cut 36.1% cost +7.19%
+  $ 5000/t  replen: n=5 5.87d cut 36.6% cost +12.51% | network: n=10 2.56d cut 7.7% cost +3.34% | both: n=10 5.83d cut 44.2% cost +16.08%
+  price at which the both-decision design adds a fifth DC: about $22/t
+  average cost per tonne avoided at $100/t: $40
 
 LINE-HAUL LINK: carbon-minimizing DC count as the carbon intensity of faster service varies (cost schedule fixed)
-  reference, r_t=0.03: carbon-minimizing DCs 7, line haul 6.00 days
-  reference, r_t=0.45: carbon-minimizing DCs 7, line haul 6.00 days
-  reference, r_t=1.78: carbon-minimizing DCs 7, line haul 6.00 days
-  spoiling dairy, solo or team, CV 0.60, rho 0.1, 99% service, F $1.0M (omega=0.099), r_t=0.03: carbon-minimizing DCs 13, line haul 1.02 days
-  spoiling dairy, solo or team, CV 0.60, rho 0.1, 99% service, F $1.0M (omega=0.099), r_t=1.78: carbon-minimizing DCs 12, line haul 2.00 days
+  reference, r_t=0.03: carbon-minimizing DCs 19, line haul 6.00 days
+  reference, r_t=0.45: carbon-minimizing DCs 19, line haul 6.00 days
+  reference, r_t=1.78: carbon-minimizing DCs 19, line haul 6.00 days
+  spoiling dairy, solo or team, CV 0.60, rho 0.1, 99% service, F $1.0M (omega=0.099), r_t=0.03: carbon-minimizing DCs 23, line haul 1.00 days
+  spoiling dairy, solo or team, CV 0.60, rho 0.1, 99% service, F $1.0M (omega=0.099), r_t=1.78: carbon-minimizing DCs 21, line haul 2.00 days
 
 ROBUSTNESS at $1,000/t (both decisions; cost and cut relative to each row's own cost minimum unless stated)
-  Reference                                      cost min 4.0 DCs 2.15 d | 4.0 DCs 3.06 d, cut 23.9%, cost +3.2%
-  Implementation: rail, intermodal, or truckload only cost min 4.0 DCs 2.00 d | 4.0 DCs 4.00 d, cut 37.9%, cost +9.1%
-  Implementation: continuous number of DCs       cost min 3.9 DCs 2.15 d | 4.4 DCs 3.06 d, cut 24.8%, cost +3.3%
-  Accounting: warehouse carbon from site energy  cost min 4.0 DCs 2.15 d | 5.0 DCs 3.06 d, cut 28.6%, cost +3.8%
-  Accounting: annual cap on realized carbon, 95% cost min 4.0 DCs 2.15 d | 5.0 DCs 3.18 d, cut 27.1%, cost +4.5%
-  Accounting: weekly cap on realized carbon, 95% cost min 4.0 DCs 2.15 d | 6.0 DCs 5.30 d, cut 41.4%, cost +20.9%
-  Extension: no financing of stock in transit    cost min 4.0 DCs 3.62 d | 4.0 DCs 5.44 d, cut 13.2%, cost +1.4%
-  Extension: load-sensitive delivery, lambda=0.1 cost min 3.0 DCs 2.15 d | 4.0 DCs 3.06 d, cut 25.3%, cost +3.4%
-  Extension: load-sensitive delivery, lambda=0.25 cost min 2.0 DCs 2.16 d | 3.0 DCs 3.07 d, cut 24.9%, cost +3.6%
-  Extension: load-sensitive delivery, lambda=0.5 cost min 1.0 DCs 2.16 d | 1.0 DCs 3.08 d, cut 25.1%, cost +3.4%
+  Reference                                      cost min 5.0 DCs 2.56 d | 7.0 DCs 3.74 d, cut 28.4%, cost +3.4%
+  Implementation: rail, intermodal, or truckload only cost min 6.0 DCs 2.00 d | 7.0 DCs 4.00 d, cut 45.3%, cost +2.9%
+  Implementation: continuous number of DCs       cost min 5.4 DCs 2.55 d | 6.7 DCs 3.74 d, cut 27.2%, cost +3.3%
+  Accounting: warehouse carbon from site energy  cost min 5.0 DCs 2.56 d | 7.0 DCs 3.74 d, cut 28.4%, cost +3.4%
+  Accounting: annual cap on realized carbon, 95% cost min 5.0 DCs 2.56 d | 7.0 DCs 4.07 d, cut 31.7%, cost +4.7%
+  Accounting: weekly cap on realized carbon, 95% cost min 5.0 DCs 2.56 d | 13.0 DCs 5.96 d, cut 46.1%, cost +21.0%
+  Extension: no financing of stock in transit    cost min 5.0 DCs 4.38 d | 7.0 DCs 6.00 d, cut 16.4%, cost +1.4%
+  Extension: load-sensitive delivery, lambda=0.1 cost min 5.0 DCs 2.56 d | 6.0 DCs 3.74 d, cut 26.1%, cost +3.3%
+  Extension: load-sensitive delivery, lambda=0.25 cost min 3.0 DCs 2.57 d | 4.0 DCs 3.76 d, cut 25.3%, cost +3.1%
+  Extension: load-sensitive delivery, lambda=0.5 cost min 1.0 DCs 2.58 d | 1.0 DCs 3.78 d, cut 24.4%, cost +3.1%
 
 ROUNDING: largest penalty from rounding the DC count, cost and carbon objectives and the price grid
-  largest penalty: 0.09%
+  largest penalty: 0.06%

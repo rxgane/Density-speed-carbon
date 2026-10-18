@@ -1,9 +1,9 @@
-"""Robustness of the least-cost design for a 30% cut in the reference network that finances its stock in transit."""
+"""Robustness of the least-cost design for a 20% cut in the reference network that finances its stock in transit (Table 4)."""
 import os
 import numpy as np
 from scipy.optimize import minimize_scalar, brentq
 import application_v22 as B
-here = os.path.dirname(os.path.abspath(__file__)); Y = 365.0; X = 0.30
+here = os.path.dirname(os.path.abspath(__file__)); Y = 365.0; X = 0.20
 out = []
 def say(s=""): print(s); out.append(s)
 def best_v(n, p, cap, vset, o):
@@ -57,9 +57,7 @@ if __name__ == "__main__":
     p = B.reference(); n0, v0 = solve(p, integer=False); C0 = B.KC(n0, v0, p)[1]
     say(f"ROBUSTNESS (continuous number of centers unless stated): least-cost design for a {100*X:.0f}% cut from each row's own cost minimum (realized caps: same expected budget as the reference)")
     row("Reference", p)
-    row("Rail, intermodal, or truckload only", p, vset=(1000.0/6, 250.0, 500.0))
     row("Whole number of centers", p, integer=True)
-    row("Warehouse carbon from site energy", B.reference(wh="site"))
     row("No financing of stock in transit", B.reference(financed=False))
     from statistics import NormalDist
     CVQ = (p["sigma"]*np.sqrt(7)/(p["mu"]*7))*np.sqrt((1+(p["N"]-1)*p["rho"])/p["N"]); z95 = NormalDist().inv_cdf(0.95)
@@ -67,6 +65,4 @@ if __name__ == "__main__":
     say(f"  multipliers from primitives: CV_Q={CVQ:.5f}, weekly m={m_week:.5f}, annual m={m_year:.5f}")
     row("Annual cap on realized carbon, 95%", p, cap_o=dict(m=m_year), budget=(1-X)*C0)
     row("Weekly cap on realized carbon, 95%", p, cap_o=dict(m=m_week), budget=(1-X)*C0)
-    for lam in (0.1, 0.25, 0.5):
-        row(f"Load-sensitive delivery, lambda={lam}", p, base_o=dict(lam=lam, nref=4.0))
     with open(os.path.join(here, "robust_v22_output.txt"), "w") as fh: fh.write("\n".join(out) + "\n")

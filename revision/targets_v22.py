@@ -1,7 +1,7 @@
 """
 Reference network that finances its stock in transit (application_v22.reference), solved as the model specifies:
 the number of distribution centers n and the speed v are both continuous. Carbon-target exercise for three
-action sets, and the inbound-transport link to network density. Writes targets_v22.json, inbound_v22.json and
+action sets. Writes targets_v22.json and
 targets_v22_output.txt.
 """
 import os, json
@@ -88,7 +88,9 @@ if __name__ == "__main__":
     # share of the cut delivered by inbound freight and safety stock (speed) vs facilities and last mile (density), both decisions
     say("  sources of the cut, both decisions (change in t/yr: facilities, holding, inbound, last mile):")
     for x in (0.10, 0.20, 0.30):
-        r = next(q for q in rows if abs(q["x"]-x) < 1e-9)["both"]; v = 1000/r["days"]; n = r["n"]
+        r = next(q for q in rows if abs(q["x"]-x) < 1e-9)["both"]
+        if r is None: say(f"    cut {100*x:.0f}%: not attainable"); continue
+        v = 1000/r["days"]; n = r["n"]
         S0, S1 = A.SS(n0, v0, p), A.SS(n, 1000/r["days"]*1, p)
         def comp(n_, v_):
             S = A.SS(n_, v_, p); t = p["N"]*p["mu"]
@@ -105,38 +107,4 @@ if __name__ == "__main__":
         K, C = KC(n, v, p)
         say(f"    ${P}/t: {n:.2f} DCs {1000/v:.2f} d cut {100*(1-C/C0):.1f}% cost +{100*(K/K0-1):.2f}% avg ${(K-K0)/(C0-C)*1000:,.0f}/t")
 
-    say("\nINBOUND-TRANSPORT LINK (financed, continuous n), carbon intensity of faster service varied with its cost schedule fixed")
-    XS = np.round(np.arange(0.10, 2.0001, 0.05), 3)
-    res = {"x": XS.tolist(), "top": {}, "bottom": {}}
-    TOP = {"lower": dict(F_year=6.0e6, over={}), "higher": dict(F_year=1.0e6, over=dict(sigma=150/np.sqrt(7), rho=0.1, z=2.326))}
-    for env, e in TOP.items():
-        base = B.reference(storage="refrigerated", value=1250.0, spoil_week=0.005, embodied=0.803, lane_kind="labor", F_year=e["F_year"])
-        base.update(e["over"]); nb = solve(base)[0]
-        res["top"][env] = {"omega": A.omega(base), "nK": float(nb), "curves": {}}
-        for rt in (0.03, 0.45, 1.78):
-            ys = []
-            for xv in XS:
-                q = B.reference(storage="refrigerated", value=1250.0, spoil_week=0.005, embodied=0.803, lane_kind="labor",
-                                F_year=e["F_year"], rL=xv/20/0.1375)
-                q.update(e["over"]); set_rt(q, rt); ys.append(float(cmin(q)))
-            res["top"][env]["curves"][str(rt)] = ys
-        k = list(XS).index(1.35)
-        say(f"  perishables, {env} pooling (omega {A.omega(base):.3f}, cost-min {nb:.2f} DCs): carbon-min DCs at diesel truck "
-            + ", ".join(f"r_t={rt}: {res['top'][env]['curves'][str(rt)][k]:.1f}" for rt in (0.03, 0.45, 1.78)))
-    CUT = 0.25
-    BOT = {"lower": dict(sigma=50/np.sqrt(7), rho=0.6), "higher": dict(sigma=150/np.sqrt(7), rho=0.1, z=2.326)}
-    for env, over in BOT.items():
-        base = B.reference(); base.update(over); nb = solve(base)[0]
-        res["bottom"][env] = {"omega": A.omega(base), "nK": float(nb), "curves": {}, "cut": CUT}
-        for rt in (0.03, 0.45, 1.78):
-            ys = []
-            for xv in XS:
-                q = B.reference(rL=xv/20/0.1375); q.update(over); set_rt(q, rt)
-                nq, vq = solve(q); Cq = KC(nq, vq, q)[1]; sres = solve(q, cap=(1-CUT)*Cq)
-                ys.append(None if sres is None else float(sres[0]))
-            res["bottom"][env]["curves"][str(rt)] = ys
-        k = list(XS).index(1.35)
-        say(f"  reference, {env} pooling (omega {A.omega(base):.3f}, cost-min {nb:.2f} DCs), {100*CUT:.0f}% cut, DCs at diesel truck "
-            + ", ".join(f"r_t={rt}: " + ("n.a." if res['bottom'][env]['curves'][str(rt)][k] is None else f"{res['bottom'][env]['curves'][str(rt)][k]:.1f}") for rt in (0.03, 0.45, 1.78)))
-    json.dump(res, open(os.path.join(here, "inbound_v22.json"), "w"))
     with open(os.path.join(here, "targets_v22_output.txt"), "w") as fh: fh.write("\n".join(out) + "\n")

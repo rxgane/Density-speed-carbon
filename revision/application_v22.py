@@ -19,17 +19,56 @@ def say(s=""): print(s); out.append(s)
 Y = 365.0
 VALUE = 50_000.0
 
-def reference(financed=True, **kw):
-    q = dict(storage="ambient", value=VALUE, rL=0.50, lane_kind="fuel"); q.update(kw)
-    p = A.network(**q)
-    p["pipe_h"] = A.CAPITAL*q["value"]/Y if financed else 0.0
+SWITCH = 1.0      # the whole inbound flow uses one service along the fitted curve (no blend)
+RETURNS = 1.0     # store-delivery rates are per loaded mile (no separate empty running)
+VALUE_REF = 20_000.0   # $ per pallet: about $49,000 per ton for electronics and pharmaceuticals (FAF 4.5) at about 0.45 t a pallet
+CAPITAL_REF = 0.15     # capital charge on stock held and in transit, high-value goods (obsolescence, insurance, theft)
+TL_KG_MILE = A.TL_KG_SMARTWAY   # truckload CO2 per truck-mile; the fitted rates are scaled from 1.339
+FIXED_SHARE = A.FIXED_SHARE   # about $1.8M of a center's $3.0M a year is fixed per site
+HANDLING = 12.6        # $ per pallet handled: brings a center of the reference network's size (5.5 centers) to $3.0M a year
+ZETA_C = 1.0           # handling cost proportional to the pallets a center handles
+
+def switchable(p, s):
+    """line haul as the average over all inbound volume when only a share s can move by rail: the slowest average
+    transit has s of the volume at the slowest rail service and 1-s by truckload, at blended cost and carbon; the
+    quadratic rates are refitted through truckload and that blended point"""
+    if s >= 1.0: return p
+    vt, vr = p["vmax"], p["vmin"]
+    k_tl, c_tl = p["e0"]+p["eps0"]*vt**2, p["t0"]+p["t1"]*vt**2
+    k_r, c_r = p["e0"]+p["eps0"]*vr**2, p["t0"]+p["t1"]*vr**2
+    L = (1-s)*p["D"]/vt + s*p["D"]/vr; v1 = p["D"]/L
+    k1, c1 = (1-s)*k_tl + s*k_r, (1-s)*c_tl + s*c_r
+    p["eps0"] = (k_tl-k1)/(vt**2-v1**2); p["e0"] = k1 - p["eps0"]*v1**2
+    p["t1"] = (c_tl-c1)/(vt**2-v1**2); p["t0"] = c1 - p["t1"]*v1**2
+    p["vmin"] = v1; p["modes"] = (v1, vt)
     return p
+
+def reference(financed=True, switch=None, returns=None, capital=None, tl_kg=None, **kw):
+    q = dict(storage="ambient", value=VALUE_REF, rL=0.50, lane_kind="fuel"); q.update(kw)
+    p = A.network(**q)
+    cap = CAPITAL_REF if capital is None else capital
+    p["h"] += (cap - A.CAPITAL)*q["value"]/Y                  # network() charges A.CAPITAL; restate at the reference rate
+    p["pipe_h"] = cap*q["value"]/Y if financed else 0.0
+    k = (TL_KG_MILE if tl_kg is None else tl_kg)/1.339         # line-haul carbon scaled to the truckload factor
+    p["e0"] *= k; p["eps0"] *= k
+    p = switchable(p, SWITCH if switch is None else switch)
+    p["tL"] *= RETURNS if returns is None else returns
+    size = A.F_YEAR[q["storage"]]/A.F_YEAR["ambient"]           # cold storage costs about twice as much to run
+    p["F"] *= FIXED_SHARE                                       # fixed charge per site
+    p["hand"] = HANDLING*size; p["zc"] = ZETA_C; p["q0"] = p["N"]*p["mu"]/5.48   # handling, $ per pallet at q0
+    return p
+
+def handling(n, p):
+    """network handling cost per day, n*c(N*mu/n) with c(q) = HANDLING*q0*(q/q0)**zc"""
+    if "hand" not in p: return 0.0
+    tput = p["N"]*p["mu"]
+    return n*p["hand"]*p["q0"]*(tput/(n*p["q0"]))**p["zc"]
 
 def KC(n, v, p, lam=0.0, nref=1.0, m=1.0):
     """daily cost and carbon; lam = load sensitivity of last-mile rates, m = transport-carbon factor"""
     fill = (n/nref)**lam if lam else 1.0
     S = A.SS(n, v, p); tput = p["N"]*p["mu"]
-    K = (p["F"]*n + p["h"]*S + p["pipe_h"]*tput*p["D"]/v + (p["t0"]+p["t1"]*v**2)*tput*p["D"]
+    K = (p["F"]*n + handling(n, p) + p["h"]*S + p["pipe_h"]*tput*p["D"]/v + (p["t0"]+p["t1"]*v**2)*tput*p["D"]
          + p["tL"]*fill*tput*A.d(n, p))
     C = (p["phi"]*n + p["eta"]*S + m*(p["e0"]+p["eps0"]*v**2)*tput*p["D"] + m*p["rL"]*p["tL"]*fill*tput*A.d(n, p))
     return K, C

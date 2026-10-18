@@ -14,7 +14,7 @@ tput = p["N"]*p["mu"]; Dm = p["D"]
 
 def parts(n, v):
     S = A.SS(n, v, p); dn = A.d(n, p)
-    cost = dict(facilities=p["F"]*n, safety_stock=p["h"]*S, stock_in_transit=p["pipe_h"]*tput*Dm/v,
+    cost = dict(facilities=p["F"]*n + B.handling(n, p), safety_stock=p["h"]*S, stock_in_transit=p["pipe_h"]*tput*Dm/v,
                 inbound_freight=(p["t0"]+p["t1"]*v**2)*tput*Dm, local_delivery=p["tL"]*tput*dn)
     carbon = dict(facilities=p["phi"]*n, safety_stock=p["eta"]*S, inbound_freight=(p["e0"]+p["eps0"]*v**2)*tput*Dm,
                   local_delivery=p["rL"]*p["tL"]*tput*dn)

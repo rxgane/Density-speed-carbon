@@ -3,7 +3,7 @@ ENERGY PRIMITIVES (kg CO2e per dollar of energy)
 
 INBOUND SPEED LEVERS: r_t = marginal carbon / marginal cost of faster inbound (kg/$)
   ocean vessel speed          5.37  (range 4.97-5.82)   marginal cost of speed is bunker fuel [MRV][BUNKER]
-  intermodal -> truckload     1.78  (range 1.18-3.55)   60% carbon saving, 10-30% cost saving [ATRI][IMX]
+  intermodal -> truckload     2.02  (range 1.35-4.04)   60% carbon saving, 10-30% cost saving [ATRI][IMX]
   truckload -> air            1.10  (range 0.60-1.90)   air 4-5x road cost, about 5-10x road carbon per t-km [AIR]
   solo -> team drivers        0.03  (range 0.00-0.10)   same tractor and fuel; premium is driver labor [TEAM]
 
@@ -13,47 +13,47 @@ LAST MILE: r_L (kg/$)
   electric van               0.075  (range 0.05-0.10)   0.37-0.39 kWh/mile x 0.371 kg/kWh over van cost per mile [EVAN]
   electric truck             0.160  (range 0.12-0.20)   about 1.2 kWh/mile x 0.371 kg/kWh over about 2.75 $/mile; driver-dominated cost
 
-FACILITIES: r_F (kg/$)  [EPA input-output rate per dollar of warehousing; low end: ESTAR site energy x grid]
-  ambient                    0.244  (range 0.068-0.28)   site-energy value 0.098; Lineage 0.28
-  refrigerated               0.244  (range 0.127-0.28)   site-energy value 0.181; Lineage 0.28
+FACILITIES: r_F (kg/$)  [ESTAR site energy x grid factor, over fixed cost]
+  ambient                    0.098  (range 0.07-0.24)   cross-check: EEIO warehousing 0.244, Lineage 0.28
+  refrigerated               0.181  (range 0.13-0.28)   cross-check: EEIO warehousing 0.244, Lineage 0.28
 
 HOLDING: r_h (kg/$), storage energy only (no spoilage)
-  Ambient packaged goods     0.150  (range 0.035-0.221)
-  Bulky low-value goods      0.202  (range 0.068-0.259)
-  Refrigerated dairy         0.194  (range 0.140-0.252)
-  Fresh beef                 0.108  (range 0.052-0.194)
-  Fresh poultry              0.150  (range 0.085-0.229)
-  Cold-chain pharmaceuticals 0.044  (range 0.017-0.105)
+  Ambient packaged goods     0.077  (range 0.030-0.223)
+  Bulky low-value goods      0.103  (range 0.048-0.298)
+  Refrigerated dairy         0.180  (range 0.085-0.318)
+  Fresh beef                 0.101  (range 0.042-0.206)
+  Fresh poultry              0.140  (range 0.061-0.269)
+  Cold-chain pharmaceuticals 0.041  (range 0.015-0.090)
 
 COST SIDE (calibrated network): omega = 0.009; speed bands 0.610 / 1.082; robustness also over omega in (0.1, 0.3, 0.6)
 
 TABLE: classification; each cell = direction at most range corners (share of corners agreeing)
   product                         fuel speed   labor speed   diesel truck   diesel van  elec. truck   elec. van
-  Ambient packaged goods         slower 100%    faster 75%      more 98%      more 73%     fewer 54%     fewer 80%
-  Bulky low-value goods          slower 100%    faster 75%      more 95%      more 71%     fewer 56%     fewer 83%
-  Refrigerated dairy             slower 100%   faster 100%      more 95%      more 64%     fewer 77%    fewer 100%
-  Fresh beef                     slower 100%    faster 75%      more 98%      more 70%     fewer 70%     fewer 99%
-  Fresh poultry                  slower 100%    faster 75%      more 96%      more 69%     fewer 75%     fewer 99%
-  Cold-chain pharmaceuticals     slower 100%    faster 69%     more 100%      more 75%     fewer 60%     fewer 95%
+  Ambient packaged goods         slower 100%    faster 75%      more 98%      more 75%      more 51%     fewer 80%
+  Bulky low-value goods          slower 100%    faster 75%      more 96%      more 71%     fewer 54%     fewer 84%
+  Refrigerated dairy             slower 100%    faster 75%      more 93%      more 66%     fewer 77%     fewer 99%
+  Fresh beef                     slower 100%    faster 75%      more 98%      more 70%     fewer 68%     fewer 98%
+  Fresh poultry                  slower 100%    faster 75%      more 94%      more 69%     fewer 73%     fewer 99%
+  Cold-chain pharmaceuticals     slower 100%    faster 50%     more 100%      more 77%     fewer 60%     fewer 95%
 
 SPOILAGE BREAK-EVEN: weekly spoilage (share of stock value lost per week held) at which faster
 replenishment becomes carbon-minimizing whatever the network does (R_speed > upper band)
 Holding carbon then includes the embodied carbon of spoiled food [EEIO]; holding cost includes its value.
-  Refrigerated dairy     vs intermodal -> truckload : never (embodied 0.80 kg/$ <= 1.92 needed)
+  Refrigerated dairy     vs intermodal -> truckload : never (embodied 0.80 kg/$ <= 2.18 needed)
   Refrigerated dairy     vs truckload -> air        : never (embodied 0.80 kg/$ <= 1.19 needed)
   Refrigerated dairy     vs ocean vessel speed      : never (embodied 0.80 kg/$ <= 5.81 needed)
-  Fresh beef             vs intermodal -> truckload : never (embodied 1.12 kg/$ <= 1.92 needed)
+  Fresh beef             vs intermodal -> truckload : never (embodied 1.12 kg/$ <= 2.18 needed)
   Fresh beef             vs truckload -> air        : never (embodied 1.12 kg/$ <= 1.19 needed)
   Fresh beef             vs ocean vessel speed      : never (embodied 1.12 kg/$ <= 5.81 needed)
-  Fresh poultry          vs intermodal -> truckload : never (embodied 0.39 kg/$ <= 1.92 needed)
+  Fresh poultry          vs intermodal -> truckload : never (embodied 0.39 kg/$ <= 2.18 needed)
   Fresh poultry          vs truckload -> air        : never (embodied 0.39 kg/$ <= 1.19 needed)
   Fresh poultry          vs ocean vessel speed      : never (embodied 0.39 kg/$ <= 5.81 needed)
 
 CARBON SHARE OF PRICED COST, s = tau r / (1 + tau r), at central ratios; and the price at which s = 1/2
   activity                                   $50/t  $100/t  $200/t  s=1/2 at $/t
-  holding, ambient packaged goods             0.7%    1.5%    2.9%         6,660
-  facilities, ambient DC                      1.2%    2.4%    4.7%         4,098
+  holding, ambient packaged goods             0.4%    0.8%    1.5%        13,000
+  facilities, ambient DC                      0.5%    1.0%    1.9%        10,250
   last mile, diesel local truck               2.4%    4.8%    9.1%         2,000
   last mile, diesel van                       1.5%    2.9%    5.7%         3,333
-  line haul, truck instead of intermodal      8.2%   15.1%   26.2%           563
+  line haul, truck instead of intermodal      9.2%   16.8%   28.8%           496
   line haul, faster vessel speed             21.2%   34.9%   51.8%           186

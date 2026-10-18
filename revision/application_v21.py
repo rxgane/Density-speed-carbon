@@ -27,16 +27,18 @@ DC_FT2 = 120_000                               # ft2 per DC
 BUILDING_KG = {k: v/3.412*GRID*DC_FT2 for k, v in EUI.items()}       # kg CO2e per DC-year
 POSITION_KG = {"ambient": 30.0, "refrigerated": 109.0}              # building carbon per pallet position-year
 STORAGE_USD = {"ambient": 240.0, "refrigerated": 480.0}             # 3PL storage rate per pallet-year
-F_YEAR = {"ambient": 3.0e6, "refrigerated": 6.0e6}   # fixed operating cost per DC-year; cold-storage rent about 2x ambient
+F_YEAR = {"ambient": 3.0e6, "refrigerated": 6.0e6}   # operating cost per DC-year; cold-storage rent about 2x ambient
+FIXED_SHARE = 0.6                              # share of a center's operating cost fixed per site (about $1.8M of $3.0M); the rest is handling
+TL_KG_SMARTWAY = 1.52                          # truckload CO2 per truck-mile, EPA SmartWay 2023 dry-van median
 CAPITAL = 0.10                                 # capital charge on inventory value per year
 BETA, GAMMA = 0.5, 0.5                         # central shares of building energy / storage cost that vary with inventory
 EEIO_WH = 0.244                                # kg CO2e per $ of warehousing, USEEIO v1.3 (NAICS 493110 and 493120) [EEIO]
 
 def network(storage="ambient", value=1500.0, spoil_week=0.0, embodied=0.0, beta=BETA, gamma=GAMMA,
-            F_year=None, rL=0.50, lane_kind="fuel", wh="eeio"):
+            F_year=None, rL=0.50, lane_kind="fuel", wh="site"):
     """parameter dictionary of the calibrated network for one product, lane and last-mile vehicle.
-    wh="eeio": warehouse carbon at the EPA input-output rate per dollar of warehousing (facility cost and the
-    storage charge that varies with stock); wh="site": site energy of a median building times the grid factor."""
+    wh="site": site energy of a median building times the grid factor (reference); wh="eeio": the EPA input-output
+    rate per dollar of warehousing applied to the facility cost and the storage charge that varies with stock."""
     F_year = F_YEAR[storage] if F_year is None else F_year
     h_year = CAPITAL*value + gamma*STORAGE_USD[storage] + 52*spoil_week*value
     if wh == "eeio":
@@ -59,7 +61,7 @@ def lane(kind):
         v1, v2, c1, c2, k1, k2 = 500.0, 1000.0, TLc, TLc + 0.35/26, TLk, TLk + 0.03*0.35/26
     t1 = (c2-c1)/(v2**2-v1**2); e1 = (k2-k1)/(v2**2-v1**2)
     # the fuel lane's curves are fitted through intermodal (250 mi/day) and truckload (500); the firm may slow
-    # further, to a 6-day transit (rail), along the same curves
+    # further, to a 6-day transit (carload rail), along the same curves
     vlo = 1000.0/6 if kind == "fuel" else v1
     return dict(t0=c1-t1*v1**2, t1=t1, e0=k1-e1*v1**2, eps0=e1, vmin=vlo, vmax=v2, modes=(v1, v2))
 
@@ -95,12 +97,12 @@ def direction(a, b, tol):
     return "faster" if b > a + tol else ("slower" if b < a - tol else "unchanged")
 
 PRODUCTS = [("Ambient packaged goods", dict(storage="ambient", value=1500.0)),
-            ("High-value goods",       dict(storage="ambient", value=50_000.0)),
+            ("High-value goods",       dict(storage="ambient", value=20_000.0)),
             ("Refrigerated dairy",     dict(storage="refrigerated", value=1250.0)),
             ("Refrigerated dairy, spoilage 0.5%/wk", dict(storage="refrigerated", value=1250.0, spoil_week=0.005, embodied=0.803))]
 
 if __name__ == "__main__":
-    say("CALIBRATED NETWORK: warehouse carbon at the EPA input-output rate %.3f kg/$; storage cost share gamma=%.2f" % (EEIO_WH, GAMMA))
+    say("CALIBRATED NETWORK, v2.1: physical storage emissions; shares beta=%.2f (energy) gamma=%.2f (storage cost)" % (BETA, GAMMA))
     for nm_, kw in PRODUCTS:
         p = network(**kw)
         say(f"  {nm_:<38} h=${p['h']*YEAR:7.0f}/pallet-yr  eta={p['eta']*YEAR:6.1f} kg/pallet-yr  r_h={p['eta']/p['h']:.3f}  "
@@ -172,19 +174,17 @@ if __name__ == "__main__":
     say("\nBENCHMARK RATIOS under the allocation (central beta=gamma=0.5; range over beta in [0.25,0.75], gamma in [0.25,1],")
     say("capital charge 8-15%, pallet value range, storage energy range, storage rate range)")
     import itertools
-    VAL = {"Ambient packaged goods": (1000, 1500, 2500), "High-value goods": (30_000, 50_000, 80_000),
+    VAL = {"Ambient packaged goods": (1000, 1500, 2500), "High-value goods": (10_000, 20_000, 50_000),
            "Refrigerated dairy": (1000, 1250, 1500), "Refrigerated dairy, spoilage 0.5%/wk": (1000, 1250, 1500)}
     EN = {"ambient": (20, 30, 50), "refrigerated": (80, 109, 140)}; ST = {"ambient": (144, 240, 300), "refrigerated": (360, 480, 720)}
     for nm_, kw in PRODUCTS:
         st = kw["storage"]; sp = kw.get("spoil_week", 0.0); em = kw.get("embodied", 0.0)
-        # storage carbon per storage dollar: EPA input-output rate (central); range from site energy of a median
-        # building (beta = 0.5) to Lineage's reported intensity
-        site_int = 0.5*EN[st][1]/(0.5*ST[st][1])
-        def rh(V, cap, gamma, k, srate):
-            return (k*gamma*srate + 52*sp*V*em) / (cap*V + gamma*srate + 52*sp*V)
-        central = rh(VAL[nm_][1], 0.10, 0.5, EEIO_WH, ST[st][1])
-        vals = [rh(V, c, g, k, r) for V, c, g, k, r in itertools.product(VAL[nm_], (0.08, 0.10, 0.15), (0.25, 0.5, 1.0),
-                                                                        (min(site_int, EEIO_WH), EEIO_WH, 0.28), ST[st])]
+        def rh(V, cap, beta, gamma, e, srate):
+            return (beta*e + 52*sp*V*em) / (cap*V + gamma*srate + 52*sp*V)
+        caps = (0.10, 0.15, 0.25) if nm_ == "High-value goods" else (0.08, 0.10, 0.15)   # capital charge, low/central/high
+        central = rh(VAL[nm_][1], caps[1], 0.5, 0.5, EN[st][1], ST[st][1])
+        vals = [rh(V, c, b, g, e, r) for V, c, b, g, e, r in itertools.product(VAL[nm_], caps, (0.25, 0.5, 0.75),
+                                                                              (0.25, 0.5, 1.0), EN[st], ST[st])]
         say(f"  holding  {nm_:<38} {central:.3f}  ({min(vals):.3f}-{max(vals):.3f})")
     for st in ("ambient", "refrigerated"):
         kwh = EUI[st]/3.412
@@ -192,8 +192,8 @@ if __name__ == "__main__":
             building = kwh*eui_scale*GRID*DC_FT2
             F = (10.12*(2 if st == "refrigerated" else 1))*DC_FT2/rent_share
             return (1-beta)*building/F
-        central = EEIO_WH       # EPA input-output rate per dollar of warehousing; range from site energy to Lineage
-        vals = [rf(b, e, r) for b, e, r in itertools.product((0.25, 0.5, 0.75), (0.8, 1.0, 1.2), (0.3, 0.4, 0.5))] + [0.28]
+        central = (1-0.5)*BUILDING_KG[st]/(FIXED_SHARE*F_YEAR[st])          # carbon per dollar of the fixed charge
+        vals = [rf(b, e, r)/fs for b, e, r, fs in itertools.product((0.25, 0.5, 0.75), (0.8, 1.0, 1.2), (0.3, 0.4, 0.5), (0.5, 0.6, 0.7))]
         say(f"  facility {st:<38} {central:.3f}  ({min(vals):.3f}-{max(vals):.3f})")
 
     say("\nROUNDING the DC count to the best integer (all rows of the design table, cost and carbon objectives)")
@@ -221,9 +221,9 @@ if __name__ == "__main__":
 
     say("\nCARBON SHARE OF PRICED COST at central ratios, s = tau r/(1 + tau r); and the price at which s = 1/2")
     pa = network(**PRODUCTS[0][1])
-    rows = [("holding, ambient packaged goods", pa["eta"]/pa["h"]), ("facilities, ambient DC", pa["phi"]/pa["F"]),
+    rows = [("holding, ambient packaged goods", pa["eta"]/pa["h"]), ("facilities, ambient DC", pa["phi"]/(FIXED_SHARE*pa["F"])),
             ("last mile, diesel local truck", 0.50), ("last mile, diesel van", 0.30),
-            ("line haul, truck instead of intermodal", lane("fuel")["eps0"]/lane("fuel")["t1"]),
+            ("line haul, truck instead of intermodal", lane("fuel")["eps0"]/lane("fuel")["t1"]*TL_KG_SMARTWAY/1.339),
             ("line haul, faster vessel speed", 3114/580)]
     for nm_, r in rows:
         sh = [100*t*r/(1+t*r) for t in (0.05, 0.10, 0.20)]

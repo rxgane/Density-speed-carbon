@@ -1,12 +1,7 @@
-ROBUSTNESS (continuous number of centers unless stated): least-cost design for a 30% cut from each row's own cost minimum (realized caps: same expected budget as the reference)
-  Reference                                    cost min 3.9 DCs 2.15 d | 4.7 DCs 3.44 d, cut 30.0%, cost +5.8%
-  Rail, intermodal, or truckload only          cost min 3.9 DCs 2.00 d | 3.8 DCs 4.00 d, cut 37.7%, cost +9.0%
-  Whole number of centers                      cost min 4.0 DCs 2.15 d | 5.0 DCs 3.42 d, cut 30.0%, cost +5.9%
-  Warehouse carbon from site energy            cost min 3.9 DCs 2.15 d | 5.0 DCs 3.13 d, cut 30.0%, cost +4.2%
-  No financing of stock in transit             cost min 3.8 DCs 3.63 d | not attainable (largest cut 18.6%)
+ROBUSTNESS (continuous number of centers unless stated): least-cost design for a 20% cut from each row's own cost minimum (realized caps: same expected budget as the reference)
+  Reference                                    cost min 5.4 DCs 2.55 d | 6.2 DCs 3.30 d, cut 20.0%, cost +1.5%
+  Whole number of centers                      cost min 5.0 DCs 2.56 d | 6.0 DCs 3.26 d, cut 20.0%, cost +1.2%
+  No financing of stock in transit             cost min 5.4 DCs 4.36 d | 9.8 DCs 6.00 d, cut 20.0%, cost +4.8%
   multipliers from primitives: CV_Q=0.22539, weekly m=1.37073, annual m=1.05141
-  Annual cap on realized carbon, 95%           cost min 3.9 DCs 2.15 d | 4.9 DCs 3.72 d, cut 33.0%, cost +7.9%
-  Weekly cap on realized carbon, 95%           cost min 3.9 DCs 2.15 d | not attainable
-  Load-sensitive delivery, lambda=0.1          cost min 3.3 DCs 2.15 d | 4.0 DCs 3.48 d, cut 30.0%, cost +6.0%
-  Load-sensitive delivery, lambda=0.25         cost min 2.2 DCs 2.15 d | 2.8 DCs 3.54 d, cut 30.0%, cost +6.4%
-  Load-sensitive delivery, lambda=0.5          cost min 1.0 DCs 2.16 d | 1.0 DCs 3.44 d, cut 30.0%, cost +5.8%
+  Annual cap on realized carbon, 95%           cost min 5.4 DCs 2.55 d | 6.5 DCs 3.51 d, cut 23.8%, cost +2.3%
+  Weekly cap on realized carbon, 95%           cost min 5.4 DCs 2.55 d | 9.2 DCs 5.16 d, cut 40.5%, cost +11.9%
