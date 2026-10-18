@@ -1108,10 +1108,8 @@ Section~\ref{sec:numerical} illustrate it.
 
 \paragraph{A diagnostic in two questions.} A firm needs four ratios and two shares. The ratios are the carbon
 per dollar of holding stock, of the speed it can buy on its line-haul lane, of last-mile delivery, and of
-operating a distribution center. Labor and capital carry little carbon, so each transport ratio follows mainly from the share of the activity's
-cost spent on energy, the warehouse ratios from site energy and, for perishables, the production carbon of
-stock that spoils (Section~\ref{sec:calib}). A firm can therefore estimate the ratios from its fuel, electricity,
-warehousing, and spoilage records. The shares
+operating a distribution center. Because labor and capital carry little carbon, a firm can estimate the ratios from its fuel, electricity,
+warehousing, and spoilage records (Section~\ref{sec:calib}). The shares
 are the pooling weight $\omega$ --- the share of a distribution center's marginal cost that is lost pooling ---
 and the safety-stock share $a_K$ of the inventory that speed saves, and the firm can obtain both from its
 cost-minimizing network through \eqref{eq:poolweight} and \eqref{eq:stockshare}. Proposition~\ref{prop:classify}
@@ -1141,26 +1139,20 @@ the central ratios of Table~\ref{tab:ratios}.}
 \end{tabular}
 \end{table}
 
-\paragraph{Slow the speed that is bought with fuel.} A faster vessel, truck instead of intermodal rail, and air
-instead of truck add cost that is mostly fuel, so their carbon per dollar is many times that of holding stock
-(Table~\ref{tab:ratios}). By Proposition~\ref{prop:speed}, a carbon price then favors slower replenishment, and financing the goods in
-transit strengthens that direction because it lowers the share $a_K$ (Section~\ref{sec:speed}). In the reference
-network, which finances its stock in transit, slower line haul delivers $92\%$ of a $20\%$ cut in emissions
+\paragraph{Slow the speed bought with fuel; buy speed with labor where held stock carries carbon.} A faster
+vessel, truck instead of intermodal rail, and air instead of truck add cost that is mostly fuel, so their carbon per
+dollar is many times that of holding stock (Table~\ref{tab:ratios}). By Proposition~\ref{prop:speed}, a carbon
+price then favors slower replenishment, and financing the goods in transit strengthens that direction because it
+lowers the share $a_K$. In the reference network, slower line haul delivers $92\%$ of a $20\%$ cut in emissions
 (Figure~\ref{fig:target}). The shifts of pharmaceutical freight from air to ocean and of truckload lanes to
 intermodal rail are consistent with this direction \citep{pharmcommerce2023astrazeneca, freightwaves2026intermodal},
 as is the finding of \citet{maloni2013slow} that slower vessel speed lowers carbon and total cost despite the
-added pipeline inventory. Where the cost-minimizing chain already ships at the slowest option, a carbon price
-leaves speed unchanged.
-
-\paragraph{Buy speed with labor where held stock carries carbon.} Because the speed a team buys costs wages and little fuel, its carbon per dollar is close to zero, and a
-carbon price favors it wherever held stock carries enough carbon that the inventory saving from speed is more
-carbon-intensive per dollar than that speed (Proposition~\ref{prop:speed}). Measured by site energy, holding ambient packaged
-goods emits $0.056$~kg per dollar and holding perishables that spoil $0.46$, about twice and fifteen times the ratio
-of team operation (Table~\ref{tab:ratios}). For packaged goods and perishables that do not spoil, however, the
-cost- and carbon-minimizing speeds on our $1{,}000$-mile lane both lie at solo operation, so a carbon price leaves
-speed unchanged; in our calibration only perishables that spoil move to team drivers. For high-value goods, whose
-holding cost is mostly capital, team operation emits more per dollar than the inventory it saves, and a carbon
-price favors a solo driver. A team shortens lead time only where a trip exceeds the distance one driver may cover in a day, so speed
+added pipeline inventory. The speed a team of drivers buys costs wages and little fuel, so a carbon price favors it
+wherever held stock carries enough carbon that the inventory saving from speed is more carbon-intensive per dollar
+than that speed. Measured by site energy, holding ambient packaged goods emits $0.056$~kg per dollar and holding
+perishables that spoil $0.46$, about twice and fifteen times the ratio of team operation (Table~\ref{tab:ratios});
+in our calibration only perishables that spoil move to team drivers, and for high-value goods, whose holding cost
+is mostly capital, a carbon price favors a solo driver. A team shortens lead time only where a trip exceeds the distance one driver may cover in a day, so speed
 bought with labor matters most on long lanes.
 
 \paragraph{Reassess network density when delivery technology changes.} The density decision compares the carbon
@@ -1198,14 +1190,13 @@ an annual cap to $2.3\%$ (Table~\ref{tab:robust}).
 
 \paragraph{Implications for policy.} An instrument that prices or caps transport alone, such as a freight fuel
 levy or a vehicle emissions standard, blends the carbon price into the transport rates and leaves holding and
-facility carbon unpriced. At a given density it therefore slows replenishment wherever speed is above its lower
-bound, and at a given speed it adds distribution centers, whatever the product. By the marginal comparisons of
-Propositions~\ref{prop:speed} and~\ref{prop:density}, at a given density a transport-only price raises total
-carbon, at least for small prices, when the inventory saving from speed is more carbon-intensive
-per dollar than the speed it would buy; at a given speed, it does so when the last mile is less carbon-intensive
-per dollar than facilities and lost pooling. When both decisions adjust, its effect on total carbon depends on
-their joint response. By the ratios of Table~\ref{tab:ratios}, the first condition holds for perishables that spoil served by team drivers, where the chain buys such speed, and
-the second for electric vans in cold chains. An instrument that prices total logistics carbon lets the firm weigh the carbon of all
+facility carbon unpriced. At a given density it therefore slows replenishment, and at a given speed it adds distribution centers, whatever
+the product. By Propositions~\ref{prop:speed} and~\ref{prop:density}, these moves raise total carbon, at least
+for small prices, when the inventory saving from speed is more carbon-intensive per dollar than the speed it would
+buy, or when the last mile is less carbon-intensive per dollar than facilities and lost pooling; when both
+decisions adjust, the effect depends on their joint response. By the ratios of Table~\ref{tab:ratios}, the first
+condition holds for perishables that spoil served by team drivers and the second for electric vans in cold
+chains. An instrument that prices total logistics carbon lets the firm weigh the carbon of all
 four activities when it chooses speed and density.
 
 \section{Discussion and Conclusion}\label{sec:discussion}
@@ -1280,24 +1271,19 @@ $\nabla g=(g_x,-\tfrac12)$ and $\nabla^2g=\mathrm{diag}(g_{xx},0)$, $g_{xx}\ge0$
 holding, and last-mile terms therefore has $(x,x)$ entry
 $F_\tau e^{x}+\tfrac14\ell_\tau N\mu\delta e^{-x/2}+S(g_{xx}+g_x^2)>0$, $(y,y)$ entry $S/4$, and off-diagonal
 entry $-Sg_x/2$, so its determinant is $\big(F_\tau e^{x}+\tfrac14\ell_\tau N\mu\delta e^{-x/2}\big)S/4+S^2g_{xx}/4>0$.
-These terms are strictly convex, and adding the convex transport and financing terms preserves strict
-convexity; the financing term $h_pN\mu D\,e^{-y}$ is convex in $y$ and does not depend on $x$.
+Adding the convex transport and financing terms preserves strict convexity.
 (ii) A strictly convex continuous function has a unique minimizer on a compact convex set. Since $J$ is continuous
 in $(x,y,\tau)$, the minimizer is continuous in $\tau$ by the maximum theorem.
 (iii) For fixed $x$, $J$ is strictly convex in $y$, so the speed response is unique and, by the maximum theorem,
-continuous. The transport, financing, facility, and last-mile terms are additively separable in $x$ and $y$, and the
-cross-partial of the holding term is $-Sg_x/2\le0$, so $J$ has decreasing differences in $(x,y)$, and the
-minimizing $y$ is nondecreasing in $x$ and the minimizing $x$ nondecreasing in $y$. At a fixed speed, $J$ is
-strictly convex in $x$; the reduced objective is the partial minimum of a strictly convex function over a convex
-set and is therefore strictly convex in $x$. A strictly convex function of $\ln n$ is strictly quasiconvex in $n$.
-By Danskin's theorem, which applies because the speed response is unique, $J^{\mathrm r}$ is differentiable with
-$J^{\mathrm r}_n(n)=J_n\big(n,v^*(n)\big)$, and by strict quasiconvexity $J^{\mathrm r}_n$ changes sign at most
-once, from negative to positive. For strict monotonicity with $\rho<1$: where $v^*$ is interior, \eqref{eq:focv}
-holds; its right side strictly increases in $n$, through $\sstock$, and strictly decreases in $v$, while its left
-side does not depend on $n$ and is nondecreasing in $v$, so $v^*$ strictly increases in $n$, and projection onto
-the speed bounds preserves monotonicity. Since $G(n,v)\propto v^{-1/2}$, $J_{nv}=-H_\tau G(n,v)/(2v)<0$, and
-$J_n(\cdot,v)$ changes sign at most once, from negative to positive, so its sign change occurs at a higher $n$ when
-$v$ rises.
+continuous. Only the holding term couples $x$ and $y$, with cross-partial $-Sg_x/2\le0$, so $J$ has decreasing
+differences in $(x,y)$ and each response is nondecreasing in the other decision. The reduced objective, the partial
+minimum of a strictly convex function over a convex set, is strictly convex in $x$ and so strictly quasiconvex in
+$n$; by Danskin's theorem, which applies because the speed response is unique,
+$J^{\mathrm r}_n(n)=J_n\big(n,v^*(n)\big)$, which changes sign at most once, from negative to positive. For strict
+monotonicity with $\rho<1$: where $v^*$ is interior, the right side of \eqref{eq:focv} strictly increases in $n$
+and strictly decreases in $v$, while its left side does not depend on $n$ and is nondecreasing in $v$, so $v^*$
+strictly increases in $n$, and projection onto the speed bounds preserves monotonicity. Since
+$J_{nv}=-H_\tau G(n,v)/(2v)<0$, the sign change of $J_n(\cdot,v)$ occurs at a higher $n$ when $v$ rises.
 \end{proof}
 
 \begin{proof}[Proof of Proposition~\ref{prop:speed}]
@@ -1357,8 +1343,7 @@ strictly decreasing where it is interior.
 (i) By Lemma~\ref{prop:unique} applied to the carbon objective, $n_C>n_K$ if and only if the reduced
 carbon objective slopes downward at $n_K$, $C^{\mathrm r}_n(n_K)<0$, and $n_C=n_K$ if it is zero. By the
 envelope theorem (Danskin's theorem, since $\hat v_C$ is unique whether or not it is at a bound),
-$C^{\mathrm r}_n(n_K)=\varphi+\eta\,G(n_K,\hat v_C)-\tfrac12\varepsilon_LN\mu\delta\,n_K^{-3/2}$. The financing
-term does not depend on $n$, so the cost condition \eqref{eq:focn} at $\tau=0$, which holds because $n_K$ is
+$C^{\mathrm r}_n(n_K)=\varphi+\eta\,G(n_K,\hat v_C)-\tfrac12\varepsilon_LN\mu\delta\,n_K^{-3/2}$. The cost condition \eqref{eq:focn} at $\tau=0$, which holds because $n_K$ is
 interior, gives $\tfrac12t_LN\mu\delta\,n_K^{-3/2}=F+hG(n_K,v_K)$, and the last term equals
 $r_L\big[F+hG(n_K,v_K)\big]$. Since $G\propto v^{-1/2}$, $\eta\,G(n_K,\hat v_C)=h\,G(n_K,v_K)\,r_h\sqrt{v_K/\hat v_C}$.
 Dividing $C^{\mathrm r}_n(n_K)$ by $F+hG(n_K,v_K)>0$ and substituting $\varphi=F\,r_F$ gives \eqref{eq:jointdensgen}.
@@ -1377,7 +1362,7 @@ is nonnegative and the second positive; the reversed case is symmetric. Since $\
 $\Psi(1)\le\Psi(n_C)\le\Psi(N)=N$, the threshold $\sqrt{\Psi(n_K)/\Psi(n_C)}$ lies in $[\underline R,\overline R]$.
 (iii) With $\rho=1$, $\Psi\equiv N$ and $G\equiv0$, so \eqref{eq:focn} involves only $F_\tau$ and $\ell_\tau$ and
 gives $n^*(\tau)=(\ell_\tau N\mu\delta/2F_\tau)^{2/3}$; the ratio of its carbon and cost values is
-$(r_L/r_F)^{2/3}$, and the financing term does not depend on $n$. The speed response no longer depends on $n$, and
+$(r_L/r_F)^{2/3}$. The speed response no longer depends on $n$, and
 by the argument of part (i) the ratio of its carbon and cost values is $(a_KR_{\mathrm{speed}})^{2/5}$. For
 \eqref{eq:excess}, carbon separates into a proximity component $C_{\mathrm{prox}}(n)=\varphi n+\varepsilon_LN\mu
 \delta n^{-1/2}$ and an availability component $C_{\mathrm{avail}}(v)=\eta z\sigma N\sqrt{D/v}+\varepsilon_0N\mu
@@ -1417,9 +1402,9 @@ $\tfrac45/(r_h^{-1}+\tau)+\tfrac15/(r_t^{-1}+\tau)-1/(r_L^{-1}+\tau)$. Since $1/
 $r$, both are nonpositive at every $\tau$ when $r_L$ exceeds $r_F$, $r_h$, and $r_t$, and nonnegative when it
 falls short of each.
 
-\emph{Low-price density response \eqref{eq:lowprice}.} Let $x=\ln n$ and $y=\ln v$, with subscripts denoting
-partial derivatives, and let $S$ and $P$ be the safety stock and the stock in transit at the interior cost minimum.
-There the Hessian of $K$ is positive definite (Lemma~\ref{prop:unique}), so differentiating the stationarity
+\emph{Low-price density response \eqref{eq:lowprice}.} In $x=\ln n$ and $y=\ln v$, with subscripts denoting
+partial derivatives and $S$ and $P$ the safety stock and stock in transit at the interior cost minimum, the Hessian
+of $K$ is positive definite (Lemma~\ref{prop:unique}), so differentiating the stationarity
 conditions of $K+\tau C$ at $\tau=0$ gives $\operatorname{sign}\mathrm dx^*/\mathrm d\tau=\operatorname{sign}
 (K_{xy}C_y-K_{yy}C_x)$. With $M=nF+hSg_x$ the marginal cost of an additional center in logarithmic units, so that
 $\omega=hSg_x/M$ and, by $K_x=0$, $M=\tfrac12t_LN\mu\delta n^{-1/2}$, we have $C_x=M[(1-\omega)r_F+\omega
