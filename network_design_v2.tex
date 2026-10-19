@@ -128,8 +128,7 @@ intermodal, and carload rail. When the firm finances its stock in transit, slowe
 $20\%$ cut in emissions, changing both decisions costs less than slowing alone and reaches deeper cuts, and whole
 facilities change the design little.
 
-The paper is structured as follows. In Section~\ref{sec:related}, we position the paper relative to the
-location--inventory, carbon-network-design, and inventory--transport--emissions literatures. In
+The paper is structured as follows. In Section~\ref{sec:related}, we position the paper in the literature. In
 Section~\ref{sec:model}, we develop the model, and in Section~\ref{sec:analysis} we answer the questions a
 firm asks of its network.
 Section~\ref{sec:numerical} applies them to US data, Section~\ref{sec:managerial} draws out managerial
@@ -761,8 +760,8 @@ carbon, $\varphi n+\varepsilon_LN\mu d(n)$, and of availability carbon, $\eta\ss
 two shares fall short of one by the share of carbon that varies with neither decision. The excess is small near parity and rises quickly away from it: the cost-minimizing network
 emits about $5\%$ more proximity carbon than the minimum when $R_{\mathrm{density}}=2$ and about $19\%$ more when
 $R_{\mathrm{density}}=4$, against $5\%$ and $21\%$ from \eqref{eq:excess}. Carbon-aware redesign therefore matters most for products whose ratios lie far from
-one. With pooling the two decisions interact and these expressions are no longer exact;
-Section~\ref{sec:numerical} illustrates the magnitudes in that case.
+one. With pooling these expressions are not exact;
+Section~\ref{sec:numerical} illustrates the magnitudes.
 
 \subsection{How does the design move as the carbon price rises?}\label{sec:path}
 
@@ -816,8 +815,7 @@ throughput $Q=\sum_i X_i$, which has mean $N\mu$ and variance $\sigma_Q^2=\sigma
   \tilde C(n,v) \;=\; \varphi n + \eta\,\sstock(n,v) + \big[\varepsilon(v)D+\varepsilon_L d(n)\big]\,Q,
 \end{equation}
 and a firm that requires realized carbon to stay within $B$ with confidence $1-\beta_c$ imposes the chance
-constraint $\Pr\{\tilde C(n,v)\le B\}\ge 1-\beta_c$, the carbon-side counterpart of the cycle service level
-$\alpha$ on the inventory side.
+constraint $\Pr\{\tilde C(n,v)\le B\}\ge 1-\beta_c$, the carbon counterpart of the cycle service level $\alpha$.
 
 \begin{corollary}[Caps on realized carbon]\label{prop:chance}
 \textup{(i)} The chance constraint is equivalent to
@@ -882,9 +880,7 @@ local-trucking industry factors \citep{epa2024useeio} and electric-van energy us
 \citep{epa2024useeio}. Derived storage benchmarks. Refrigerated storage uses $109$~kg CO\textsubscript{2}e per
 pallet position-year: Lineage's $1.068$ million tonnes of 2024 Scope~1 and market-based Scope~2 emissions
 \citep{lineage2025sustainability}, divided by its $9.8$ million pallet positions in March 2024
-\citep{lineage2024prospectus}. This company-wide ratio, which includes mobile combustion and refrigerants, serves
-as an approximate storage proxy. The ambient benchmark, $30$~kg, scales $109$ by the energy-intensity ratio
-$22.7/84.1$ and rounds the result. Assumptions. Third-party storage at $\$240$ (ambient) and $\$480$ (refrigerated) per
+\citep{lineage2024prospectus}. This company-wide ratio includes mobile combustion and refrigerants. The ambient $30$~kg scales $109$ by the energy-intensity ratio $22.7/84.1$. Assumptions. Third-party storage at $\$240$ (ambient) and $\$480$ (refrigerated) per
 pallet-year; rent at about $40\%$ of a distribution center's operating cost, with cold-storage rent twice
 ambient, and a fixed charge of $60\%$ ($50$ to $70\%$) of that cost; capital at $10\%$ of pallet value ($15\%$ for
 high-value goods), for stock held and stock in transit; intermodal $10$--$30\%$ cheaper than truckload with about
@@ -929,9 +925,8 @@ a faster vessel, truck instead of intermodal rail, air instead of truck --- is t
 the added cost is mostly fuel. A team of two drivers runs the same truck about twice as far per day, so the
 speed it buys adds mostly wages and little carbon. Spoilage changes the holding ratio of perishables: food that
 spoils while held carries the carbon of its production, which we value at the input--output intensity of the
-food. Even processed beef, at $1.12$~kg per dollar the most carbon-intensive food we examine, stays below the ratios of
-truck instead of intermodal rail and of vessel speed; only against air freight, at $0.60$ to $1.90$, could
-spoilage favor speed. 
+food. Even processed beef, the most carbon-intensive food we examine at $1.12$~kg per dollar, stays below the ratios
+of truck instead of intermodal rail and of vessel speed; only against air freight could spoilage favor speed. 
 
 \subsection{Meeting a carbon target in a reference network}\label{sec:network}
 
@@ -1074,7 +1069,7 @@ Weekly cap on realized carbon, $95\%$         & $5.4$ & $2.55$ & $9.2$  & $5.16$
 With whole centers, the cost minimum has five centers and the design for the cut six, with a line haul of $3.26$
 days, at a cost increase of $1.2\%$. With only truckload, intermodal, and carload services, the least-cost design for the cut moves the whole flow
 from truckload to intermodal with $5.4$ centers, at $2.4\%$, and overshoots the target with a $43\%$ cut; the line
-haul still slows, but the network no longer grows. 
+haul slows, but the network does not grow. 
 
 Holding cost decides where the cost minimum lies on the speed range, and so how much slowing has to give; the
 cost-minimizing network itself changes little, between $5.1$ and $5.6$ centers. A higher capital charge or pallet
@@ -1120,8 +1115,7 @@ the speed direction shown holds whenever $a_KR_{\mathrm{speed}}$ lies outside th
 
 \begin{table}[t]
 \centering\small
-\caption{Carbon-minimizing direction of the two decisions (Proposition~\ref{prop:classify}), with examples from
-the central ratios of Table~\ref{tab:ratios}.}
+\caption{Carbon-minimizing direction of the two decisions (Proposition~\ref{prop:classify}), with examples from Table~\ref{tab:ratios}.}
 \label{tab:regimes}
 \renewcommand{\arraystretch}{1.25}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.27\linewidth}
@@ -1416,11 +1410,9 @@ $\gamma\,q_{1-\beta_c}=(q_{1-\beta_c}/N\mu)\,[\varepsilon(v)N\mu D+\varepsilon_L
 From $\sigma_Q^2=\sigma^2N[1+(N-1)\rho]$, $\mathrm{CV}_Q=(\sigma/\mu)\sqrt{[1+(N-1)\rho]/N}$ is increasing in
 $\sigma/\mu$ and, for $N>1$, in $\rho$, and $z_{\beta_c}$ is increasing in $1-\beta_c$, so, for $\beta_c<\tfrac12$, $m$ is increasing in all
 three.
-(ii) The chance constraint multiplies the inbound and last-mile carbon rates by $m$; substituting $m\varepsilon_0$
-and $m\varepsilon_L$ for $\varepsilon_0$ and $\varepsilon_L$ in \eqref{eq:speedthreshold} and
-\eqref{eq:densthreshpool} gives the two conditions, the latter scaling only the left side. The same substitution in
-Proposition~\ref{prop:classify}, with $n_K$, $\omega$, and $a_K$ unchanged because the cost rates are unchanged,
-gives the joint conditions. For the joint speed, divide the carbon density condition by $m$: its facility and
+(ii) The chance constraint multiplies the inbound and last-mile carbon rates by $m$ and leaves the cost rates,
+and so $n_K$, $\omega$, and $a_K$, unchanged; substituting $m\varepsilon_0$ and $m\varepsilon_L$ for
+$\varepsilon_0$ and $\varepsilon_L$ in Propositions~\ref{prop:speed}--\ref{prop:classify} gives the thresholds. For the joint speed, divide the carbon density condition by $m$: its facility and
 lost-pooling terms then scale as $m^{-1}$ and $m^{-4/5}$ and, multiplied by $n^{3/2}$, rise in $n$ with
 elasticities $\tfrac32$ and at least $\tfrac9{10}$, so that, at an interior $n_C$,
 $\mathrm d\ln n_C/\mathrm d\ln m\le\tfrac89$. Since $\Psi$ has elasticity at most one in $n$,
@@ -1430,8 +1422,7 @@ $\mathrm d\ln v_C/\mathrm d\ln m\le-\tfrac25+\tfrac15\cdot\tfrac89<0$.
 
 \section{Economies of scale in operating a center}\label{app:scale}
 
-Section~\ref{sec:model} charges each center a fixed charge per site and handling at a constant rate per unit. Here
-we let a center's cost and carbon show economies of scale in its throughput. Each center is sized to its planned
+Here we let a center's cost and carbon show economies of scale in its throughput. Each center is sized to its planned
 throughput $q=N\mu/n$; its cost is $F+c(q)$ and its carbon $\varphi+\psi(q)$, with $c(q)=c_0(q/q_0)^{\zeta_c}$ and
 $\psi(q)=\psi_0(q/q_0)^{\zeta_\psi}$, where $q_0$ is a reference throughput and $\zeta_c,\zeta_\psi\in[0,1]$. An
 exponent below one represents economies of scale, and an exponent of one gives the proportional handling of
@@ -1471,11 +1462,10 @@ in addition to the conditions of part (iii) with $\varphi/F$ in place of $r_F$, 
 r_L(1-\zeta_c)c(q)$ at every density, and nonincreasing under the reverse inequalities.
 
 Under a cap on realized carbon, centers sized to their planned throughput keep facility carbon deterministic, and
-Corollary~\ref{prop:chance} holds with $C_F(n)$ in place of $\varphi n$ and with the replacements above. In the
+Corollary~\ref{prop:chance} holds with $C_F(n)$ in place of $\varphi n$ and the replacements above. In the
 proof of part (ii), the facility
 term of the scaled carbon density condition, multiplied by $n^{3/2}$, rises in $n$ with elasticity
 $\tfrac32-\epsilon_\varphi>\tfrac12$, where $\epsilon_\varphi=-\mathrm d\ln\bar\varphi/\mathrm d\ln n<1$, so
-$\mathrm d\ln n_C/\mathrm d\ln m<2$ and $\mathrm d\ln v_C/\mathrm d\ln m<-\tfrac25+\tfrac15\cdot2=0$. If part of a center's energy, such as that of handling equipment,
-varied with realized volume, the deterministic equivalent would scale that part by $m^{\zeta_\psi}$ as well.
+$\mathrm d\ln n_C/\mathrm d\ln m<2$ and $\mathrm d\ln v_C/\mathrm d\ln m<-\tfrac25+\tfrac15\cdot2=0$. Energy that varied with realized volume would scale by $m^{\zeta_\psi}$.
 
 \end{document}
