@@ -26,7 +26,7 @@ public US data traces how a carbon price moves a reference network that finances
 | `revision/levers_data.py`, `revision/fig_levers.py` | Cost and carbon as each decision moves on its own (Figure 2, `fig_levers.pdf`) |
 | `revision/fig_target.py` | Least-cost design for each required cut (Figure 3, `fig_target.pdf`) |
 | `revision/robust_v22.py` | Least-cost design for a 20% cut: whole centers, three services only, financing, caps on realized carbon (Table 4) |
-| `revision/sensitivity_v24.py` | The holding, line-haul, warehouse, and store-delivery rows of Table 4 |
+| `revision/sensitivity_v24.py` | Table 4 sensitivities, single-lever comparisons, emissions-component changes, and the last-mile density-path illustration |
 | `revision/numbers_v27.py` | Other numbers cited in Section 5: cost-minimum details, density thresholds, rounding penalty |
 | `revision/check_lowprice.py` | Numerical check of the low-price density condition on random instances |
 | `revision/calibration_v2.py` | Carbon intensity per dollar of each activity from public sources; product classification; carbon share of priced cost |
@@ -48,7 +48,7 @@ python3 application_v22.py
 python3 calibration_v2.py
 python3 targets_v22.py && python3 levers_data.py && python3 fig_levers.py && python3 fig_target.py
 python3 robust_v22.py
-python3 sensitivity_v24.py > sensitivity_v24_output.txt
+python3 sensitivity_v24.py
 python3 numbers_v27.py
 python3 check_lowprice.py
 ```

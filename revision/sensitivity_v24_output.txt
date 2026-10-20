@@ -1,4 +1,4 @@
-(cut 20%)
+(cut 20% from each row's own cost-minimizing emissions)
 Variant                                                     cost min  carbon t  wareh.  store |     20% cut design   cost    $/t   price |  slow max both max
 Reference                                              5.4 DCs 2.55d    32,660    2.6%   32.9% |   6.2 DCs 3.30d + 1.5%    218     542 |     37.5%    46.6%
 Capital charge 10%                                     5.5 DCs 2.93d    28,949    3.0%   36.8% |   6.5 DCs 3.97d + 1.7%    269     692 |     29.7%    39.7%
@@ -13,3 +13,21 @@ Warehouse carbon halved                                5.4 DCs 2.55d    32,238  
 Warehouse carbon doubled                               5.4 DCs 2.55d    33,504    5.0%   32.1% |   6.1 DCs 3.36d + 1.6%    236     601 |     36.5%    41.1%
 Refrigerated storage                                   3.5 DCs 2.55d    36,474    5.7%   36.6% |   4.0 DCs 3.45d + 1.7%    264     687 |     33.4%    38.9%
 Electric store delivery (r_L = 0.16)                   5.4 DCs 2.55d    25,350    3.3%   13.6% |   5.5 DCs 3.14d + 0.9%    167     402 |     48.3%    49.2%
+
+Strategy comparisons at each scenario's 20% target
+Reference: both +1.466%, replenishment alone +1.645%; facilities -1.67%, holding -0.09%, inbound +91.67%, last_mile +10.09%
+Capital charge 10%: both +1.713%, replenishment alone +2.047%; facilities -2.42%, holding -0.13%, inbound +88.59%, last_mile +13.96%
+Capital charge 25%: both +1.262%, replenishment alone +1.352%; facilities -1.04%, holding -0.05%, inbound +94.36%, last_mile +6.73%
+Pallet value $10,000: both +1.954%, replenishment alone +2.509%; facilities -3.16%, holding -0.17%, inbound +85.74%, last_mile +17.59%
+Pallet value $50,000: both +2.139%, replenishment alone +2.294%; facilities -1.28%, holding -0.05%, inbound +92.85%, last_mile +8.48%
+Efficient diesel truck (1.34 kg per mile): both +2.102%, replenishment alone +2.574%; facilities -2.69%, holding -0.11%, inbound +87.25%, last_mile +15.55%
+Intermodal 45% below truckload: both +3.410%, replenishment alone +4.572%; facilities -3.47%, holding -0.13%, inbound +84.66%, last_mile +18.94%
+Intermodal 70% below truckload: both +0.919%, replenishment alone +0.987%; facilities -1.12%, holding -0.07%, inbound +94.19%, last_mile +7.00%
+Warehouse carbon halved: both +1.388%, replenishment alone +1.588%; facilities -0.89%, holding -0.04%, inbound +90.19%, last_mile +10.74%
+Warehouse carbon doubled: both +1.628%, replenishment alone +1.762%; facilities -2.81%, holding -0.18%, inbound +94.39%, last_mile +8.60%
+Refrigerated storage: both +1.722%, replenishment alone +1.935%; facilities -3.64%, holding -0.31%, inbound +92.54%, last_mile +11.41%
+Electric store delivery (r_L = 0.16): both +0.873%, replenishment alone +0.875%; facilities -0.25%, holding -0.08%, inbound +99.81%, last_mile +0.53%
+
+Electric line haul: cost-minimizing emissions 25,091.01 t/year, 23.17% below the reference. Original absolute 20% target met before redesign: True. Freight costs are held fixed; vehicle acquisition is not evaluated.
+
+Last-mile sensitivity r_L=0.09: endpoint threshold 0.075724, initial threshold 0.106238; n_K=5.449602, n at $100/t=5.444547, n_C=6.115112; whole-DC designs 5 and 5 at zero and $100/t.
