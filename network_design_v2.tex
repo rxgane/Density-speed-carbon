@@ -107,12 +107,12 @@ speeds, we express this threshold in terms of carbon intensities per dollar and 
 transit, and separate the speed comparison into an intensity effect and a density effect. These results show
 how inbound transport carbon enters the network-density decision through safety stock.
 
-Second, we characterize adjustment along the carbon-price path, including conditions for monotone changes in
-speed and density. With quadratic transport rates and an interior cost minimum, we derive the
-initial density response and show how it can differ from the comparison between the cost and carbon minima.
-A small carbon price can favor consolidation even when the carbon-minimizing network is more dispersed; with
-transit financing, the reverse pattern is also possible. These results distinguish the network adjustment
-associated with an initial carbon price from that associated with a target near the minimum attainable emissions.
+Second, we characterize how the design adjusts as the carbon price rises, including conditions under which speed
+and density each move in one direction. Starting from the cost-minimizing network, we trace how the number of DCs
+changes along the way. We show that at a low carbon price, the number of DCs can move away from the cost-minimizing
+design in the direction opposite to the carbon-minimizing design, and turn toward it only at higher prices. For
+example, at low carbon prices the network can shrink even though the carbon-minimizing network has more DCs; when
+the firm finances its goods in transit, the reverse can also occur.
 
 We then give a calibrated illustration of the model using public US data.
 
@@ -1001,14 +1001,12 @@ by $5.8\%$, almost all through slower line haul, at a cost increase of $0.1\%$, 
 Table~\ref{tab:robust} shows how carbon parameters change the least-cost combination of replenishment and network
 adjustment. In the carbon-parameter rows, cost rates and demand stay fixed, so the cost-minimizing design remains
 at $5.4$ DCs and $2.55$ days, but its emissions change. Each target is a $20\%$ cut from that row's own
-cost-minimizing emissions; the caps on realized carbon use the reference row's budget. The table groups changes
-in carbon parameters separately from storage, financing, and implementation checks.
+cost-minimizing emissions; the caps on realized carbon use the reference row's budget. 
 
 \begin{table}[t]
 \centering\small
 \caption{Least-cost designs for a cut of at least $20\%$ under alternative carbon parameters and operating
-conditions. Cuts are relative to each row's own baseline, except the realized-carbon caps, which use the reference
-budget. Days are line-haul transit times.}
+conditions. Days are line-haul transit times.}
 \label{tab:robust}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}lccccc@{}}
@@ -1054,38 +1052,45 @@ alone costs $4.6\%$ more, against $3.4\%$ for joint adjustment; at the larger ad
 $1.0\%$ against $0.9\%$. Last-mile savings account for $19\%$ of the net cut in the former case and $7\%$ in
 the latter, with added facility and holding carbon offsetting part of the transport savings.
 
-A cleaner truck also reduces the carbon saved by slowing. With electric line haul, the largest additional cut
+A cleaner truck also reduces the carbon saved by slowing. With an efficient diesel truck, the least-cost design for
+the target has $6.6$ DCs and $3.44$ days, at a cost increase of $2.1\%$. With electric line haul, the largest additional cut
 is $18.9\%$, but this is measured from a lower baseline: the cost-minimizing design emits $25{,}091$~t a year,
-$23.2\%$ below the reference, and already meets the original reference's $20\%$ target. The carbon-parameter
-comparison holds freight costs fixed; it does not evaluate vehicle-acquisition costs.
+$23.2\%$ below the reference, and already meets the original reference's $20\%$ target. 
 
 \paragraph{Last-mile and warehouse carbon.} Cleaner delivery reduces the value of adding DCs. At $r_L=0.16$,
 the $20\%$ target uses $5.5$ DCs and $3.14$ days, and both joint adjustment and slowing alone cost about
 $0.9\%$ more. Inbound freight supplies $99.8\%$ of the net cut and last-mile savings $0.5\%$, with facility and
-holding increases offsetting the balance. Halving or doubling warehouse carbon changes the target cost to
-$1.4\%$ or $1.6\%$; its limited influence here reflects warehousing's $2.6\%$ share of reference emissions.
+holding increases offsetting the balance. Halving or doubling warehouse carbon gives designs for the target of $6.2$ DCs and $3.26$ days or $6.1$ DCs and
+$3.36$ days, at $1.4\%$ or $1.6\%$; its limited influence here reflects warehousing's $2.6\%$ share of reference
+emissions.
 
-The same network illustrates the distinction between initial and eventual density responses. Holding all other
-inputs fixed, set $r_L=0.09$, between the joint threshold $0.0757$ in \eqref{eq:jointdensgen} and the low-price
+The same network illustrates the distinction between initial and eventual density responses. Holding all other inputs fixed, we set $r_L=0.09$, within the range for an electric van in Table~\ref{tab:ratios}
+and between the joint threshold $0.0757$ in \eqref{eq:jointdensgen} and the low-price
 threshold $0.1062$ in \eqref{eq:lowprice}. Density initially falls: at $\$100$ per metric ton it is $5.445$,
 against $5.450$ at the cost minimum, although the carbon minimum has $6.115$ DCs. This illustrates the change of
 direction established in Section~\ref{sec:path}; the initial movement is small, and the whole-DC designs at
 zero and $\$100$ both have five DCs.
 
-\paragraph{Operating and implementation checks.} Capital charges, pallet value, and refrigerated storage also
-change dollar costs and hence the starting design. Higher capital charges or pallet values make the cost minimum
-faster, whereas refrigerated storage raises facility cost and favors fewer DCs. Without transit financing, the
+\paragraph{Storage and financing.} Capital charges, pallet value, and refrigerated storage also change dollar costs
+and hence the starting design. Capital charges and pallet values move the cost minimum along the speed range, while its
+network stays between $5.1$ and $5.6$ DCs. Higher values make it faster: at a $25\%$ charge it ships in $2.14$ days, and the target takes $5.8$
+DCs and $2.65$ days, at $1.3\%$; at $\$50{,}000$ a pallet it ships by truckload, and the target takes $5.8$ DCs and
+$2.43$ days, at $2.1\%$. Lower values make it slower, $2.93$ days at a $10\%$ charge and $3.24$ days at
+$\$10{,}000$ a pallet, and the target takes $6.5$ DCs and $3.97$ days, at $1.7\%$, and $6.7$ DCs and $4.56$ days,
+at $2.0\%$. Refrigerated storage raises facility cost, so the cost minimum has $3.5$ DCs, at $2.55$ days, and the
+target takes $4.0$ DCs and $3.45$ days, at $1.7\%$. Without transit financing, the
 cost minimum already ships in $4.36$ days, so the target requires six days and $9.8$ DCs, at a cost increase of
 $4.8\%$.
 
-With whole DCs, the reference design for the target adds one DC, from five to six, and costs $1.2\%$ more.
-With only three freight services, it switches from truckload to intermodal, overshooting the target with a
-$43\%$ cut at $2.4\%$ more cost; density falls slightly from $5.5$ to $5.4$. Thus the availability of intermediate
-services affects both the attainable cuts and the accompanying network adjustment.
+\paragraph{Implementation and carbon accounting.} With whole DCs, the cost minimum has five DCs and $2.56$ days,
+and the design for the target adds one DC, with $3.26$ days, at a cost increase of $1.2\%$.
+With only three freight services, the design switches from truckload to intermodal, overshooting the target with a
+$43\%$ cut at $2.4\%$ more cost; density falls slightly from $5.5$ to $5.4$. In the reference network, the availability of intermediate services thus affects both the attainable cut and the
+accompanying network adjustment.
 
 Finally, at the reference budget and with demand independent across weeks, a $95\%$ cap on realized carbon
-requires a deeper expected cut: $23.8\%$ for an annual cap and $40.5\%$ for a weekly cap, at cost increases of
-$2.3\%$ and $11.9\%$. The accounting horizon therefore changes how much expected abatement the firm must obtain.
+requires a deeper expected cut: $23.8\%$ for an annual cap, with $6.5$ DCs and $3.51$ days, at a cost increase of
+$2.3\%$, and $40.5\%$ for a weekly cap, with $9.2$ DCs and $5.16$ days, at $11.9\%$. The accounting horizon therefore changes how much expected abatement the firm must obtain.
 
 \section{Managerial Implications}\label{sec:managerial}
 
