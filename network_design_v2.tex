@@ -46,8 +46,8 @@
 \noindent Firms that distribute through regional distribution centers (DCs) need to reconsider how many DCs to operate and
 how fast to replenish them as carbon is increasingly priced into these decisions, whether voluntarily or through regulation. In this paper, we examine which way, and how far, a carbon price or cap moves the two
 decisions. Each decision
-trades one source of emissions against another. Slower line haul burns less fuel but requires more safety stock
-and more stock in transit; more DCs shorten the last mile but add buildings and give up the
+trades one source of emissions against another. Slower line haul burns less fuel but requires more safety stock;
+more DCs shorten the last mile but add buildings and give up the
 pooling that keeps inventory low. We model the two decisions jointly and show that the design problem has a
 unique optimum at every carbon price. For a given network, carbon pricing favors faster replenishment when the
 inventory that speed saves emits more per dollar than the speed itself. Goods in transit carry a financing cost
@@ -83,21 +83,19 @@ fuel from 2028 \citep{eea2026ets2}. California is phasing in the reporting of su
 counted \citep{iso2023_14083}. A firm that prices or caps its distribution carbon must therefore ask which way, and how far, a carbon price
 moves these two decisions.
 
-In this paper, we examine how a carbon price changes these two decisions: how many DCs the firm operates, the
-density of its network, and how fast it replenishes them. Each decision trades one source of emissions against
-another. A longer lead time lets the firm move freight by slower, cleaner modes, such as rail in place of truck or
-slower ships \citep{psaraftis2013speed, cariou2011slow}, but goods spend longer in transit, and the firm must
-hold more safety stock to cover the longer wait. More DCs shorten the trips to customers and so cut delivery
-emissions, but each DC is another warehouse with its own energy use, and splitting demand across more DCs means
-holding more stock in total \citep{eppen1979effects, mckinnon2012setting}. The cost-minimizing design strikes
-one balance in each trade-off; a carbon price can shift it.
+In this paper, we examine how a carbon price changes these two decisions: how many DCs the firm operates (the
+density of its network) and how fast it replenishes them. Slower replenishment saves freight emissions
+\citep{psaraftis2013speed, cariou2011slow} but requires more inventory, which adds cost and its own emissions. A
+denser network cuts last-mile emissions but adds buildings and gives up the economies of pooled inventory
+\citep{eppen1979effects, mckinnon2012setting}. Which way a carbon price moves each decision depends on which side
+of each trade-off emits more carbon per dollar.
 
 We formalize this in a single-product location--inventory model with stochastic demand. The firm chooses network
 density and replenishment speed to minimize cost subject to a cap on expected or realized carbon and a service requirement. The model follows the location--inventory tradition
 \citep{daskin2002inventory, shen2003joint} in a continuous-approximation form \citep{daganzo2005logistics}, with
 replenishment speed as a continuous decision. Because speed sets the lead time that safety stock must cover, it
 links transport and inventory in both cost and carbon, and the continuous form lets us state in closed form how
-pooling and the financing of goods in transit enter the comparison.
+pooling and the financing of goods in transit enter the two decisions.
 
 We establish that the joint design has a unique optimum at every carbon price and that speed and density are
 complements. Building on this structure, our analytical contribution has two parts. First, we derive thresholds
@@ -121,7 +119,7 @@ and network adjustment to meet a carbon target at least cost.
 The paper is structured as follows. In Section~\ref{sec:related}, we position the paper in the literature. In
 Section~\ref{sec:model}, we develop the model, and in Section~\ref{sec:analysis} we answer the questions a
 firm asks of its network.
-Section~\ref{sec:numerical} applies them to US data, Section~\ref{sec:managerial} draws out managerial
+Section~\ref{sec:numerical} illustrates the answers with US data, Section~\ref{sec:managerial} draws out managerial
 implications, and Section~\ref{sec:discussion} concludes.
 
 \section{Related Literature}\label{sec:related}
@@ -130,9 +128,7 @@ Our work connects four streams of research: location--inventory design with risk
 design, the joint control of inventory and transport mode under emissions regulation, and carbon as a priced cost
 in service-constrained inventory systems. Each develops part of the two substitutions we study --- availability
 (inventory or replenishment speed) and proximity (facilities or last-mile travel). We draw on all four and add the
-joint design of network density and replenishment speed under a carbon cap and a service requirement. Our
-analysis derives thresholds comparing the cost- and carbon-minimizing designs and distinguishes these
-comparisons from the response along the carbon-price path.
+joint design of network density and replenishment speed under a carbon cap and a service requirement.
 
 \subsection{Location--inventory design and risk pooling}
 
@@ -826,7 +822,7 @@ cap.
 
 \section{A Calibrated Application}\label{sec:numerical}
 
-This section applies the results to distribution activities measured from public US data.
+This section illustrates the results with distribution activities measured from public US data.
 Section~\ref{sec:calib} constructs benchmark carbon intensities per dollar from public data, Section~\ref{sec:network} traces how a reference network meets a carbon
 target, and Section~\ref{sec:robust} examines how carbon intensities and operating conditions change the abatement strategy. The
 directions follow from the propositions once the ratios are known, subject to the bounds on speed.
@@ -1001,8 +997,8 @@ by $5.8\%$, almost all through slower line haul, at a cost increase of $0.1\%$, 
 \subsection{Carbon intensities and abatement strategy}\label{sec:robust}
 
 Table~\ref{tab:robust} shows how carbon parameters change the least-cost combination of replenishment and network
-adjustment. In the carbon-parameter rows, cost rates and demand stay fixed, so the cost-minimizing design remains
-at $5.4$ DCs and $2.55$ days, but its emissions change. Each target is a $20\%$ cut from that row's own
+adjustment. In the carbon-parameter and realized-carbon rows, cost rates and demand stay fixed, so the cost-minimizing design remains
+at $5.4$ DCs and $2.55$ days. Each target is a $20\%$ cut from that row's own
 cost-minimizing emissions; the caps on realized carbon use the reference row's budget. 
 
 \begin{table}[t]
@@ -1049,7 +1045,7 @@ Weekly cap on realized carbon, $95\%$         & $5.4$ & $2.55$ & $9.2$  & $5.16$
 
 \paragraph{Line-haul carbon.} When intermodal's emission advantage falls from $70\%$ to $45\%$, the firm must
 adjust both decisions further to meet its percentage target: the design moves from $5.9$ DCs and $3.13$ days to
-$7.1$ DCs and $3.72$ days. Network adjustment also becomes more valuable. At the smaller advantage, slowing
+$7.1$ DCs and $3.72$ days. Here, network adjustment becomes more valuable. At the smaller advantage, slowing
 alone costs $4.6\%$ more, against $3.4\%$ for joint adjustment; at the larger advantage the comparison is
 $1.0\%$ against $0.9\%$. Last-mile savings account for $19\%$ of the net cut in the former case and $7\%$ in
 the latter, with added facility and holding carbon offsetting part of the transport savings.
@@ -1059,40 +1055,39 @@ the target has $6.6$ DCs and $3.44$ days, at a cost increase of $2.1\%$. With el
 is $18.9\%$, but this is measured from a lower baseline: the cost-minimizing design emits $25{,}091$~t a year,
 $23.2\%$ below the reference, and already meets the original reference's $20\%$ target. 
 
-\paragraph{Last-mile and warehouse carbon.} Cleaner delivery reduces the value of adding DCs. At $r_L=0.16$,
+\paragraph{Last-mile and warehouse carbon.} In this network, cleaner delivery reduces the value of adding DCs. At $r_L=0.16$,
 the $20\%$ target uses $5.5$ DCs and $3.14$ days, and both joint adjustment and slowing alone cost about
-$0.9\%$ more. Inbound freight supplies $99.8\%$ of the net cut and last-mile savings $0.5\%$, with facility and
-holding increases offsetting the balance. Halving or doubling warehouse carbon gives designs for the target of $6.2$ DCs and $3.26$ days or $6.1$ DCs and
+$0.9\%$ more. Halving or doubling warehouse carbon gives designs for the target of $6.2$ DCs and $3.26$ days or $6.1$ DCs and
 $3.36$ days, at $1.4\%$ or $1.6\%$; its limited influence here reflects warehousing's $2.6\%$ share of reference
 emissions.
 
-The same network illustrates the distinction between initial and eventual density responses. Holding all other inputs fixed, we set $r_L=0.09$, within the range for an electric van in Table~\ref{tab:ratios}
+Holding all other inputs fixed, we set $r_L=0.09$, above the electric van's central ratio in Table~\ref{tab:ratios} but within its range,
 and between the joint threshold $0.0757$ in \eqref{eq:jointdensgen} and the low-price
 threshold $0.1062$ in \eqref{eq:lowprice}. Density initially falls: at $\$100$ per metric ton it is $5.445$,
 against $5.450$ at the cost minimum, although the carbon minimum has $6.115$ DCs. This illustrates the change of
 direction established in Section~\ref{sec:path}; the initial movement is small, and the whole-DC designs at
 zero and $\$100$ both have five DCs.
 
-\paragraph{Storage and financing.} Capital charges, pallet value, and refrigerated storage also change dollar costs
+\paragraph{Storage and financing.} Capital charges, pallet value, and refrigerated storage change dollar costs
 and hence the starting design. Capital charges and pallet values move the cost minimum along the speed range, while its
-network stays between $5.1$ and $5.6$ DCs. Higher values make it faster: at a $25\%$ charge it ships in $2.14$ days, and the target takes $5.8$
+network stays between $5.1$ and $5.6$ DCs. Higher charges and values make it faster: at a $25\%$ charge it ships in $2.14$ days, and the target takes $5.8$
 DCs and $2.65$ days, at $1.3\%$; at $\$50{,}000$ a pallet it ships by truckload, and the target takes $5.8$ DCs and
-$2.43$ days, at $2.1\%$. Lower values make it slower, $2.93$ days at a $10\%$ charge and $3.24$ days at
+$2.43$ days, at $2.1\%$. Lower ones make it slower, $2.93$ days at a $10\%$ charge and $3.24$ days at
 $\$10{,}000$ a pallet, and the target takes $6.5$ DCs and $3.97$ days, at $1.7\%$, and $6.7$ DCs and $4.56$ days,
 at $2.0\%$. Refrigerated storage raises facility cost, so the cost minimum has $3.5$ DCs, at $2.55$ days, and the
 target takes $4.0$ DCs and $3.45$ days, at $1.7\%$. Without transit financing, the
-cost minimum already ships in $4.36$ days, so the target requires six days and $9.8$ DCs, at a cost increase of
+cost minimum keeps $5.4$ DCs but already ships in $4.36$ days, so the target requires six days and $9.8$ DCs, at a cost increase of
 $4.8\%$.
 
 \paragraph{Implementation and carbon accounting.} With whole DCs, the cost minimum has five DCs and $2.56$ days,
 and the design for the target adds one DC, with $3.26$ days, at a cost increase of $1.2\%$.
 With only three freight services, the design switches from truckload to intermodal, overshooting the target with a
-$43\%$ cut at $2.4\%$ more cost; density falls slightly from $5.5$ to $5.4$. In the reference network, the availability of intermediate services thus affects both the attainable cut and the
+$43\%$ cut at $2.4\%$ more cost; density falls slightly from $5.5$ to $5.4$. In the reference network, the availability of intermediate services thus affects both the cut obtained and the
 accompanying network adjustment.
 
 Finally, at the reference budget and with demand independent across weeks, a $95\%$ cap on realized carbon
 requires a deeper expected cut: $23.8\%$ for an annual cap, with $6.5$ DCs and $3.51$ days, at a cost increase of
-$2.3\%$, and $40.5\%$ for a weekly cap, with $9.2$ DCs and $5.16$ days, at $11.9\%$. The accounting horizon therefore changes how much expected abatement the firm must obtain.
+$2.3\%$, and $40.5\%$ for a weekly cap, with $9.2$ DCs and $5.16$ days, at $11.9\%$.
 
 \section{Managerial Implications}\label{sec:managerial}
 
@@ -1198,7 +1193,7 @@ A firm that distributes through regional DCs provides availability through safet
 replenishment speed and proximity through facilities or last-mile travel, and a carbon price or cap can change
 which activity provides each. We have shown that the joint design has a unique optimum at every carbon price and that the carbon-minimizing
 direction of density, and of speed when the speed and density comparisons agree, follows, when speeds are interior, from four
-carbon intensities per dollar and two shares of the cost-minimizing design. In public US data, the classification depends on the product, on how
+carbon intensities per dollar and two shares of the cost-minimizing design. The classification depends on the product, on how
 speed is bought, and on how the last mile is driven. Several moves that firms explain by cost, delivery
 service, and transport miles are consistent with these directions. Our model adds the carbon of the inventory a slower supply chain holds, the
 financing of the goods it carries, and the link between speed and density.
@@ -1254,7 +1249,7 @@ $F_\tau e^{x}+\tfrac14\ell_\tau N\mu\delta e^{-x/2}+S(g_{xx}+g_x^2)>0$, $(y,y)$ 
 entry $-Sg_x/2$, so its determinant is $\big(F_\tau e^{x}+\tfrac14\ell_\tau N\mu\delta e^{-x/2}\big)S/4+S^2g_{xx}/4>0$.
 Adding the convex transport and financing terms preserves strict convexity.
 (ii) A strictly convex continuous function has a unique minimizer on a compact convex set. Since $J$ is continuous
-in $(x,y,\tau)$, the minimizer is continuous in $\tau$ by the maximum theorem.
+in $(x,y,\tau)$, the minimizer is continuous in $\tau$ by the maximum theorem. With $u=\tau/(1+\tau)$, the function $J/(1+\tau)=(1-u)K+uC$ is continuous in $(x,y,u)$ on $u\in[0,1]$ and strictly convex at each $u$, so the minimizer tends to that of $C$ as $\tau\to\infty$.
 (iii) For fixed $x$, $J$ is strictly convex in $y$, so the speed response is unique and, by the maximum theorem,
 continuous. Only the holding term couples $x$ and $y$, with cross-partial $-Sg_x/2\le0$, so $J$ has decreasing
 differences in $(x,y)$ and each response is nondecreasing in the other decision \citep{topkis1998}. The reduced objective, the partial
